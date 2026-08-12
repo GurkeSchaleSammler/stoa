@@ -1,0 +1,107 @@
+<div class="register-shell">
+  <div class="register-card">
+    <div class="register-header">
+      <div class="register-logo"><img src="/android-chrome-192x192.png" alt="" /></div>
+      <h1>{{ 'auth.createAccount' | translate }}</h1>
+      <p>{{ 'auth.registerLead' | translate }}</p>
+    </div>
+
+    @if (error()) {
+      <div class="register-error" role="alert">
+        <span>{{ error() | translate }}</span>
+        <button type="button" class="error-dismiss" (click)="dismissError()">&times;</button>
+      </div>
+    }
+
+    <div class="register-form" (keydown.enter)="submit()">
+      <!-- Name -->
+      <div class="field">
+        <label for="name">{{ 'common.name' | translate }}</label>
+        <input
+          id="name"
+          type="text"
+          autocomplete="name"
+          [placeholder]="'auth.namePlaceholder' | translate"
+          [(ngModel)]="name"
+          (ngModelChange)="fieldChanged('name')"
+          [disabled]="isLoading()"
+          [class.invalid]="fieldErrors().name"
+        />
+        @if (fieldErrors().name) {
+          <span class="field-error">{{ fieldErrors().name | translate }}</span>
+        }
+      </div>
+
+      <!-- E-Mail -->
+      <div class="field">
+        <label for="reg-email">{{ 'common.email' | translate }}</label>
+        <input
+          id="reg-email"
+          type="email"
+          autocomplete="email"
+          [placeholder]="'auth.emailPlaceholder' | translate"
+          [(ngModel)]="email"
+          (ngModelChange)="fieldChanged('email')"
+          [disabled]="isLoading()"
+          [class.invalid]="fieldErrors().email"
+        />
+        @if (fieldErrors().email) {
+          <span class="field-error">{{ fieldErrors().email | translate }}</span>
+        }
+      </div>
+
+      <!-- Passwort -->
+      <div class="field">
+        <label for="reg-password">{{ 'common.password' | translate }}</label>
+        <input
+          id="reg-password"
+          type="password"
+          autocomplete="new-password"
+          [placeholder]="'validation.minLength8' | translate"
+          [(ngModel)]="password"
+          (ngModelChange)="fieldChanged('password')"
+          [disabled]="isLoading()"
+          [class.invalid]="fieldErrors().password"
+        />
+        @if (fieldErrors().password) {
+          <span class="field-error">{{ fieldErrors().password | translate }}</span>
+        }
+      </div>
+
+      <!-- Passwort bestätigen -->
+      <div class="field">
+        <label for="password-confirm">{{ 'auth.confirmPassword' | translate }}</label>
+        <input
+          id="password-confirm"
+          type="password"
+          autocomplete="new-password"
+          [placeholder]="'auth.enterAgain' | translate"
+          [(ngModel)]="passwordConfirm"
+          (ngModelChange)="fieldChanged('passwordConfirm')"
+          [disabled]="isLoading()"
+          [class.invalid]="fieldErrors().passwordConfirm"
+        />
+        @if (fieldErrors().passwordConfirm) {
+          <span class="field-error">{{ fieldErrors().passwordConfirm | translate }}</span>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="register-submit"
+        [disabled]="isLoading() || !canSubmit()"
+        (click)="submit()"
+      >
+        @if (isLoading()) {
+          <span class="spinner" aria-hidden="true"></span>
+        }
+        {{ (isLoading() ? 'auth.creatingAccount' : 'auth.createAccount') | translate }}
+      </button>
+    </div>
+
+    <div class="register-footer">
+      <span>{{ 'auth.hasAccount' | translate }}</span>
+      <a routerLink="/auth/login">{{ 'auth.login' | translate }}</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: stoasis-backend
+  profiles:
+    default: local
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+server:
+  port: 4000
+  servlet:
+    session:
+      cookie:
+        name: stoasis_session
+        http-only: true
+        same-site: lax
+      timeout: 30d
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

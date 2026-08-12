@@ -1,0 +1,37 @@
+<div class="verify-shell">
+  <div class="verify-card">
+    @switch (status()) {
+      @case ('verifying') {
+        <div class="verify-state">
+          <span class="spinner-lg" aria-hidden="true"></span>
+          <h1>{{ 'auth.verifyingLink' | translate }}</h1>
+          <p>{{ 'auth.verifyingLead' | translate }}</p>
+        </div>
+      }
+
+      @case ('success') {
+        <div class="verify-state">
+          <span class="state-icon success"><ui-app-icon name="check" /></span>
+          <h1>{{ 'auth.loggedIn' | translate }}</h1>
+          <p>{{ 'auth.redirecting' | translate }}</p>
+        </div>
+      }
+
+      @case ('error') {
+        <div class="verify-state">
+          <span class="state-icon error"><ui-app-icon name="warning" /></span>
+          <h1>{{ 'auth.invalidLink' | translate }}</h1>
+          <p>
+            {{ (error() | translate) || ('auth.invalidLinkLead' | translate) }}
+          </p>
+          <button type="button" class="retry-btn" (click)="retry()">
+            {{ 'common.tryAgain' | translate }}
+          </button>
+          <a routerLink="/auth/login" class="back-link">
+            {{ 'auth.backToLogin' | translate }}
+          </a>
+        </div>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,110 @@
+<div class="login-shell">
+  <div class="login-card">
+    <!-- Logo + Titel -->
+    <div class="login-header">
+      <div class="login-logo"><img src="/android-chrome-192x192.png" alt="" /></div>
+      <h1>Stoasis</h1>
+      <p>{{ 'auth.tagline' | translate }}</p>
+    </div>
+
+    <!-- Error Banner -->
+    @if (error()) {
+      <div class="login-error" role="alert">
+        <span>{{ error() | translate }}</span>
+        <button type="button" class="error-dismiss" (click)="dismissError()">&times;</button>
+      </div>
+    }
+
+    @if (notice()) {
+      <div class="login-success" role="status">
+        <p>
+          <strong>{{ notice() | translate }}</strong>
+        </p>
+      </div>
+    }
+
+    <!-- Magic Link Success -->
+    @if (magicLinkSent() && mode() === 'magic-link') {
+      <div class="login-success" role="status">
+        <span class="success-icon"><ui-app-icon name="mail" /></span>
+        <p>
+          {{ 'auth.magicLinkSentBeforeEmail' | translate }}
+          <strong>{{ email }}</strong>
+          {{ 'auth.magicLinkSentAfterEmail' | translate }}
+        </p>
+      </div>
+    }
+
+    <!-- Login Form -->
+    @if (!magicLinkSent() || mode() === 'credentials') {
+      <div class="login-form" (keydown.enter)="submit()">
+        <!-- E-Mail -->
+        <div class="field">
+          <label for="email">{{ 'common.email' | translate }}</label>
+          <input
+            id="email"
+            type="email"
+            autocomplete="email"
+            [placeholder]="'auth.emailPlaceholder' | translate"
+            [(ngModel)]="email"
+            [disabled]="isLoading()"
+          />
+        </div>
+
+        <!-- Passwort (nur im Credentials-Modus) -->
+        @if (mode() === 'credentials') {
+          <div class="field">
+            <label for="password">{{ 'common.password' | translate }}</label>
+            <div class="password-wrap">
+              <input
+                id="password"
+                [type]="passwordVisible() ? 'text' : 'password'"
+                autocomplete="current-password"
+                placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;"
+                [(ngModel)]="password"
+                [disabled]="isLoading()"
+              />
+              <button
+                type="button"
+                class="pw-toggle"
+                [attr.aria-label]="
+                  (passwordVisible() ? 'auth.hidePassword' : 'auth.showPassword') | translate
+                "
+                (click)="togglePw()"
+              >
+                <ui-app-icon [name]="passwordVisible() ? 'eye-off' : 'eye'" />
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Submit -->
+        <button type="button" class="login-submit" [disabled]="isLoading()" (click)="submit()">
+          @if (isLoading()) {
+            <span class="spinner" aria-hidden="true"></span>
+          }
+          {{ submitLabel() }}
+        </button>
+      </div>
+    }
+
+    <!-- Modus-Switch -->
+    <div class="login-switch">
+      @if (mode() === 'credentials') {
+        <button type="button" (click)="switchTo('magic-link')">
+          {{ 'auth.useMagicLink' | translate }}
+        </button>
+      } @else {
+        <button type="button" (click)="switchTo('credentials')">
+          {{ 'auth.usePassword' | translate }}
+        </button>
+      }
+    </div>
+
+    <!-- Register-Link -->
+    <div class="login-footer">
+      <span>{{ 'auth.noAccount' | translate }}</span>
+      <a routerLink="/auth/register">{{ 'auth.register' | translate }}</a>
+    </div>
+  </div>
+</div>

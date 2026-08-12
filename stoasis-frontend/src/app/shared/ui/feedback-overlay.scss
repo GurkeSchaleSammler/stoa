@@ -1,0 +1,162 @@
+.snackbar-stack {
+  position: fixed;
+  z-index: 1000;
+  right: clamp(12px, 3vw, 32px);
+  bottom: clamp(12px, 3vw, 32px);
+  width: min(390px, calc(100vw - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  pointer-events: none;
+}
+.snackbar {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-raised) 94%, transparent);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
+  animation: snackbar-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.snackbar.success {
+  border-color: color-mix(in srgb, var(--success) 35%, var(--border));
+  color: var(--success);
+}
+.snackbar.error {
+  border-color: color-mix(in srgb, var(--danger) 38%, var(--border));
+  color: var(--danger);
+  animation:
+    snackbar-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both,
+    subtle-shake 320ms 130ms ease-out;
+}
+.snackbar button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+}
+.dialog-backdrop {
+  position: fixed;
+  z-index: 1100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(8 10 8 / 62%);
+  backdrop-filter: blur(8px);
+  animation: fade-in 160ms ease-out both;
+}
+.confirm-dialog {
+  width: min(440px, 100%);
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 15px;
+  padding: 24px;
+  border: 1px solid var(--border-strong);
+  border-radius: 17px;
+  background: var(--surface-raised);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+  animation: dialog-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.confirm-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 1.25rem;
+}
+.confirm-icon.danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.confirm-dialog h2 {
+  margin: 1px 0 7px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+.confirm-dialog p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+.confirm-dialog footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--text);
+  border-radius: 9px;
+  background: var(--text);
+  color: var(--surface-raised);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+.button.secondary {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+}
+.button.danger {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: white;
+}
+@keyframes snackbar-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes subtle-shake {
+  30% {
+    transform: translateX(-3px);
+  }
+  60% {
+    transform: translateX(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .snackbar,
+  .snackbar.error,
+  .dialog-backdrop,
+  .confirm-dialog {
+    animation: none;
+  }
+}

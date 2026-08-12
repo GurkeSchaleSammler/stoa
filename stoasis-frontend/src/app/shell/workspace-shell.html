@@ -1,0 +1,51 @@
+<div class="workspace-shell">
+  <aside class="workspace-sidebar"><feature-collection-list-handler /></aside>
+  <section class="workspace-main">
+    <nav class="utility-nav" [attr.aria-label]="'shell.accountMenu' | translate">
+      <a class="search-link" routerLink="/search" routerLinkActive="active"
+      ><ui-app-icon name="search" />
+        <span class="search-label">{{ 'common.search' | translate }}</span></a
+      >
+
+      <div
+        class="language-switcher"
+        role="group"
+        [attr.aria-label]="'language.label' | translate"
+      >
+        @for (languageOption of languages; track languageOption.code) {
+          <button
+            type="button"
+            [class.active]="language.currentLanguageKey() === languageOption.code"
+            [attr.aria-pressed]="language.currentLanguageKey() === languageOption.code"
+            [attr.aria-label]="languageOption.label"
+            [attr.lang]="languageOption.code"
+            (click)="language.switchLanguage(languageOption.code)"
+          >
+            {{ languageOption.code.toUpperCase() }}
+          </button>
+        }
+      </div>
+
+      <a routerLink="/profile" routerLinkActive="active"
+      ><span class="user-avatar">
+              @if (session.user()?.avatarUrl; as avatarUrl) {
+                <img [src]="avatarUrl" alt="" />
+              } @else {
+                {{ session.user()?.name?.slice(0, 1) || 'S' }}
+              }</span
+      ><span class="user-name">{{
+          session.user()?.name || ('common.profile' | translate)
+        }}</span></a
+      >
+      <button
+        id="logout-button"
+        type="button"
+        (click)="auth.logout()"
+        [attr.aria-label]="'common.logout' | translate"
+      >
+        <ui-app-icon name="logout" />
+      </button>
+    </nav>
+    <div class="route-stage"><router-outlet /></div>
+  </section>
+</div>

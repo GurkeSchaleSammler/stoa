@@ -1,0 +1,139 @@
+<style>
+#erd-rel svg { max-width: 100%; height: auto; }
+#erd-rel svg.erDiagram .divider path { stroke-opacity: 0.5; }
+#erd-rel svg.erDiagram .row-rect-odd path,
+#erd-rel svg.erDiagram .row-rect-odd rect,
+#erd-rel svg.erDiagram .row-rect-even path,
+#erd-rel svg.erDiagram .row-rect-even rect { stroke: none !important; }
+</style>
+<div id="erd-rel"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"anthropic-sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"anthropic-sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+const { svg } = await mermaid.render('erd-rel-svg', `erDiagram
+    USER {
+        uuid id PK
+        string email UK
+        string name
+        string avatar_url
+        enum plan "free | premium"
+        timestamp created_at
+    }
+    COLLECTION {
+        uuid id PK
+        uuid owner_id FK
+        string name
+        string emoji
+        jsonb allowed_types "link note photo"
+        enum visibility "private | link"
+        string invite_token UK
+        timestamp created_at
+    }
+    MEMBERSHIP {
+        uuid collection_id FK
+        uuid user_id FK
+        enum role "owner | editor | viewer"
+        timestamp joined_at
+    }
+    PIN {
+        uuid id PK
+        uuid collection_id FK
+        uuid created_by FK
+        enum pin_type "link | note | photo"
+        int sort_order
+        timestamp created_at
+        timestamp updated_at
+    }
+    LINK_DATA {
+        uuid pin_id FK
+        string url
+        string canonical_url
+        string title
+        string description
+        string image_url
+        string site_name
+        int reading_time_min
+        text extracted_text
+        tsvector tsv
+        enum parse_status "ok | failed"
+    }
+    NOTE_DATA {
+        uuid pin_id FK
+        text content
+        string color "yellow | blue | green"
+    }
+    PHOTO_DATA {
+        uuid pin_id FK
+        string file_key
+        string caption
+        int width
+        int height
+        string mime_type
+    }
+    TAG {
+        uuid id PK
+        uuid owner_id FK
+        string name
+    }
+    PIN_TAG {
+        uuid pin_id FK
+        uuid tag_id FK
+    }
+    COMMENT {
+        uuid id PK
+        uuid pin_id FK
+        uuid author_id FK
+        text body
+        timestamp created_at
+    }
+    USER ||--o{ COLLECTION : owns
+    USER ||--o{ MEMBERSHIP : joins
+    COLLECTION ||--o{ MEMBERSHIP : has
+    COLLECTION ||--o{ PIN : contains
+    USER ||--o{ PIN : creates
+    PIN ||--o| LINK_DATA : has
+    PIN ||--o| NOTE_DATA : has
+    PIN ||--o| PHOTO_DATA : has
+    PIN ||--o{ PIN_TAG : tagged
+    TAG ||--o{ PIN_TAG : applied
+    USER ||--o{ TAG : owns
+    PIN ||--o{ COMMENT : has
+    USER ||--o{ COMMENT : writes
+`);
+document.getElementById('erd-rel').innerHTML = svg;
+document.querySelectorAll('#erd-rel svg.erDiagram .node').forEach(node => {
+  const fp = node.querySelector('path[d]');
+  if (!fp) return;
+  const d = fp.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (fp.hasAttribute(a)) rect.setAttribute(a, fp.getAttribute(a));
+  }
+  fp.replaceWith(rect);
+});
+document.querySelectorAll('#erd-rel svg.erDiagram .row-rect-odd path, #erd-rel svg.erDiagram .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>

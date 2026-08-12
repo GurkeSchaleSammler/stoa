@@ -1,0 +1,247 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.profile-card,
+.settings-section {
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--surface-raised);
+}
+.profile-card > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--accent-strong);
+  font-size: 0.67rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.profile-card h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2rem;
+}
+.profile-avatar {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--sage-soft);
+  color: var(--sage);
+  font-weight: 800;
+  overflow: hidden;
+}
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.avatar-editor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.avatar-upload {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 7px !important;
+  margin: 0 !important;
+  cursor: pointer;
+}
+.avatar-upload input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.profile-card label,
+.danger-zone label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.profile-card input,
+.danger-zone input {
+  min-height: 42px;
+  padding: 0 11px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-sunken);
+  color: var(--text);
+  font: inherit;
+}
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 23px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.button {
+  min-height: 39px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+.button:disabled {
+  opacity: 0.45;
+}
+.button.primary {
+  background: var(--text);
+  color: var(--surface-raised);
+}
+.button.secondary {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+}
+.button.danger {
+  margin-top: 10px;
+  background: var(--danger);
+  color: white;
+}
+.error-banner,
+.success-banner {
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 0.76rem;
+}
+.success-banner {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.settings-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.settings-section.stack {
+  align-items: flex-start;
+  flex-direction: column;
+}
+.settings-section h2 {
+  margin: 0 0 5px;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+}
+.settings-section p:not(.eyebrow) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+.data-actions,
+.theme-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.file-button {
+  display: inline-flex;
+  align-items: center;
+}
+.file-button input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.import-result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: 0.72rem;
+}
+.import-result small {
+  width: 100%;
+}
+.theme-options {
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.theme-options button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 35px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.theme-options ui-app-icon {
+  width: 18px;
+  height: 18px;
+}
+.theme-options button.active {
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+.danger-zone {
+  border-color: color-mix(in srgb, var(--danger) 25%, var(--border));
+}
+.danger-zone > div:last-child {
+  min-width: 280px;
+}
+.logout-link {
+  margin-left: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+@media (max-width: 680px) {
+  .settings-section {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .danger-zone > div:last-child {
+    min-width: 0;
+  }
+  .card-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .card-actions .button {
+    width: 100%;
+  }
+  .profile-card > header,
+  .avatar-editor {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
