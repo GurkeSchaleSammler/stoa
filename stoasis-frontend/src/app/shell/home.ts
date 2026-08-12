@@ -167,10 +167,34 @@ import { AppIconComponent } from '../shared/ui/app-icon';
     .home::before {
       position: absolute;
       z-index: 0;
-      inset: -24px;
-      background-image: radial-gradient(circle, var(--dot) 1px, transparent 1.2px);
-      background-size: 26px 26px;
-      mask-image: linear-gradient(to bottom, #000 0, transparent 43rem);
+      inset: -48px;
+      background-image:
+        radial-gradient(circle, var(--dot) 0 1px, transparent 1.25px),
+        radial-gradient(
+          circle,
+          color-mix(in srgb, var(--dot) 58%, transparent) 0 0.75px,
+          transparent 1px
+        );
+      background-position:
+        0 0,
+        13px 19px;
+      background-size:
+        27px 29px,
+        83px 79px;
+      -webkit-mask-image: radial-gradient(
+        ellipse 118% 92% at 34% 14%,
+        #000 0 25%,
+        rgb(0 0 0 / 82%) 54%,
+        rgb(0 0 0 / 32%) 78%,
+        transparent 100%
+      );
+      mask-image: radial-gradient(
+        ellipse 118% 92% at 34% 14%,
+        #000 0 25%,
+        rgb(0 0 0 / 82%) 54%,
+        rgb(0 0 0 / 32%) 78%,
+        transparent 100%
+      );
       transform: translate(var(--dot-x, 0), var(--dot-y, 0));
       transition: transform 180ms ease-out;
       content: '';
@@ -341,8 +365,27 @@ import { AppIconComponent } from '../shared/ui/app-icon';
       position: relative;
       min-height: 470px;
       padding: 38px 28px;
-      background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
-      background-size: 21px 21px;
+      background-image:
+        radial-gradient(
+          ellipse 96% 82% at 34% 19%,
+          transparent 0 38%,
+          color-mix(in srgb, var(--surface-raised) 48%, transparent) 74%,
+          var(--surface-raised) 100%
+        ),
+        radial-gradient(circle, var(--dot) 0 1px, transparent 1.25px),
+        radial-gradient(
+          circle,
+          color-mix(in srgb, var(--dot) 56%, transparent) 0 0.75px,
+          transparent 1px
+        );
+      background-position:
+        0 0,
+        0 0,
+        13px 17px;
+      background-size:
+        100% 100%,
+        21px 23px,
+        67px 71px;
     }
     .demo-pin {
       position: absolute;

@@ -6,7 +6,12 @@ import { ThemeToggleComponent } from '../ui/profile-components';
   selector: 'feature-theme-toggle-handler',
   standalone: true,
   imports: [ThemeToggleComponent],
-  template: `<ui-theme-toggle [theme]="prefs.theme()" (onThemeChange)="prefs.setTheme($event)" />`,
+  template: `<ui-theme-toggle
+    [theme]="prefs.theme()"
+    [palette]="prefs.palette()"
+    (onThemeChange)="prefs.setTheme($event)"
+    (onPaletteChange)="prefs.setPalette($event)"
+  />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThemeToggleHandlerComponent {

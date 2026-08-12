@@ -9,6 +9,8 @@ Status: verbindliche Produkt- und Designrichtlinie
 - Stoasis verwendet die Logo- und Favicon-Assets aus `public/`. Logos erhalten einen sinnvollen Alternativtext oder ein leeres `alt`, wenn direkt daneben bereits ein lesbarer Markenname steht.
 - Icons in interaktiven Elementen sind gut erkennbar, in der Regel 18 bis 24 Pixel gross. Im Darkmode sind sie hell, im Lightmode dunkel; kontextuelle Statusfarben sind zulässig, wenn der Kontrast erhalten bleibt.
 - Das Abonnement- und Planmodell ist bis zur bewussten Produktfreigabe vollständig aus der sichtbaren Oberfläche entfernt. Es darf keine Navigation, Werbung oder Einstellungszeile dazu geben.
+- Farbwelt und Helligkeit sind unabhängige Einstellungen. Die Farbwelten `default`, `yellow`, `dark-green`, `pink`, `purple` und `burgundy` funktionieren jeweils mit Light, Dark und Systemmodus.
+- Paletten definieren ausschließlich globale semantische CSS-Tokens in `src/styles/_themes.scss`. Komponenten verwenden nur Tokens wie `--surface-raised`, `--text` oder `--accent` und enthalten keine palettenspezifischen Theme-Klassen.
 
 ## Responsive Design
 
@@ -23,6 +25,7 @@ Status: verbindliche Produkt- und Designrichtlinie
 
 - Mikroanimationen sind kurz, diskret und erklären Zustandswechsel. Erfolg und Fehler besitzen unterschiedliche, nicht allein farbbasierte Icons und Animationen.
 - Die Startseite enthält eine animierte Produktdemo und ein dezentes Punktfeld, dessen Licht und Versatz auf die Zeigerposition reagieren.
+- Raster und Punkthintergründe laufen weich und radial aus. Abstände, Winkel und Deckkraft dürfen leicht variieren; harte lineare Fade-Kanten und technisch perfekte Endlosgitter werden vermieden.
 - `prefers-reduced-motion: reduce` deaktiviert dekorative Bewegungen und verkürzt Übergänge praktisch auf null.
 - Animationen dürfen niemals das Speichern, Löschen, Navigieren oder Lesen blockieren.
 

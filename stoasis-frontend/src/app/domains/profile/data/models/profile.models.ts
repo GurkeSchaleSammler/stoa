@@ -15,9 +15,20 @@ export interface ImportResult {
   skipped: number;
   errors: string[];
 }
-export type Theme = 'light' | 'dark' | 'system';
+export const themeModes = ['light', 'dark', 'system'] as const;
+export type ThemeMode = (typeof themeModes)[number];
+export const colorPalettes = [
+  'default',
+  'yellow',
+  'dark-green',
+  'pink',
+  'purple',
+  'burgundy',
+] as const;
+export type ColorPalette = (typeof colorPalettes)[number];
 export interface Preferences {
-  theme: Theme;
+  theme: ThemeMode;
+  palette: ColorPalette;
   defaultView: BoardViewMode;
 }
 export interface ProfileFormValue {

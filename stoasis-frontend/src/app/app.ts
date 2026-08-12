@@ -22,5 +22,8 @@ export class App {
       if (theme === 'system') this.document.documentElement.removeAttribute('data-theme');
       else this.document.documentElement.dataset['theme'] = theme;
     });
+    effect(() => {
+      this.document.documentElement.dataset['palette'] = this.prefs.palette();
+    });
   }
 }
