@@ -7,9 +7,9 @@ INSERT INTO users (id, email, name, avatar_url, plan, password_hash, created_at)
 ('user-sara', 'sara@stoa.test', 'Sara Roth', NULL, 'free', '{noop}test1234', TIMESTAMP WITH TIME ZONE '2026-01-28 16:10:00+00');
 
 INSERT INTO collections (id, name, emoji, owner_id, visibility, invite_token, created_at, updated_at) VALUES
-('coll-japan', 'Japan-Trip 2027', '🗺️', 'user-du', 'link', 'invite-japan-a1b2', TIMESTAMP WITH TIME ZONE '2026-05-28 10:00:00+00', TIMESTAMP WITH TIME ZONE '2026-06-06 18:40:00+00'),
-('coll-dev', 'Stoasis Dev-Ressourcen', '💻', 'user-du', 'private', NULL, TIMESTAMP WITH TIME ZONE '2026-06-20 08:00:00+00', TIMESTAMP WITH TIME ZONE '2026-07-02 14:20:00+00'),
-('coll-rezepte', 'Rezepte mit Sara', '🍳', 'user-du', 'link', 'invite-rezepte-c3d4', TIMESTAMP WITH TIME ZONE '2026-07-08 17:00:00+00', TIMESTAMP WITH TIME ZONE '2026-07-10 19:00:00+00');
+('coll-japan', 'Japan-Trip 2027', ':️', 'user-du', 'link', 'invite-japan-a1b2', TIMESTAMP WITH TIME ZONE '2026-05-28 10:00:00+00', TIMESTAMP WITH TIME ZONE '2026-06-06 18:40:00+00'),
+('coll-dev', 'Stoasis Dev-Ressourcen', '__', 'user-du', 'private', NULL, TIMESTAMP WITH TIME ZONE '2026-06-20 08:00:00+00', TIMESTAMP WITH TIME ZONE '2026-07-02 14:20:00+00'),
+('coll-rezepte', 'Rezepte mit Sara', '<>', 'user-du', 'link', 'invite-rezepte-c3d4', TIMESTAMP WITH TIME ZONE '2026-07-08 17:00:00+00', TIMESTAMP WITH TIME ZONE '2026-07-10 19:00:00+00');
 
 INSERT INTO collection_allowed_types (collection_id, pin_type) VALUES
 ('coll-japan', 'link'), ('coll-japan', 'note'), ('coll-japan', 'photo'),

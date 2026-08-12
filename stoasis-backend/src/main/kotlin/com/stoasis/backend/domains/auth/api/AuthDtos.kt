@@ -17,7 +17,12 @@ data class RegisterRequest(
     @field:Size(min = 8, message = "Passwort muss mindestens 8 Zeichen lang sein.") val password: String,
 )
 
-data class MagicLinkRequest(@field:Email(message = "Ungültige E-Mail-Adresse.") val email: String)
+data class MagicLinkRequest(
+    @field:NotBlank(message = "E-Mail ist erforderlich.")
+    @field:Email(message = "Ungültige E-Mail-Adresse.")
+    @field:Size(max = 320, message = "E-Mail-Adresse ist zu lang.")
+    val email: String,
+)
 data class VerifyTokenRequest(@field:NotBlank val token: String)
 
 data class UserDto(

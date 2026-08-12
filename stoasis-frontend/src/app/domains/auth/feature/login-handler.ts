@@ -60,8 +60,7 @@ export class LoginHandlerComponent {
     if (this.mode() === 'credentials') {
       this.auth.login({ email: form.email, password: form.password });
     } else {
-      this.magicLinkSent.set(true);
-      this.auth.requestMagicLink({ email: form.email });
+      this.auth.requestMagicLink({ email: form.email }, () => this.magicLinkSent.set(true));
     }
   }
 

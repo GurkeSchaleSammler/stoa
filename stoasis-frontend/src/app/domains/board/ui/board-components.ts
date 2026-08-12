@@ -23,7 +23,13 @@ import {
   template: `
     <div class="link-visual">
       @if (data().imageUrl) {
-        <img [src]="data().imageUrl" alt="" />
+        <img
+          [src]="data().imageUrl"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer"
+        />
       } @else {
         <ui-app-icon name="link" />
       }
@@ -367,7 +373,17 @@ export class BoardCanvasComponent {
               }
               @if (preview(); as link) {
                 <div class="link-preview">
-                  <ui-app-icon name="link" />
+                  @if (link.imageUrl) {
+                    <img
+                      [src]="link.imageUrl"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                    />
+                  } @else {
+                    <ui-app-icon name="link" />
+                  }
                   <div>
                     <strong>{{ link.title }}</strong
                     ><small>{{ link.siteName || link.url }}</small>

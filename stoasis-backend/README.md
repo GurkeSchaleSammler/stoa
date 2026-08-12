@@ -9,19 +9,23 @@ Kotlin/Spring-Backend für das Angular-Frontend in `../stoasis-frontend`.
 - Spring Boot 4.1.0 / Spring MVC / Spring Security
 - Spring Data JPA
 - Flyway
+- Spring Mail mit SMTP
+- Jsoup 1.22.2 für statisches HTML-Metadaten-Parsing
 - H2 In-Memory im Profil `local`
 - Jackson 3 Kotlin
 
 ## Lokal starten
 
-Das Profil `local` ist das Default-Profil. Es benötigt keine externe Datenbank:
+Das Profil `local` ist das Default-Profil. Die Datenbank bleibt vollständig in-memory. Für echte Magic-Link-Testmails wird Mailpit als lokaler SMTP-Server gestartet:
 
 ```bash
+docker compose up -d mailpit
 ./gradlew bootRun
 ```
 
 Backend: `http://localhost:4000`  
 H2-Konsole: `http://localhost:4000/h2-console`
+Mailpit-Postfach: `http://localhost:8025`
 
 - JDBC URL: `jdbc:h2:mem:stoasis`
 - User: `sa`
@@ -66,3 +70,14 @@ Das Frontend erhält ein serverseitiges `HttpOnly`-Session-Cookie. Für lokale S
 - `/api/search`
 - `/api/tags`
 - `/api/links/preview`
+- `/api/links/previews/{id}`
+
+## Sichere Link-Vorschauen
+
+Das Backend lädt ausschliesslich öffentliche HTTP(S)-Ziele auf Port 80/443. DNS-Ergebnisse werden vor dem Abruf gegen lokale, private, Link-Local-, Multicast- und Cloud-Metadatenbereiche geprüft und dieselbe validierte IP wird für die Socket-Verbindung verwendet. Weiterleitungen werden einzeln neu geprüft. HTML und Bilder besitzen harte Grössen- und Zeitlimits.
+
+Es wird niemals JavaScript einer Zielseite ausgeführt. Jsoup liest nur statische Open-Graph-/Twitter-Metadaten. Ein gefundenes PNG/JPEG wird vollständig dekodiert, auf feste Abmessungen begrenzt und als neues JPEG gespeichert. SVG, HTML, Skripte, Animationen und unbekannte Bildformate werden nicht an den Browser weitergereicht. Fehlt ein geeignetes Bild, erzeugt Stoasis aus den Metadaten einen statischen Snapshot.
+
+## SMTP in Produktion
+
+Der produktive Versand nutzt dieselbe Spring-Mail-Integration. Folgende Umgebungsvariablen konfigurieren den SMTP-Anbieter: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS`, `STOASIS_MAIL_FROM`, `STOASIS_FRONTEND_URL` und `STOASIS_PUBLIC_API_URL`. Magic-Link-Tokens werden nur gehasht gespeichert, laufen nach 15 Minuten ab, sind auch bei parallelen Aufrufen atomar einmalig und werden pro E-Mail/IP gedrosselt.

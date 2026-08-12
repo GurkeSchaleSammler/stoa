@@ -487,6 +487,13 @@
   background: var(--accent-soft);
   color: var(--accent-strong);
 }
+.link-preview > img {
+  width: 76px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-xs, 7px);
+  object-fit: cover;
+}
 .link-preview div {
   min-width: 0;
   display: flex;

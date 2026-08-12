@@ -74,7 +74,7 @@ export class AuthService {
       .subscribe();
   }
 
-  requestMagicLink(request: MagicLinkRequest): void {
+  requestMagicLink(request: MagicLinkRequest, onSuccess?: () => void): void {
     this.setLoading();
     this.api
       .requestMagicLink(request)
@@ -87,6 +87,7 @@ export class AuthService {
           })),
         ),
         tap(() => this.snackbars.success('snackbar.magicLinkSent')),
+        tap(() => onSuccess?.()),
         catchError((err) => this.handleError(err)),
         takeUntilDestroyed(this.destroyRef),
       )

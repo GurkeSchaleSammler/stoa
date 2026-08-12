@@ -14,6 +14,8 @@ Aktuelle Domains: Auth, Collection, Pin, Membership, Profile, Search/Tags, Uploa
 - Spring Data JPA / Hibernate 7
 - Flyway für versionierte Schemaänderungen
 - Jackson 3 mit Kotlin-Modul
+- Spring Mail für SMTP-Versand
+- Jsoup 1.22.2 für passives Metadaten-Parsing ohne JavaScript-Ausführung
 - H2 In-Memory ausschliesslich im Profil `local`
 
 ## Persistenzprofile
@@ -31,6 +33,9 @@ Produktive Profile dürfen `db/local` nicht in `spring.flyway.locations` aufnehm
 - API-Fehler haben ein einheitliches JSON-Format mit `message` und optionalen Feldfehlern.
 - CORS erlaubt im lokalen Stand nur das Angular-Frontend auf Port 4200.
 - Uploads werden als Binärdaten gespeichert; das Profil kann die erhaltene `imageUrl` direkt verwenden.
+- Link-Vorschauen dürfen ausschliesslich serverseitig geladen werden. Erlaubt sind öffentliche HTTP(S)-Ziele auf Port 80/443; private, lokale, reservierte und Link-Local-Adressen sowie jede Redirect-Kette dorthin werden blockiert. DNS-Prüfung und Socket-Verbindung verwenden dieselbe IP.
+- Fremdes JavaScript, CSS oder HTML wird niemals im Client ausgeführt. HTML wird grössenbegrenzt mit Jsoup als Datenstruktur gelesen. Nur dekodierbare PNG/JPEG-Vorschaubilder werden nach Pixel-/Grössenprüfung als neues statisches JPEG gespeichert und über Stoasis ausgeliefert.
+- Magic Links werden über Spring Mail/SMTP versendet. Tokens besitzen mindestens 256 Bit Entropie, werden nur als SHA-256-Hash persistiert, verfallen nach 15 Minuten, werden durch ein atomisches Datenbank-Update genau einmal eingelöst und pro E-Mail/IP gedrosselt. SMTP-Zeitlimits sind zwingend konfiguriert.
 - Das Abo-Modell ist kein fachlich aktiver Backend-Bereich. Das für Frontend-Kompatibilität vorhandene Feld `plan` bleibt lokal immer `free`; Billing-Endpunkte werden nicht angeboten.
 
 Vor einem Produktivbetrieb sind CSRF-Schutz für Cookie-Sessions, sichere Cookies (`Secure`), Rate Limits für Auth/Upload sowie ein externer Object Store für Bilder zu ergänzen.

@@ -11,6 +11,23 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      "[mail.smtp.auth]": ${SMTP_AUTH:false}
+      "[mail.smtp.starttls.enable]": ${SMTP_STARTTLS:false}
+      "[mail.smtp.connectiontimeout]": 5000
+      "[mail.smtp.timeout]": 5000
+      "[mail.smtp.writetimeout]": 5000
+
+stoasis:
+  public-api-base-url: ${STOASIS_PUBLIC_API_URL:http://localhost:4000}
+  auth:
+    frontend-base-url: ${STOASIS_FRONTEND_URL:http://localhost:4200}
+    mail-from: ${STOASIS_MAIL_FROM:no-reply@stoasis.local}
 
 server:
   port: 4000

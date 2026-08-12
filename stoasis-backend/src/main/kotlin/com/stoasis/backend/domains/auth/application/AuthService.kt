@@ -12,6 +12,9 @@ import com.stoasis.backend.domains.auth.data.UserRepository
 import com.stoasis.backend.shared.web.ApiException
 import java.time.Duration
 import java.time.Instant
+import java.security.MessageDigest
+import java.security.SecureRandom
+import java.util.Base64
 import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -23,6 +26,8 @@ class AuthService(
     private val users: UserRepository,
     private val tokens: MagicLinkTokenRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val magicLinkMailSender: MagicLinkMailSender,
+    private val magicLinkRateLimiter: MagicLinkRateLimiter,
 ) {
     private val sessionDuration = Duration.ofDays(30)
 
@@ -54,27 +59,35 @@ class AuthService(
     }
 
     @Transactional
-    fun requestMagicLink(email: String): MagicLinkResponse {
-        val token = UUID.randomUUID().toString().replace("-", "").take(24)
+    fun requestMagicLink(email: String, remoteAddress: String): MagicLinkResponse {
+        val normalizedEmail = email.trim().lowercase()
+        magicLinkRateLimiter.check(normalizedEmail, remoteAddress)
+        val token = Base64.getUrlEncoder().withoutPadding().encodeToString(ByteArray(32).also(secureRandom::nextBytes))
+        val tokenHash = hashToken(token)
         tokens.save(
             MagicLinkTokenEntity(
-                token = token,
-                email = email.trim().lowercase(),
+                token = tokenHash,
+                email = normalizedEmail,
                 expiresAt = Instant.now().plus(Duration.ofMinutes(15)),
             ),
         )
-        println("Magic Link: http://localhost:4200/auth/verify?token=$token")
-        return MagicLinkResponse("Magic Link wurde versendet (siehe Server-Konsole).", 900)
+        magicLinkMailSender.send(normalizedEmail, token)
+        return MagicLinkResponse("Wenn die Adresse gültig ist, wurde ein Magic Link versendet.", 900)
     }
 
     @Transactional
     fun verify(token: String): Pair<UserEntity, AuthResponse> {
-        val entry = tokens.findById(token).orElseThrow {
+        val tokenHash = hashToken(token)
+        val entry = tokens.findById(tokenHash).orElseThrow {
             ApiException(HttpStatus.BAD_REQUEST, "Ungültiger Link.")
         }
         if (entry.used) throw ApiException(HttpStatus.BAD_REQUEST, "Dieser Link wurde bereits verwendet.")
-        if (entry.expiresAt.isBefore(Instant.now())) {
+        val now = Instant.now()
+        if (entry.expiresAt.isBefore(now)) {
             throw ApiException(HttpStatus.BAD_REQUEST, "Dieser Link ist abgelaufen.")
+        }
+        if (tokens.markUsedIfValid(tokenHash, now) != 1) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Dieser Link wurde bereits verwendet.")
         }
         val user = users.findByEmailIgnoreCase(entry.email) ?: users.save(
             UserEntity(
@@ -83,10 +96,17 @@ class AuthService(
                 name = entry.email.substringBefore('@'),
             ),
         )
-        entry.used = true
         return user to response(user)
     }
 
     private fun response(user: UserEntity) =
         AuthResponse(user.toDto(), Instant.now().plus(sessionDuration))
+
+    private fun hashToken(token: String): String = MessageDigest.getInstance("SHA-256")
+        .digest(token.toByteArray())
+        .joinToString("") { (it.toInt() and 0xff).toString(16).padStart(2, '0') }
+
+    companion object {
+        private val secureRandom = SecureRandom()
+    }
 }

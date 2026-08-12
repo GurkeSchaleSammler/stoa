@@ -38,7 +38,8 @@ class AuthController(
     }
 
     @PostMapping("/magic-link")
-    fun magicLink(@Valid @RequestBody request: MagicLinkRequest) = auth.requestMagicLink(request.email)
+    fun magicLink(@Valid @RequestBody body: MagicLinkRequest, request: HttpServletRequest) =
+        auth.requestMagicLink(body.email, request.remoteAddr)
 
     @PostMapping("/verify")
     fun verify(@Valid @RequestBody body: VerifyTokenRequest, request: HttpServletRequest): AuthResponse {

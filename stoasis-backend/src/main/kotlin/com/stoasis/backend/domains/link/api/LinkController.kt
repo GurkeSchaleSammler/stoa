@@ -1,33 +1,43 @@
 package com.stoasis.backend.domains.link.api
 
-import com.stoasis.backend.domains.pin.api.LinkPinData
+import com.stoasis.backend.domains.link.application.LinkPreviewService
+import com.stoasis.backend.domains.link.data.LinkPreviewImageRepository
 import com.stoasis.backend.shared.web.ApiException
-import java.net.URI
+import java.time.Duration
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/links")
-class LinkController {
+class LinkController(
+    private val previews: LinkPreviewService,
+    private val images: LinkPreviewImageRepository,
+    @Value("\${stoasis.public-api-base-url}") private val publicApiBaseUrl: String,
+) {
     @GetMapping("/preview")
-    fun preview(@RequestParam url: String): LinkPinData {
-        val uri = try {
-            URI(url)
-        } catch (_: Exception) {
-            throw ApiException(HttpStatus.BAD_REQUEST, "Bitte eine vollständige URL eingeben.")
+    fun preview(@RequestParam url: String) =
+        previews.preview(url, publicApiBaseUrl.trimEnd('/'))
+
+    @GetMapping("/previews/{id}")
+    @Transactional(readOnly = true)
+    fun previewImage(@PathVariable id: String): ResponseEntity<ByteArray> {
+        val image = images.findById(id).orElseThrow {
+            ApiException(HttpStatus.NOT_FOUND, "Vorschaubild nicht gefunden.")
         }
-        if (uri.scheme !in setOf("http", "https") || uri.host.isNullOrBlank()) {
-            throw ApiException(HttpStatus.BAD_REQUEST, "Bitte eine vollständige URL eingeben.")
-        }
-        val host = uri.host.removePrefix("www.")
-        val title = uri.path.split('/').lastOrNull { it.isNotBlank() }
-            ?.replace('-', ' ')
-            ?.replace('_', ' ')
-            ?.replaceFirstChar(Char::uppercase)
-            ?: "Inhalt von $host"
-        return LinkPinData(url, title, "Vorschau für $host.", null, host, (title.length % 12).coerceIn(2, 14), "ok")
+        return ResponseEntity.ok()
+            .contentType(MediaType.IMAGE_JPEG)
+            .cacheControl(CacheControl.maxAge(Duration.ofDays(7)).cachePrivate())
+            .header("X-Content-Type-Options", "nosniff")
+            .header("Content-Security-Policy", "default-src 'none'; sandbox")
+            .body(image.content)
     }
 }

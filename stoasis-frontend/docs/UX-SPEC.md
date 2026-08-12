@@ -29,6 +29,12 @@ Status: verbindliche Produkt- und Designrichtlinie
 - `prefers-reduced-motion: reduce` deaktiviert dekorative Bewegungen und verkürzt Übergänge praktisch auf null.
 - Animationen dürfen niemals das Speichern, Löschen, Navigieren oder Lesen blockieren.
 
+## Externe Link-Vorschauen
+
+- Fremde Webseiten werden niemals als `iframe`, eingebettetes HTML oder clientseitig ausgeführtes Skript dargestellt.
+- Linkkarten verwenden ausschliesslich vom Stoasis-Backend erzeugte, statische Rastervorschauen. Das Originalziel wird nur durch eine bewusste Nutzeraktion in einem neuen Browserkontext geöffnet.
+- Während des sicheren Serverabrufs erscheint ein Ladezustand; bei blockierten oder nicht erreichbaren Zielen bleibt der Link trotzdem speicherbar und erhält eine verständliche Fehlerrückmeldung.
+
 ## Startseite und SEO
 
 - Die Startseite ist scrollbar und besteht mindestens aus Hero, interaktiver Demo, Funktionen/Mehrwerten, erklärtem Ablauf und abschliessender Handlungsaufforderung.

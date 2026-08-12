@@ -13,7 +13,8 @@ data class ApiError(val message: String)
 class ApiException(
     val status: HttpStatus,
     override val message: String,
-) : RuntimeException(message)
+    cause: Throwable? = null,
+) : RuntimeException(message, cause)
 
 @RestControllerAdvice
 class ApiExceptionHandler {
