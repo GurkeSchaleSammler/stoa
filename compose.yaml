@@ -1,0 +1,30 @@
+services:
+  backend:
+    image: stoasis-backend:dev
+    build:
+      context: ./stoasis-backend
+    environment:
+      SMTP_HOST: mailpit
+      STOASIS_FRONTEND_URL: ${STOASIS_FRONTEND_URL:-http://localhost:8080}
+      STOASIS_PUBLIC_API_URL: ${STOASIS_PUBLIC_API_URL:-http://localhost:8080}
+    ports:
+      - "${STOASIS_BACKEND_PORT:-4000}:4000"
+    depends_on:
+      - mailpit
+
+  frontend:
+    image: stoasis-frontend:dev
+    build:
+      context: ./stoasis-frontend
+    environment:
+      BACKEND_URL: http://backend:4000
+    ports:
+      - "${STOASIS_FRONTEND_PORT:-8080}:8080"
+    depends_on:
+      - backend
+
+  mailpit:
+    image: axllent/mailpit:v1.30.0
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"

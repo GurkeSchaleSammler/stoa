@@ -11,12 +11,13 @@ Kotlin/Spring-Backend für das Angular-Frontend in `../stoasis-frontend`.
 - Flyway
 - Spring Mail mit SMTP
 - Jsoup 1.22.2 für statisches HTML-Metadaten-Parsing
-- H2 In-Memory im Profil `local`
+- H2 In-Memory im Profil `dev`
+- PostgreSQL im Profil `prod`
 - Jackson 3 Kotlin
 
-## Lokal starten
+## Dev starten und bauen
 
-Das Profil `local` ist das Default-Profil. Die Datenbank bleibt vollständig in-memory. Für echte Magic-Link-Testmails wird Mailpit als lokaler SMTP-Server gestartet:
+Das Profil `dev` ist das Default-Profil. Die Datenbank bleibt vollständig in-memory. Für echte Magic-Link-Testmails kann Mailpit separat gestartet werden:
 
 ```bash
 docker compose up -d mailpit
@@ -34,6 +35,75 @@ Mailpit-Postfach: `http://localhost:8025`
 Der Dump `src/main/resources/db/local/V100__local_dump.sql` wird nach dem allgemeinen Schema automatisch durch Flyway geladen. Bei jedem Neustart entsteht eine frische reproduzierbare Datenbank.
 
 Testlogin: `du@stoa.test` / `test1234`
+
+Ein ausführbares Dev-Artefakt bauen und starten:
+
+```bash
+./gradlew clean bootJar
+java -jar build/libs/stoasis.jar
+```
+
+Ohne explizites Profil verwendet die Anwendung automatisch `dev`.
+
+## Prod bauen und starten
+
+Das JAR ist für Dev und Prod identisch; das Spring-Profil wird erst beim Start gewählt:
+
+```bash
+./gradlew clean bootJar
+java -jar build/libs/stoasis.jar --spring.profiles.active=prod
+```
+
+Vor dem Prod-Start müssen mindestens diese Variablen gesetzt sein:
+
+```text
+PGHOST
+PGPORT
+PGDATABASE
+PGUSER
+PGPASSWORD
+STOASIS_FRONTEND_URL
+STOASIS_PUBLIC_API_URL
+STOASIS_CORS_ALLOWED_ORIGINS
+```
+
+Das Profil `prod` verwendet PostgreSQL und lädt ausschließlich die allgemeinen Migrationen unter `db/migration`. Lokale Seeds werden nicht ausgeführt.
+
+## Docker
+
+Image bauen:
+
+```bash
+docker build -t stoasis-backend .
+```
+
+Dev starten – ohne Argument:
+
+```bash
+docker run --rm -p 4000:4000 stoasis-backend
+```
+
+Prod starten – mit dem Argument `prod` und einer Datei mit den benötigten Umgebungsvariablen:
+
+```bash
+docker run --rm -p 4000:4000 \
+  --env-file .env.prod \
+  stoasis-backend prod
+```
+
+Für den kompletten lokalen Dev-Stack mit Frontend und Mailpit genügt im Repository-Root:
+
+```bash
+docker compose up --build
+```
+
+Der Container lauscht standardmäßig auf Port `4000`; `PORT` kann ihn überschreiben. Der Healthcheck ist unter `/actuator/health` erreichbar.
+
+## Tests
+
+```bash
+./gradlew test
+```
 
 ## Domain-Struktur
 

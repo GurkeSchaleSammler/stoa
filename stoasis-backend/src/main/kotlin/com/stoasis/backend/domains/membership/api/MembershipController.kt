@@ -2,7 +2,7 @@ package com.stoasis.backend.domains.membership.api
 
 import com.stoasis.backend.domains.membership.application.MembershipService
 import com.stoasis.backend.shared.security.CurrentUser
-import jakarta.servlet.http.HttpServletRequest
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 class MembershipController(
     private val memberships: MembershipService,
     private val currentUser: CurrentUser,
+    @Value("\${stoasis.auth.frontend-base-url}") private val configuredFrontendBaseUrl: String,
 ) {
     @GetMapping("/api/collections/{collectionId}/members")
     fun list(@PathVariable collectionId: String) = memberships.list(collectionId, currentUser.id())
@@ -34,23 +35,21 @@ class MembershipController(
         memberships.remove(collectionId, userId, currentUser.id())
 
     @GetMapping("/api/collections/{collectionId}/invite")
-    fun invite(@PathVariable collectionId: String, request: HttpServletRequest) =
-        memberships.invite(collectionId, currentUser.id(), frontendBaseUrl(request))
+    fun invite(@PathVariable collectionId: String) =
+        memberships.invite(collectionId, currentUser.id(), frontendBaseUrl())
 
     @PatchMapping("/api/collections/{collectionId}/invite")
     fun setInvite(
         @PathVariable collectionId: String,
         @RequestBody body: UpdateInviteRequest,
-        request: HttpServletRequest,
-    ) = memberships.setInvite(collectionId, currentUser.id(), body.visibility, frontendBaseUrl(request))
+    ) = memberships.setInvite(collectionId, currentUser.id(), body.visibility, frontendBaseUrl())
 
     @GetMapping("/api/invites/{token}")
-    fun preview(@PathVariable token: String, request: HttpServletRequest) =
-        memberships.preview(token, currentUser.id(), frontendBaseUrl(request))
+    fun preview(@PathVariable token: String) =
+        memberships.preview(token, currentUser.id(), frontendBaseUrl())
 
     @PostMapping("/api/collections/join/{token}")
     fun join(@PathVariable token: String) = memberships.join(token, currentUser.id())
 
-    private fun frontendBaseUrl(request: HttpServletRequest): String =
-        request.getHeader("Origin")?.takeIf { it.startsWith("http") } ?: "http://localhost:4200"
+    private fun frontendBaseUrl(): String = configuredFrontendBaseUrl.trimEnd('/')
 }

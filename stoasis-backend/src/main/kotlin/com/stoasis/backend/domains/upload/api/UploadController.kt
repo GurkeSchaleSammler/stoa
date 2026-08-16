@@ -5,10 +5,10 @@ import com.stoasis.backend.domains.upload.data.UploadEntity
 import com.stoasis.backend.domains.upload.data.UploadRepository
 import com.stoasis.backend.shared.security.CurrentUser
 import com.stoasis.backend.shared.web.ApiException
-import jakarta.servlet.http.HttpServletRequest
 import java.io.ByteArrayInputStream
 import java.util.UUID
 import javax.imageio.ImageIO
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -30,6 +30,7 @@ class UploadController(
     private val uploads: UploadRepository,
     private val users: UserRepository,
     private val currentUser: CurrentUser,
+    @Value("\${stoasis.public-api-base-url}") private val publicApiBaseUrl: String,
 ) {
     @PostMapping(consumes = ["image/jpeg", "image/png", "image/webp", "application/octet-stream"])
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,7 +39,6 @@ class UploadController(
         @RequestBody content: ByteArray,
         @RequestHeader(HttpHeaders.CONTENT_TYPE, required = false) contentType: String?,
         @RequestHeader("X-File-Name", required = false) originalName: String?,
-        request: HttpServletRequest,
     ): UploadResponse {
         if (content.isEmpty()) throw ApiException(HttpStatus.BAD_REQUEST, "Keine Bilddatei empfangen.")
         val mediaType = contentType?.substringBefore(';') ?: MediaType.APPLICATION_OCTET_STREAM_VALUE
@@ -58,7 +58,7 @@ class UploadController(
                 imageHeight = image?.height ?: 1000,
             ),
         )
-        val baseUrl = "${request.scheme}://${request.serverName}:${request.serverPort}"
+        val baseUrl = publicApiBaseUrl.trimEnd('/')
         return UploadResponse(entity.id, "$baseUrl/api/uploads/${entity.id}", entity.imageWidth, entity.imageHeight, entity.originalName)
     }
 

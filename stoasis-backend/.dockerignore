@@ -1,0 +1,6 @@
+.gradle
+.idea
+build
+compose.yaml
+README.md
+*.iml

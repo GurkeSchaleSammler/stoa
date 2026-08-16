@@ -1,59 +1,89 @@
-# StoasisFrontend
+# Stoasis Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.3.
+Angular-Single-Page-App für Stoasis. Im Container liefert Caddy das gebaute Frontend aus und leitet `/api` an das Backend weiter.
 
-## Development server
+## Voraussetzungen
 
-To start a local development server, run:
+- Node.js 22
+- npm 10
+- Backend auf `http://localhost:4000`, wenn das Frontend ohne Docker gestartet wird
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Abhängigkeiten installieren:
 
 ```bash
-ng generate component component-name
+npm ci
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Dev starten und bauen
+
+Dev-Server mit automatischem Neuladen starten:
 
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+Die App läuft unter `http://localhost:4200`. Requests an `/api` leitet der Angular-Dev-Server über `proxy.conf.json` an `http://localhost:4000` weiter.
 
-To build the project run:
+Ein explizites Dev-Bundle bauen:
 
 ```bash
-ng build
+npm run build -- --configuration development
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Das Dev-Bundle ist nicht optimiert und enthält Source Maps.
 
-## Running unit tests
+## Prod bauen und lokal prüfen
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Optimiertes Produktionsbundle bauen:
 
 ```bash
-ng test
+npm run build -- --configuration production
 ```
 
-## Running end-to-end tests
+Das Ergebnis liegt unter `dist/stoasis-frontend/browser` und enthält optimierte, gehashte Assets.
 
-For end-to-end (e2e) testing, run:
+Für eine lokale Vorschau mit Produktions-Build-Konfiguration:
 
 ```bash
-ng e2e
+npm start -- --configuration production
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Dieser Dev-Server dient nur zur lokalen Vorschau. Im echten Produktionsbetrieb wird das Bundle aus dem Caddy-Container ausgeliefert.
 
-## Additional Resources
+## Docker
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Das Image enthält sowohl das Dev- als auch das Prod-Bundle:
+
+```bash
+docker build -t stoasis-frontend .
+```
+
+Dev starten – ohne Argument:
+
+```bash
+docker run --rm -p 8080:8080 \
+  -e BACKEND_URL=http://host.docker.internal:4000 \
+  stoasis-frontend
+```
+
+Prod starten – mit dem Argument `prod`:
+
+```bash
+docker run --rm -p 8080:8080 \
+  -e BACKEND_URL=http://host.docker.internal:4000 \
+  stoasis-frontend prod
+```
+
+`BACKEND_URL` muss aus dem Container erreichbar sein. Im gemeinsamen Container-Netz ist der Wert `http://backend:4000`. Für den kompletten lokalen Stack genügt im Repository-Root:
+
+```bash
+docker compose up --build
+```
+
+Der Container lauscht standardmäßig auf Port `8080`; `PORT` kann ihn überschreiben. Der Healthcheck ist unter `/healthz` erreichbar.
+
+## Tests
+
+```bash
+npm test -- --watch=false
+```

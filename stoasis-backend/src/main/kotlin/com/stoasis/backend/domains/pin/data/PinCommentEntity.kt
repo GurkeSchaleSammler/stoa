@@ -20,6 +20,6 @@ class PinCommentEntity(
     var pin: PinEntity? = null,
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "author_id", nullable = false)
     var author: UserEntity? = null,
-    @Column(nullable = false, columnDefinition = "CLOB") var body: String = "",
+    @Column(nullable = false, columnDefinition = "TEXT") var body: String = "",
     @Column(name = "created_at", nullable = false) var createdAt: Instant = Instant.now(),
 )

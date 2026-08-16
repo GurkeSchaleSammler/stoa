@@ -2,7 +2,7 @@ spring:
   application:
     name: stoasis-backend
   profiles:
-    default: local
+    default: dev
   jpa:
     open-in-view: false
     hibernate:
@@ -25,12 +25,15 @@ spring:
 
 stoasis:
   public-api-base-url: ${STOASIS_PUBLIC_API_URL:http://localhost:4000}
+  cors:
+    allowed-origins: ${STOASIS_CORS_ALLOWED_ORIGINS:http://localhost:4200,http://127.0.0.1:4200,http://localhost:8080}
   auth:
     frontend-base-url: ${STOASIS_FRONTEND_URL:http://localhost:4200}
     mail-from: ${STOASIS_MAIL_FROM:no-reply@stoasis.local}
 
 server:
-  port: 4000
+  address: 0.0.0.0
+  port: ${PORT:4000}
   servlet:
     session:
       cookie:

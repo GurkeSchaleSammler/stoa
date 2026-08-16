@@ -2,6 +2,7 @@ package com.stoasis.backend.shared.security
 
 import com.stoasis.backend.shared.web.ApiError
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -21,6 +22,7 @@ import tools.jackson.databind.ObjectMapper
 class SecurityConfig(
     private val sessionAuthenticationFilter: SessionAuthenticationFilter,
     private val objectMapper: ObjectMapper,
+    @Value("\${stoasis.cors.allowed-origins}") private val corsAllowedOrigins: String,
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain = http
@@ -64,7 +66,7 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
-            allowedOrigins = listOf("http://localhost:4200", "http://127.0.0.1:4200")
+            allowedOrigins = corsAllowedOrigins.split(',').map(String::trim).filter(String::isNotEmpty)
             allowedMethods = listOf("GET", "POST", "PATCH", "DELETE", "OPTIONS")
             allowedHeaders = listOf("Content-Type", "X-File-Name", "Accept")
             allowCredentials = true
