@@ -10,7 +10,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { distinctUntilChanged, map } from 'rxjs';
 import { PinService } from '../data/application/pin.service';
-import { BoardCanvasComponent, StackDrop } from '../ui/board-components';
+import { BoardCanvasComponent } from '../ui/board-canvas';
+import { StackDrop } from '../ui/models/stack-drop';
 import { AddPinDialogHandlerComponent } from './add-pin-dialog-handler';
 import { PinDetailHandlerComponent } from './pin-detail-handler';
 import { BoardViewMode } from '../../../shared/models/board-view-mode';
@@ -28,30 +29,37 @@ import { BoardViewMode } from '../../../shared/models/board-view-mode';
       [selectedPinId]="pins.selectedPinId()"
       [canEdit]="pins.canEdit()"
       [isLoading]="pins.isLoading()"
-      [error]="pins.error()"
+      [error]="pins.error() || pins.elementsError()"
       (onSelectPin)="selectPin($event)"
       (onAddPinClick)="addDialogOpen.set(true)"
       (onViewModeChange)="changeView($event)"
       (onGridChange)="pins.updateGrid(collectionId(), $event.pinId, $event.grid)"
       (onStackDrop)="handleStackDrop($event)"
-      (onStackChange)="pins.updateStack(collectionId(), $event.id, $event.update)"
+      (onStackChange)="pins.stackActions.update(collectionId(), $event.id, $event.update)"
       (onReleaseStackChild)="
-        pins.releaseStackChild(collectionId(), $event.stackId, $event.pinId, $event)
+        pins.stackActions.releaseChild(collectionId(), $event.stackId, $event.pinId, $event)
       "
-      (onDissolveStack)="pins.dissolveStack(collectionId(), $event)"
+      (onDissolveStack)="pins.stackActions.dissolve(collectionId(), $event)"
       (onCreateConnector)="
-        pins.createConnector(collectionId(), $event.sourcePinId, $event.targetPinId, $event.color)
+        pins.connectorActions.create(
+          collectionId(),
+          $event.sourcePinId,
+          $event.targetPinId,
+          $event.color
+        )
       "
-      (onDeleteConnector)="pins.deleteConnector(collectionId(), $event)"
-      (onCreateZone)="pins.createZone(collectionId(), $event)"
-      (onUpdateZone)="pins.updateZone(collectionId(), $event.id, $event.update)"
-      (onDeleteZone)="pins.deleteZone(collectionId(), $event)"
-      (onCreateLabel)="pins.createLabel(collectionId(), $event)"
-      (onUpdateLabel)="pins.updateLabel(collectionId(), $event.id, $event.update)"
-      (onDeleteLabel)="pins.deleteLabel(collectionId(), $event)"
-      (onCreateSticker)="pins.createSticker(collectionId(), $event)"
-      (onUpdateSticker)="pins.updateSticker(collectionId(), $event.id, $event.update)"
-      (onDeleteSticker)="pins.deleteSticker(collectionId(), $event)"
+      (onDeleteConnector)="pins.connectorActions.delete(collectionId(), $event)"
+      (onCreateZone)="pins.decorationActions.createZone(collectionId(), $event)"
+      (onUpdateZone)="pins.decorationActions.updateZone(collectionId(), $event.id, $event.update)"
+      (onDeleteZone)="pins.decorationActions.deleteZone(collectionId(), $event)"
+      (onCreateLabel)="pins.decorationActions.createLabel(collectionId(), $event)"
+      (onUpdateLabel)="pins.decorationActions.updateLabel(collectionId(), $event.id, $event.update)"
+      (onDeleteLabel)="pins.decorationActions.deleteLabel(collectionId(), $event)"
+      (onCreateSticker)="pins.decorationActions.createSticker(collectionId(), $event)"
+      (onUpdateSticker)="
+        pins.decorationActions.updateSticker(collectionId(), $event.id, $event.update)
+      "
+      (onDeleteSticker)="pins.decorationActions.deleteSticker(collectionId(), $event)"
       (onMembersClick)="openMembers()"
       (onSettingsClick)="openSettings()"
     />
@@ -128,9 +136,9 @@ export class BoardCanvasHandlerComponent {
   }
   handleStackDrop(drop: StackDrop): void {
     if (drop.targetType === 'stack') {
-      this.pins.addToStack(this.collectionId(), drop.targetId, drop.pinId);
+      this.pins.stackActions.addChild(this.collectionId(), drop.targetId, drop.pinId);
     } else {
-      this.pins.createStack(this.collectionId(), drop.pinId, drop.targetId);
+      this.pins.stackActions.create(this.collectionId(), drop.pinId, drop.targetId);
     }
   }
   openMembers(): void {

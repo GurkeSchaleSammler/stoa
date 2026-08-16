@@ -24,14 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
-data class UploadResponse(
-    val fileKey: String,
-    val imageUrl: String,
-    val width: Int,
-    val height: Int,
-    val originalName: String,
-)
-
 @RestController
 @RequestMapping("/api/uploads")
 class UploadController(

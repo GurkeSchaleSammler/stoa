@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { colorPalettes } from '../models/profile.models';
+import { colorPalettes } from '../models/color-palettes';
 import { PrefsStore } from './prefs.store';
 
 describe('PrefsStore', () => {

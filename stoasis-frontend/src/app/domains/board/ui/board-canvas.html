@@ -1,0 +1,294 @@
+<section class="board-shell">
+  @if (context(); as active) {
+    <ui-board-toolbar
+      [context]="active"
+      [viewMode]="viewMode()"
+      [canEdit]="canEdit()"
+      [paletteOpen]="paletteOpen()"
+      (viewModeChange)="onViewModeChange.emit($event)"
+      (membersClick)="onMembersClick.emit()"
+      (settingsClick)="onSettingsClick.emit()"
+      (paletteToggle)="paletteOpen.update((open) => !open)"
+    />
+    @if (paletteOpen() && canEdit()) {
+      <ui-board-palette
+        [activeTool]="activeTool()"
+        [selectedColor]="selectedColor()"
+        [zoneLabel]="newZoneLabel()"
+        [labelText]="newLabelText()"
+        [stickerMotifs]="stickerMotifs"
+        (close)="paletteOpen.set(false)"
+        (zoneToolToggle)="toggleZoneTool()"
+        (colorChange)="selectedColor.set($event)"
+        (zoneLabelChange)="newZoneLabel.set($event)"
+        (labelTextChange)="newLabelText.set($event)"
+        (addLabel)="addFloatingLabel()"
+        (addSticker)="addSticker($event)"
+      />
+    }
+  }
+  <ui-board-status [context]="context()" [error]="error()" />
+  @if (isLoading()) {
+    <div class="board-loading" [attr.aria-label]="'board.loading' | translate">
+      <span></span><span></span><span></span>
+    </div>
+  } @else {
+    <div class="board-canvas">
+      @if (viewMode() === 'board') {
+        <div
+          #clipBoard
+          class="clip-board"
+          [style.width.px]="boardWidthPx"
+          [style.height.px]="boardHeightPx"
+          [class.drawing-zone]="activeTool() === 'zone'"
+          (pointerdown)="startBoardPointer($event)"
+          (pointermove)="moveBoardPointer($event)"
+          (pointerup)="endBoardPointer($event)"
+          (pointercancel)="cancelBoardPointer($event)"
+          (dragover)="$event.preventDefault()"
+          (drop)="dropPaletteSticker($event)"
+        >
+          @for (zone of elements().zones; track zone.id) {
+            <section
+              class="soft-zone"
+              [class]="'soft-zone ' + zone.colorVariant"
+              [style.left.px]="zoneX(zone) * clipSizePx"
+              [style.top.px]="zoneY(zone) * clipSizePx"
+              [style.width.px]="zoneWidth(zone) * clipSizePx"
+              [style.height.px]="zoneHeight(zone) * clipSizePx"
+              (pointerdown)="startZonePointer($event, zone, 'move')"
+              (pointermove)="moveBoardPointer($event)"
+              (pointerup)="endBoardPointer($event)"
+            >
+              @if (zone.label) {
+                <span>{{ zone.label }}</span>
+              }
+              @if (canEdit()) {
+                <button
+                  type="button"
+                  class="element-delete"
+                  [attr.aria-label]="'common.delete' | translate"
+                  (pointerdown)="$event.stopPropagation()"
+                  (click)="onDeleteZone.emit(zone.id)"
+                >
+                  <ui-app-icon name="close" />
+                </button>
+                <button
+                  type="button"
+                  class="zone-resize"
+                  [attr.aria-label]="'board.resize' | translate"
+                  (pointerdown)="startZonePointer($event, zone, 'resize')"
+                  (pointermove)="moveBoardPointer($event)"
+                  (pointerup)="endBoardPointer($event)"
+                ></button>
+              }
+            </section>
+          }
+
+          @if (zonePointer(); as drawing) {
+            @if (drawing.mode === 'draw') {
+              <div
+                class="soft-zone zone-draft"
+                [class]="'soft-zone zone-draft ' + selectedColor()"
+                [style.left.px]="drawing.x * clipSizePx"
+                [style.top.px]="drawing.y * clipSizePx"
+                [style.width.px]="drawing.widthClips * clipSizePx"
+                [style.height.px]="drawing.heightClips * clipSizePx"
+              ></div>
+            }
+          }
+
+          <svg
+            class="connector-layer"
+            [attr.width]="boardWidthPx"
+            [attr.height]="boardHeightPx"
+            aria-hidden="true"
+          >
+            @for (connector of elements().connectors; track connector.id) {
+              <path
+                class="connector-thread"
+                [class]="'connector-thread ' + connector.colorVariant"
+                [attr.d]="connectorPath(connector)"
+                (dblclick)="canEdit() && onDeleteConnector.emit(connector.id)"
+              />
+            }
+            @if (connectorDraft(); as draft) {
+              <path class="connector-thread draft" [attr.d]="draftConnectorPath(draft)" />
+            }
+          </svg>
+
+          @for (sticker of elements().stickers; track sticker.id) {
+            <ui-board-sticker
+              [sticker]="sticker"
+              [value]="stickerValue(sticker)"
+              [selected]="selectedStickerId() === sticker.id"
+              [canEdit]="canEdit()"
+              [clipSizePx]="clipSizePx"
+              (pointerStart)="startStickerPointer($event.event, sticker, $event.mode)"
+              (pointerMove)="moveStickerPointer($event)"
+              (pointerEnd)="endStickerPointer($event)"
+              (pointerCancel)="cancelStickerPointer($event)"
+              (select)="selectedStickerId.set(sticker.id)"
+              (layerChange)="setStickerLayer(sticker, $event)"
+              (delete)="onDeleteSticker.emit(sticker.id)"
+            />
+          }
+
+          @for (label of elements().labels; track label.id) {
+            <div
+              class="floating-label"
+              [style.left.px]="labelValue(label).x * clipSizePx"
+              [style.top.px]="labelValue(label).y * clipSizePx"
+              [style.width.px]="label.widthClips * clipSizePx"
+              [style.z-index]="label.layer + 2000"
+              (pointerdown)="startLabelPointer($event, label)"
+              (pointermove)="moveLabelPointer($event)"
+              (pointerup)="endLabelPointer($event)"
+              (pointercancel)="cancelLabelPointer($event)"
+            >
+              <span>{{ label.text }}</span>
+              @if (canEdit()) {
+                <button
+                  type="button"
+                  [attr.aria-label]="'common.delete' | translate"
+                  (pointerdown)="$event.stopPropagation()"
+                  (click)="onDeleteLabel.emit(label.id)"
+                >
+                  <ui-app-icon name="close" />
+                </button>
+              }
+            </div>
+          }
+
+          @for (stack of elements().stacks; track stack.id) {
+            <div
+              class="stack-block"
+              [class.expanded]="stack.expanded"
+              [class.drop-target]="isStackTarget('stack', stack.id)"
+              [class.dragging]="stackDrag()?.stackId === stack.id && stackDrag()?.moved"
+              [style.left.px]="stackLeft(stack)"
+              [style.top.px]="stackTop(stack)"
+              [style.width.px]="cardWidthPx"
+              [style.height.px]="stack.heightClips * clipSizePx"
+              [style.z-index]="stackLayer(stack)"
+              (pointerdown)="startStackPointer($event, stack)"
+              (pointermove)="moveStackPointer($event)"
+              (pointerup)="endStackPointer($event, stack)"
+              (pointercancel)="cancelStackPointer($event)"
+            >
+              <span class="stack-sheet sheet-one"></span>
+              <span class="stack-sheet sheet-two"></span>
+              @if (stack.expanded) {
+                @for (childId of stack.children; track childId; let index = $index) {
+                  @if (pinById(childId); as child) {
+                    <div
+                      class="stack-child"
+                      [attr.data-pin-id]="child.id"
+                      [class.dragging-out]="stackChildDrag()?.pinId === childId"
+                      [style.--stack-index]="index"
+                      [style.transform]="stackChildTransform(stack, childId, index)"
+                      (pointerdown)="startStackChildPointer($event, stack, child)"
+                      (pointermove)="moveStackChildPointer($event)"
+                      (pointerup)="endStackChildPointer($event, stack, child)"
+                      (pointercancel)="cancelStackChildPointer($event)"
+                    >
+                      <ui-pin-card [pin]="child" (onOpen)="openPin($event)" />
+                    </div>
+                  }
+                }
+              } @else if (topPin(stack); as top) {
+                <div class="stack-child top-card" [attr.data-pin-id]="top.id">
+                  <ui-pin-card [pin]="top" (onOpen)="openPin($event)" />
+                </div>
+              }
+              <button
+                type="button"
+                class="stack-badge"
+                [attr.aria-label]="'board.toggleStack' | translate"
+                (pointerdown)="$event.stopPropagation()"
+                (click)="
+                  onStackChange.emit({ id: stack.id, update: { expanded: !stack.expanded } })
+                "
+              >
+                +{{ stack.children.length }}
+              </button>
+              @if (canEdit()) {
+                <button
+                  type="button"
+                  class="stack-dissolve"
+                  [attr.aria-label]="'board.dissolveStack' | translate"
+                  (pointerdown)="$event.stopPropagation()"
+                  (click)="onDissolveStack.emit(stack.id)"
+                >
+                  <ui-app-icon name="close" />
+                </button>
+              }
+            </div>
+          }
+
+          @for (pin of visiblePins(); track pin.id) {
+            <div
+              #clipCard
+              class="clip-card"
+              [class.can-move]="canEdit()"
+              [class.dragging]="isDragging(pin.id)"
+              [class.overlap-warning]="isInvalidDrag(pin.id)"
+              [class.drop-rejected]="rejectedPinId() === pin.id"
+              [class.drop-target]="isStackTarget('pin', pin.id)"
+              [attr.data-pin-id]="pin.id"
+              [style.left.px]="cardLeft(pin)"
+              [style.top.px]="cardTop(pin)"
+              [style.width.px]="cardWidthPx"
+              [style.height.px]="cardHeight(pin)"
+              [style.z-index]="cardLayer(pin)"
+              [style.--layer-depth]="layerDepth(pin)"
+              [style.--layer-shadow-y]="layerShadowY(pin)"
+              [style.--layer-shadow-blur]="layerShadowBlur(pin)"
+              (pointerdown)="startDrag($event, pin)"
+              (pointermove)="moveDrag($event)"
+              (pointerup)="endDrag($event)"
+              (pointercancel)="cancelDrag($event)"
+            >
+              <ui-pin-card
+                [pin]="pin"
+                [selected]="selectedPinId() === pin.id"
+                (onOpen)="openPin($event)"
+              />
+              @if (canEdit()) {
+                <ui-pin-edit-button (edit)="openPin(pin.id)" />
+                <button
+                  type="button"
+                  class="connect-handle"
+                  [attr.aria-label]="'board.connect' | translate"
+                  (pointerdown)="startConnector($event, pin)"
+                  (pointermove)="moveConnector($event)"
+                  (pointerup)="endConnector($event)"
+                  (pointercancel)="cancelConnector($event)"
+                ></button>
+              }
+            </div>
+          }
+          @if (canEdit()) {
+            <button
+              type="button"
+              class="add-pin-card"
+              [style.left.px]="addPosition().x * clipSizePx"
+              [style.top.px]="addPosition().y * clipSizePx"
+              [style.width.px]="cardWidthPx"
+              (click)="onAddPinClick.emit()"
+            >
+              <span aria-hidden="true"><ui-app-icon name="plus" /></span
+              ><strong>{{ 'pin.add' | translate }}</strong
+              ><small>{{ 'pin.addTypes' | translate }}</small>
+            </button>
+          }
+        </div>
+      } @else {
+        <ui-board-list-view [pins]="pins()" (onSelectPin)="onSelectPin.emit($event)" />
+      }
+      @if (pins().length === 0 && !canEdit()) {
+        <p class="empty-board">{{ 'board.empty' | translate }}</p>
+      }
+    </div>
+  }
+</section>

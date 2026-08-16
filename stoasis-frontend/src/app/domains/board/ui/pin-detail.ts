@@ -1,0 +1,178 @@
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
+import { AppIconComponent } from '../../../shared/ui/app-icon';
+import { Pin } from '../../../shared/models/pin';
+import { PinEditValue } from '../data/models/pin-edit-value';
+
+@Component({
+  selector: 'ui-pin-detail',
+  standalone: true,
+  imports: [FormsModule, TranslatePipe, AppIconComponent],
+  template: `
+    @if (pin(); as item) {
+      <div class="detail-backdrop" (click)="onClose.emit()">
+        <aside
+          class="detail-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pin-detail-title"
+          (click)="$event.stopPropagation()"
+        >
+          <header>
+            <span class="detail-type">{{ 'pin.type.' + item.type | translate }}</span
+            ><button
+              type="button"
+              class="close-button"
+              [attr.aria-label]="'common.close' | translate"
+              (click)="onClose.emit()"
+            >
+              <ui-app-icon name="close" />
+            </button>
+          </header>
+          <div class="detail-content">
+            @if (editMode()) {
+              @switch (item.type) {
+                @case ('link') {
+                  <label class="dialog-field"
+                    ><span>{{ 'common.title' | translate }}</span
+                    ><input
+                      [ngModel]="editValue().title"
+                      (ngModelChange)="onDraftChange.emit({ title: $event })"
+                  /></label>
+                  <label class="dialog-field"
+                    ><span>{{ 'common.description' | translate }}</span
+                    ><textarea
+                      rows="4"
+                      [ngModel]="editValue().description"
+                      (ngModelChange)="onDraftChange.emit({ description: $event })"
+                    ></textarea>
+                  </label>
+                }
+                @case ('note') {
+                  <label class="dialog-field"
+                    ><span>{{ 'pin.note' | translate }}</span
+                    ><textarea
+                      rows="10"
+                      [ngModel]="editValue().content"
+                      (ngModelChange)="onDraftChange.emit({ content: $event })"
+                    ></textarea>
+                  </label>
+                }
+                @case ('photo') {
+                  <label class="dialog-field"
+                    ><span>{{ 'pin.caption' | translate }}</span
+                    ><input
+                      [ngModel]="editValue().caption"
+                      (ngModelChange)="onDraftChange.emit({ caption: $event })"
+                  /></label>
+                }
+              }
+              <label class="dialog-field"
+                ><span>{{ 'common.tags' | translate }}</span
+                ><input
+                  [ngModel]="editValue().tags"
+                  (ngModelChange)="onDraftChange.emit({ tags: $event })"
+              /></label>
+              <div class="detail-actions">
+                <button type="button" class="button secondary" (click)="onCancelEdit.emit()">
+                  {{ 'common.cancel' | translate }}</button
+                ><button type="button" class="button primary" (click)="onSave.emit()">
+                  {{ 'common.save' | translate }}
+                </button>
+              </div>
+            } @else {
+              @switch (item.type) {
+                @case ('link') {
+                  <p class="eyebrow">{{ item.data.siteName || ('pin.webLink' | translate) }}</p>
+                  <h1 id="pin-detail-title">{{ item.data.title }}</h1>
+                  <p class="detail-lead">{{ item.data.description }}</p>
+                  <a class="visit-link" [href]="item.data.url" target="_blank" rel="noopener"
+                    >{{ 'pin.openLink' | translate }} <ui-app-icon name="external"
+                  /></a>
+                }
+                @case ('note') {
+                  <p class="eyebrow">{{ 'pin.note' | translate }}</p>
+                  <h1 id="pin-detail-title">{{ item.data.content }}</h1>
+                }
+                @case ('photo') {
+                  <div class="detail-photo"><ui-app-icon name="image" /></div>
+                  <h1 id="pin-detail-title">
+                    {{ item.data.caption || ('pin.photo' | translate) }}
+                  </h1>
+                }
+              }
+              @if (item.tags.length) {
+                <div class="tag-row">
+                  @for (tag of item.tags; track tag) {
+                    <span>#{{ tag }}</span>
+                  }
+                </div>
+              }
+              <p class="detail-meta">
+                {{ 'pin.pinnedBy' | translate: { name: item.createdByName } }} ·
+                {{ item.createdAt.slice(0, 10) }}
+              </p>
+              @if (canEdit()) {
+                <div class="detail-actions">
+                  <button type="button" class="button danger-ghost" (click)="onDelete.emit()">
+                    <ui-app-icon name="trash" /> {{ 'common.delete' | translate }}</button
+                  ><button type="button" class="button secondary" (click)="onEdit.emit()">
+                    <ui-app-icon name="edit" /> {{ 'common.edit' | translate }}
+                  </button>
+                </div>
+              }
+            }
+
+            <section class="comments" aria-labelledby="comments-title">
+              <h2 id="comments-title">
+                {{ 'pin.comments' | translate }} <span>{{ item.comments.length }}</span>
+              </h2>
+              @for (comment of item.comments; track comment.at + comment.authorId) {
+                <article [class.pending]="comment.pending">
+                  <strong>{{ comment.authorName | translate }}</strong>
+                  <p>{{ comment.body }}</p>
+                  <time>{{ comment.at.slice(0, 10) }}</time>
+                </article>
+              } @empty {
+                <p class="helper">{{ 'pin.noComments' | translate }}</p>
+              }
+              <div class="comment-form">
+                <label class="sr-only" for="new-comment">{{ 'pin.comment' | translate }}</label
+                ><textarea
+                  id="new-comment"
+                  rows="2"
+                  [placeholder]="'pin.replyPlaceholder' | translate"
+                  [(ngModel)]="commentDraft"
+                ></textarea
+                ><button type="button" [disabled]="!commentDraft.trim()" (click)="submitComment()">
+                  <ui-app-icon name="send" /> {{ 'common.send' | translate }}
+                </button>
+              </div>
+            </section>
+          </div>
+        </aside>
+      </div>
+    }
+  `,
+  styleUrl: './board.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class PinDetailComponent {
+  readonly pin = input<Pin | null>(null);
+  readonly canEdit = input(false);
+  readonly editMode = input(false);
+  readonly editValue = input.required<PinEditValue>();
+  readonly onEdit = output<void>();
+  readonly onDraftChange = output<Partial<PinEditValue>>();
+  readonly onSave = output<void>();
+  readonly onCancelEdit = output<void>();
+  readonly onDelete = output<void>();
+  readonly onCommentSubmit = output<string>();
+  readonly onClose = output<void>();
+  commentDraft = '';
+  submitComment(): void {
+    this.onCommentSubmit.emit(this.commentDraft);
+    this.commentDraft = '';
+  }
+}

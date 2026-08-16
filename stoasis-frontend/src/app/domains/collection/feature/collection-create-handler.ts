@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { form, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { CollectionService } from '../data/application/collection.service';
-import { CollectionCreateDialogComponent } from '../ui/collection-components';
+import { CollectionCreateDialogComponent } from '../ui/collection-create-dialog';
 import { PinType } from '../../../shared/models/pin-type';
 import { CreateCollectionRequest } from '../data/models/create-collection-request';
 

@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { ImportService } from '../data/application/import.service';
 import { ProfileService } from '../data/application/profile.service';
-import { ImportExportComponent } from '../ui/profile-components';
+import { ImportExportComponent } from '../ui/import-export';
 import { SnackbarService } from '../../../shared/application/snackbar.service';
 import { ExportFormat } from '../data/models/export-format';
 

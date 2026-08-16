@@ -27,39 +27,41 @@ export class LinkParserService {
   readonly isLoading = computed(() => this.loadingState());
   readonly error = computed(() => this.errorState());
 
-  private readonly parserSubscription = this.request
-    .pipe(
-      debounceTime(350),
-      distinctUntilChanged(),
-      filter((url) => url.length > 5),
-      tap(() => {
-        this.loadingState.set(true);
-        this.errorState.set(null);
-      }),
-      switchMap((url) =>
-        this.api.parseLink(url).pipe(
-          catchError(() => {
-            this.previewState.set({
-              url,
-              title: url,
-              description: null,
-              imageUrl: null,
-              siteName: null,
-              readingTimeMin: null,
-              parseStatus: 'failed',
-            });
-            this.errorState.set('errors.linkPreview');
-            this.snackbars.error('errors.linkPreview');
-            this.loadingState.set(false);
-            return EMPTY;
-          }),
+  constructor() {
+    this.request
+      .pipe(
+        debounceTime(350),
+        distinctUntilChanged(),
+        filter((url) => url.length > 5),
+        tap(() => {
+          this.loadingState.set(true);
+          this.errorState.set(null);
+        }),
+        switchMap((url) =>
+          this.api.parseLink(url).pipe(
+            catchError(() => {
+              this.previewState.set({
+                url,
+                title: url,
+                description: null,
+                imageUrl: null,
+                siteName: null,
+                readingTimeMin: null,
+                parseStatus: 'failed',
+              });
+              this.errorState.set('errors.linkPreview');
+              this.snackbars.error('errors.linkPreview');
+              this.loadingState.set(false);
+              return EMPTY;
+            }),
+          ),
         ),
-      ),
-      tap((preview) => this.previewState.set(preview)),
-      tap(() => this.loadingState.set(false)),
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe();
+        tap((preview) => this.previewState.set(preview)),
+        tap(() => this.loadingState.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
 
   parseMetadata(url: string): void {
     if (!url.trim()) {

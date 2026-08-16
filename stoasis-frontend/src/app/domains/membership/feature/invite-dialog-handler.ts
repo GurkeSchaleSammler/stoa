@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { MembershipService } from '../data/application/membership.service';
-import { InviteDialogComponent } from '../ui/membership-components';
+import { InviteDialogComponent } from '../ui/invite-dialog';
 
 @Component({
   selector: 'feature-invite-dialog-handler',

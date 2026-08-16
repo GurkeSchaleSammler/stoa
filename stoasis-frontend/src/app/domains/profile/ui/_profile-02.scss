@@ -1,0 +1,173 @@
+.appearance-control > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.appearance-control strong {
+  font-size: 0.78rem;
+}
+.appearance-control small {
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+.theme-options,
+.palette-options {
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-sunken);
+}
+.palette-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(430px, 100%);
+}
+.theme-options button,
+.palette-options button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 35px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.theme-options ui-app-icon {
+  width: 18px;
+  height: 18px;
+}
+.theme-options button.active,
+.palette-options button.active {
+  background: var(--surface-raised);
+  color: var(--text);
+  box-shadow: 0 1px 4px rgb(20 22 18 / 9%);
+}
+.palette-options button {
+  justify-content: flex-start;
+  min-height: 43px;
+  padding: 4px 9px 4px 5px;
+}
+.palette-swatch {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  border: 1px solid rgb(20 22 18 / 14%);
+  border-radius: 7px;
+  background: #f2f1eb;
+}
+.palette-swatch i {
+  flex: 1;
+  height: 100%;
+}
+.palette-options button[data-palette='default'] .palette-swatch i:nth-child(1) {
+  background: #181a17;
+}
+.palette-options button[data-palette='default'] .palette-swatch i:nth-child(2) {
+  background: #486cc7;
+}
+.palette-options button[data-palette='default'] .palette-swatch i:nth-child(3) {
+  background: #e9e8e0;
+}
+.palette-options button[data-palette='yellow'] .palette-swatch i:nth-child(1) {
+  background: #10100b;
+}
+.palette-options button[data-palette='yellow'] .palette-swatch i:nth-child(2) {
+  background: #d2c32f;
+}
+.palette-options button[data-palette='yellow'] .palette-swatch i:nth-child(3) {
+  background: #f3efe5;
+}
+.palette-options button[data-palette='dark-green'] .palette-swatch i:nth-child(1) {
+  background: #08130f;
+}
+.palette-options button[data-palette='dark-green'] .palette-swatch i:nth-child(2) {
+  background: #286b4f;
+}
+.palette-options button[data-palette='dark-green'] .palette-swatch i:nth-child(3) {
+  background: #eef2ec;
+}
+.palette-options button[data-palette='pink'] .palette-swatch i:nth-child(1) {
+  background: #160d12;
+}
+.palette-options button[data-palette='pink'] .palette-swatch i:nth-child(2) {
+  background: #c74f83;
+}
+.palette-options button[data-palette='pink'] .palette-swatch i:nth-child(3) {
+  background: #f7f0f3;
+}
+.palette-options button[data-palette='purple'] .palette-swatch i:nth-child(1) {
+  background: #100d19;
+}
+.palette-options button[data-palette='purple'] .palette-swatch i:nth-child(2) {
+  background: #7655c7;
+}
+.palette-options button[data-palette='purple'] .palette-swatch i:nth-child(3) {
+  background: #f3f0f7;
+}
+.palette-options button[data-palette='burgundy'] .palette-swatch i:nth-child(1) {
+  background: #14090d;
+}
+.palette-options button[data-palette='burgundy'] .palette-swatch i:nth-child(2) {
+  background: #8f3044;
+}
+.palette-options button[data-palette='burgundy'] .palette-swatch i:nth-child(3) {
+  background: #f5efef;
+}
+.danger-zone {
+  border-color: color-mix(in srgb, var(--danger) 25%, var(--border));
+}
+.danger-zone > div:last-child {
+  min-width: 280px;
+}
+.logout-link {
+  margin-left: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+@media (max-width: 680px) {
+  .settings-section {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .danger-zone > div:last-child {
+    min-width: 0;
+  }
+  .card-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .card-actions .button {
+    width: 100%;
+  }
+  .profile-card > header,
+  .avatar-editor {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .appearance-control {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .theme-options,
+  .palette-options {
+    width: 100%;
+  }
+  .palette-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .theme-options button,
+  .palette-options button {
+    flex: 1;
+    justify-content: center;
+  }
+}

@@ -20,6 +20,10 @@ import com.stoasis.backend.domains.pin.data.PinCommentEntity
 import com.stoasis.backend.domains.pin.data.PinCommentRepository
 import com.stoasis.backend.domains.pin.data.PinEntity
 import com.stoasis.backend.domains.pin.data.PinRepository
+import com.stoasis.backend.domains.pin.model.PinGridRect
+import com.stoasis.backend.domains.pin.utils.estimatedPinHeight
+import com.stoasis.backend.domains.pin.utils.findFreePinPosition
+import com.stoasis.backend.domains.pin.utils.pinOverlapAllowed
 import com.stoasis.backend.shared.web.ApiException
 import java.time.Instant
 import java.util.UUID
@@ -41,7 +45,6 @@ class PinService(
         const val CARD_WIDTH_CLIPS = 16
         const val BOARD_WIDTH_CLIPS = 160
         const val BOARD_HEIGHT_CLIPS = 240
-        private const val AUTO_LAYOUT_GAP_CLIPS = 2
     }
 
     @Transactional(readOnly = true)
@@ -68,8 +71,8 @@ class PinService(
         )
         applyData(pin, request.data)
         val existing = pins.findAllByCollectionIdOrderBySortOrder(collectionId)
-        pin.heightClips = estimatedHeight(pin)
-        val position = findFreePosition(pin.heightClips, occupiedRects(collectionId, existing))
+        pin.heightClips = estimatedPinHeight(pin)
+        val position = findFreePinPosition(pin.heightClips, occupiedRects(collectionId, existing))
         pin.gridX = position.first
         pin.gridY = position.second
         pin.layer = (existing.maxOfOrNull(PinEntity::layer) ?: 0) + 1
@@ -202,7 +205,7 @@ class PinService(
             throw ApiException(HttpStatus.BAD_REQUEST, "Ungültige Kartenebene.")
         }
 
-        val candidate = GridRect(grid.x, grid.y, CARD_WIDTH_CLIPS, grid.heightClips)
+        val candidate = PinGridRect(grid.x, grid.y, CARD_WIDTH_CLIPS, grid.heightClips)
         val stackedIds = stacks.findAllByCollectionIdOrderByLayer(collectionId)
             .flatMap { it.children }
             .mapNotNull { it.pin?.id }
@@ -210,12 +213,12 @@ class PinService(
         val invalidPinOverlap = collectionPins
             .asSequence()
             .filter { it.id != pin.id && it.id !in stackedIds }
-            .map { GridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
-            .any { !overlapAllowed(candidate, it) }
+            .map { PinGridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
+            .any { !pinOverlapAllowed(candidate, it) }
         val invalidStackOverlap = stacks.findAllByCollectionIdOrderByLayer(collectionId)
             .asSequence()
-            .map { GridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
-            .any { !overlapAllowed(candidate, it) }
+            .map { PinGridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
+            .any { !pinOverlapAllowed(candidate, it) }
         if (invalidPinOverlap || invalidStackOverlap) {
             throw ApiException(HttpStatus.CONFLICT, "Karten dürfen sich höchstens zur Hälfte überlagern.")
         }
@@ -226,48 +229,13 @@ class PinService(
         pin.layer = grid.layer
     }
 
-    private fun estimatedHeight(pin: PinEntity): Int = when (pin.type) {
-        PinType.link -> 18
-        PinType.note -> (12 + (pin.content.orEmpty().length / 38)).coerceIn(12, 28)
-        PinType.photo -> {
-            val ratio = if ((pin.imageWidth ?: 0) > 0) {
-                (pin.imageHeight ?: 0).toDouble() / (pin.imageWidth ?: 1)
-            } else 0.7
-            (8 + (CARD_WIDTH_CLIPS * ratio).toInt()).coerceIn(12, 30)
-        }
-    }
-
-    private fun occupiedRects(collectionId: String, existing: List<PinEntity>): List<GridRect> {
+    private fun occupiedRects(collectionId: String, existing: List<PinEntity>): List<PinGridRect> {
         val allStacks = stacks.findAllByCollectionIdOrderByLayer(collectionId)
         val stackedIds = allStacks.flatMap { it.children }.mapNotNull { it.pin?.id }.toSet()
         return existing
             .filter { it.id !in stackedIds }
-            .map { GridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) } +
-            allStacks.map { GridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
-    }
-
-    private fun findFreePosition(heightClips: Int, occupied: List<GridRect>): Pair<Int, Int> {
-        for (y in 0..(BOARD_HEIGHT_CLIPS - heightClips) step AUTO_LAYOUT_GAP_CLIPS) {
-            for (x in 0..(BOARD_WIDTH_CLIPS - CARD_WIDTH_CLIPS) step (CARD_WIDTH_CLIPS + AUTO_LAYOUT_GAP_CLIPS)) {
-                val candidate = GridRect(x, y, CARD_WIDTH_CLIPS, heightClips)
-                if (occupied.none { intersectionArea(candidate, it) > 0 }) return x to y
-            }
-        }
-        throw ApiException(HttpStatus.CONFLICT, "Auf diesem Board ist kein freier Platz mehr verfügbar.")
-    }
-
-    private data class GridRect(val x: Int, val y: Int, val width: Int, val height: Int)
-
-    private fun overlapAllowed(a: GridRect, b: GridRect): Boolean {
-        val overlapArea = intersectionArea(a, b)
-        val smallerArea = minOf(a.width * a.height, b.width * b.height)
-        return overlapArea * 2 <= smallerArea
-    }
-
-    private fun intersectionArea(a: GridRect, b: GridRect): Int {
-        val width = (minOf(a.x + a.width, b.x + b.width) - maxOf(a.x, b.x)).coerceAtLeast(0)
-        val height = (minOf(a.y + a.height, b.y + b.height) - maxOf(a.y, b.y)).coerceAtLeast(0)
-        return width * height
+            .map { PinGridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) } +
+            allStacks.map { PinGridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
     }
 
     private fun applyData(pin: PinEntity, data: JsonNode) {

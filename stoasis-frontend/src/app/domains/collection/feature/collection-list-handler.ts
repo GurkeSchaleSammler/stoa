@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CollectionService } from '../data/application/collection.service';
-import { CollectionListComponent } from '../ui/collection-components';
+import { CollectionListComponent } from '../ui/collection-list';
 import { CollectionFilter } from '../data/models/collection-filter';
 
 @Component({

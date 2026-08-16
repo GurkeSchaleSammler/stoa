@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TagService } from '../data/application/tag.service';
-import { TagManagerComponent } from '../ui/search-components';
+import { TagManagerComponent } from '../ui/tag-manager';
 
 @Component({
   selector: 'feature-tag-manager-handler',

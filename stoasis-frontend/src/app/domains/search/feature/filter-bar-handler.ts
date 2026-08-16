@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SearchService } from '../data/application/search.service';
 import { TagService } from '../data/application/tag.service';
-import { FilterBarComponent } from '../ui/search-components';
+import { FilterBarComponent } from '../ui/filter-bar';
 import { PinType } from '../../../shared/models/pin-type';
 
 @Component({

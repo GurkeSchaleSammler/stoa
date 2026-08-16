@@ -1,0 +1,210 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.board-shell {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--surface-sunken);
+}
+.board-toolbar {
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 22px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+.board-heading,
+.board-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.board-emoji {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--surface-sunken);
+  font-size: 1.25rem;
+}
+.board-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.board-heading h1 {
+  margin: 1px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  letter-spacing: -0.02em;
+}
+.member-count {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--sage-soft);
+  color: var(--sage);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.view-toggle {
+  display: flex;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+.view-toggle button,
+.toolbar-icon {
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+  min-height: 30px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+.view-toggle button.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.toolbar-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface-raised);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.board-hint {
+  padding: 7px 22px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+.board-error {
+  margin: 12px 22px 0;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 0.8rem;
+}
+.board-canvas {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 22px;
+  background-color: var(--surface-sunken);
+}
+.clip-board {
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+}
+.clip-card {
+  position: absolute;
+  transition:
+    left 0.38s var(--ease-spring),
+    top 0.38s var(--ease-spring);
+  animation: card-arrive 0.28s var(--ease-soft) both;
+}
+.clip-card.can-move {
+  touch-action: none;
+  user-select: none;
+}
+.clip-card.can-move .pin-card {
+  cursor: grab;
+}
+.clip-card.dragging {
+  transition: none;
+}
+.clip-card.dragging .pin-card {
+  cursor: grabbing;
+  transform: none;
+  box-shadow: var(--shadow-lg);
+}
+.clip-card.overlap-warning .pin-card {
+  border-color: var(--danger);
+  box-shadow:
+    0 0 0 2px var(--danger-soft),
+    var(--shadow-lg);
+}
+.clip-card.drop-rejected .pin-card {
+  animation: rejected-drop 0.48s ease-out;
+}
+@keyframes rejected-drop {
+  0%,
+  100% {
+    border-color: var(--border);
+  }
+  35% {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px var(--danger-soft);
+  }
+}
+.pin-card {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--border) 35%, transparent);
+  border-radius: var(--radius-card);
+  background: var(--surface-raised);
+  color: var(--text);
+  text-align: left;
+  box-shadow: 0 var(--layer-shadow-y, 4px) var(--layer-shadow-blur, 30px) rgb(31 32 27 / 8%);
+  cursor: pointer;
+  transition:
+    transform 0.18s var(--ease-soft),
+    box-shadow 0.18s var(--ease-soft),
+    border-color 0.18s var(--ease-soft);
+}
+.pin-card:hover,
+.pin-card:focus-visible,
+.pin-card.selected {
+  transform: scale(1.015);
+  border-color: color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: 0 6px 38px rgb(31 32 27 / 11%);
+}
+.pin-type {
+  position: absolute;
+  z-index: 1;
+  top: 9px;
+  right: 9px;
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 800;
+  font-size: 0.9rem;
+}

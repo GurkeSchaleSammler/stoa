@@ -1,7 +1,7 @@
 package com.stoasis.backend
 
 import com.stoasis.backend.domains.link.application.PreviewImageRenderer
-import com.stoasis.backend.shared.security.PublicUrlPolicy
+import com.stoasis.backend.shared.utils.PublicUrlPolicy
 import com.stoasis.backend.shared.web.ApiException
 import java.awt.Color
 import java.awt.image.BufferedImage

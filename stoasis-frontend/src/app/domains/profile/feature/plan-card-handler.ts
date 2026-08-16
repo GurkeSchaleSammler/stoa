@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize, tap } from 'rxjs';
 import { SessionContextStore } from '../../../shared/application/session-context.store';
 import { BillingService } from '../data/application/billing.service';
-import { PlanCardComponent } from '../ui/profile-components';
+import { PlanCardComponent } from '../ui/plan-card';
 
 @Component({
   selector: 'feature-plan-card-handler',

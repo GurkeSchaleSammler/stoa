@@ -1,0 +1,205 @@
+.toolbar-button.active {
+  border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.board-palette {
+  position: absolute;
+  z-index: 35;
+  top: 68px;
+  right: 18px;
+  width: min(310px, calc(100% - 36px));
+  max-height: calc(100% - 88px);
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--border) 38%, transparent);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--surface-raised) 94%, transparent);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(18px);
+  animation: palette-in 0.2s var(--ease-soft) both;
+}
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+}
+.palette-heading,
+.palette-section,
+.label-creator {
+  display: flex;
+}
+.palette-heading {
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.palette-heading p,
+.palette-section > span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.palette-heading strong {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 550;
+}
+.palette-section {
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px 0;
+  border-top: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+}
+.palette-tool {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  border: 1px solid color-mix(in srgb, var(--border) 52%, transparent);
+  background: var(--surface-raised);
+  color: var(--text);
+  cursor: pointer;
+}
+.palette-tool:hover,
+.palette-tool.active {
+  transform: scale(1.01);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  box-shadow: var(--shadow-md);
+}
+.palette-tool:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.palette-colors {
+  display: flex;
+  gap: 8px;
+}
+.color-dot {
+  width: 30px;
+  height: 30px;
+  border: 4px solid transparent;
+  border-radius: 999px;
+  background: var(--decor-color);
+  background-clip: padding-box;
+  cursor: pointer;
+}
+.color-dot.active {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--decor-color) 25%, transparent);
+}
+.label-creator input,
+.zone-label-input {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+.sticker-options {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.sticker-options button {
+  display: grid;
+  min-width: 0;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 0;
+  background: var(--surface-sunken);
+  cursor: grab;
+}
+.sticker-options button:hover {
+  transform: scale(1.06);
+  box-shadow: var(--shadow-md);
+}
+.sticker-mini {
+  color: var(--decor-color);
+  font-size: 1.15rem;
+}
+.sticker-palette small {
+  color: var(--muted);
+  font-size: 0.66rem;
+  line-height: 1.5;
+}
+
+.accent {
+  --decor-color: var(--accent);
+  --decor-soft: color-mix(in srgb, var(--accent) 13%, transparent);
+}
+.sage {
+  --decor-color: var(--sage);
+  --decor-soft: color-mix(in srgb, var(--sage) 13%, transparent);
+}
+.clay {
+  --decor-color: color-mix(in srgb, var(--amber) 72%, var(--danger));
+  --decor-soft: color-mix(in srgb, var(--amber) 13%, transparent);
+}
+.ink {
+  --decor-color: var(--text);
+  --decor-soft: color-mix(in srgb, var(--text) 9%, transparent);
+}
+.amber {
+  --decor-color: var(--amber);
+  --decor-soft: color-mix(in srgb, var(--amber) 13%, transparent);
+}
+
+.clip-board.drawing-zone {
+  cursor: crosshair;
+}
+.soft-zone {
+  position: absolute;
+  z-index: 0;
+  border: 1px solid color-mix(in srgb, var(--decor-color) 12%, transparent);
+  border-radius: 30px;
+  background: var(--decor-soft);
+  color: var(--decor-color);
+  transition:
+    left 0.18s var(--ease-soft),
+    top 0.18s var(--ease-soft),
+    width 0.18s var(--ease-soft),
+    height 0.18s var(--ease-soft);
+}
+.soft-zone > span {
+  position: absolute;
+  top: 13px;
+  left: 17px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-raised) 80%, transparent);
+  color: var(--decor-color);
+  font-size: 0.67rem;
+  font-weight: 650;
+  backdrop-filter: blur(8px);
+}
+.zone-draft {
+  z-index: 3;
+  border-style: dashed;
+  pointer-events: none;
+}
+.element-delete,
+.stack-dissolve,
+.sticker-delete {
+  position: absolute;
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
+  color: var(--muted);
+  box-shadow: 0 4px 20px rgb(20 22 19 / 9%);
+  cursor: pointer;
+  opacity: 0;
+}

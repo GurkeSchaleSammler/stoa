@@ -1,12 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-
-export interface ConfirmationDialogRequest {
-  title: string;
-  message: string;
-  confirmLabel: string;
-  cancelLabel: string;
-  tone: 'danger' | 'default';
-}
+import { ConfirmationDialogRequest } from '../models/confirmation-dialog-request';
 
 @Injectable({ providedIn: 'root' })
 export class ConfirmationDialogService {

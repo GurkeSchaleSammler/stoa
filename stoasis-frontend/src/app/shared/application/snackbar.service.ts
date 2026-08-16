@@ -1,16 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { InterpolationParameters } from '@ngx-translate/core';
-
-export type SnackbarTone = 'success' | 'error' | 'info';
-
-export interface SnackbarMessage {
-  id: number;
-  message: string;
-  params?: InterpolationParameters;
-  tone: SnackbarTone;
-  actionLabel?: string;
-  action?: () => void;
-}
+import { SnackbarMessage } from '../models/snackbar-message';
+import { SnackbarTone } from '../models/snackbar-tone';
 
 @Injectable({ providedIn: 'root' })
 export class SnackbarService {

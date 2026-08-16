@@ -1,5 +1,5 @@
-import { overlapAllowed} from './overlap-allowed';
-import { intersectionArea} from './intersection-area';
+import { overlapAllowed } from './overlap-allowed';
+import { intersectionArea } from './intersection-area';
 
 describe('clip grid geometry', () => {
   it('allows an overlap of exactly half the smaller card', () => {

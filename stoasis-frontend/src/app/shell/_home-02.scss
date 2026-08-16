@@ -1,0 +1,222 @@
+.demo-pin {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 185px;
+  min-height: 160px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+  animation: pin-float 5s ease-in-out infinite;
+}
+.demo-pin small {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.demo-pin strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+.pin-icon {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.pin-icon ui-app-icon {
+  width: 20px;
+  height: 20px;
+}
+.demo-link {
+  top: 42px;
+  left: 28px;
+}
+.demo-note {
+  z-index: 2;
+  top: 135px;
+  right: 24px;
+  background: var(--amber-soft);
+  animation-delay: -1.6s;
+}
+.demo-photo {
+  bottom: 30px;
+  left: 54px;
+  animation-delay: -3s;
+}
+.photo-shape {
+  display: grid;
+  place-items: center;
+  height: 78px;
+  border-radius: 9px;
+  background: linear-gradient(145deg, var(--sage-soft), var(--accent-soft));
+  color: var(--sage);
+}
+.photo-shape ui-app-icon {
+  width: 30px;
+  height: 30px;
+}
+.demo-lines {
+  width: 88%;
+  height: 24px;
+  background: linear-gradient(var(--border-strong) 2px, transparent 2px) 0 0 / 100% 9px;
+  opacity: 0.55;
+}
+.demo-tag {
+  align-self: flex-start;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-raised) 66%, transparent);
+  color: var(--amber);
+  font-size: 0.62rem;
+}
+.demo-cursor {
+  position: absolute;
+  right: 38px;
+  bottom: 35px;
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+  animation: cursor-pulse 2.4s ease-in-out infinite;
+}
+.demo-cursor ui-app-icon {
+  width: 21px;
+  height: 21px;
+}
+.content-section {
+  width: min(1080px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(74px, 10vw, 126px) 0;
+}
+.section-heading {
+  max-width: 680px;
+  margin-bottom: 42px;
+}
+.section-heading h2,
+.workflow h2,
+.closing-cta h2 {
+  margin: 10px 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.4vw, 3.7rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+.benefits {
+  border-top: 1px solid var(--border);
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 13px;
+}
+.feature-grid article {
+  min-height: 250px;
+  padding: 27px;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  background: var(--surface-raised);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease;
+}
+.feature-grid article:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-strong);
+}
+.feature-grid article > span {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 50px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.feature-grid article:nth-child(2) > span {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+.feature-grid article:nth-child(3) > span {
+  background: var(--sage-soft);
+  color: var(--sage);
+}
+.feature-grid ui-app-icon {
+  width: 23px;
+  height: 23px;
+}
+.feature-grid h3,
+.workflow h3 {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 1.23rem;
+}
+.feature-grid p,
+.workflow li p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.79rem;
+  line-height: 1.65;
+}
+.workflow {
+  display: grid;
+  grid-template-columns: 0.85fr 1fr;
+  align-items: center;
+  gap: clamp(48px, 9vw, 120px);
+}
+.workflow-visual {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-height: 460px;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--surface-raised);
+  overflow: hidden;
+}
+.workflow-visual::before {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, var(--accent-soft), transparent 52%);
+  content: '';
+}
+.workflow-visual span {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface-raised);
+  color: var(--text);
+  box-shadow: var(--shadow-md);
+  animation: pin-float 4.8s ease-in-out infinite;
+}
+.workflow-visual span:nth-of-type(2) {
+  animation-delay: -1.5s;
+}
+.workflow-visual span:nth-of-type(3) {
+  animation-delay: -3s;
+}
+.workflow-visual ui-app-icon {
+  width: 28px;
+  height: 28px;
+}

@@ -8,7 +8,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.Lob
 import jakarta.persistence.Table
 import java.time.Instant
-import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Table(name = "link_preview_images")
@@ -21,5 +20,3 @@ class LinkPreviewImageEntity(
     @Column(name = "image_height", nullable = false) var imageHeight: Int = 0,
     @Column(name = "created_at", nullable = false) var createdAt: Instant = Instant.now(),
 )
-
-interface LinkPreviewImageRepository : JpaRepository<LinkPreviewImageEntity, String>

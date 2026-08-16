@@ -8,7 +8,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Table(name = "tags")
@@ -18,9 +17,3 @@ class TagEntity(
     var owner: UserEntity? = null,
     @Column(nullable = false) var name: String = "",
 )
-
-interface TagRepository : JpaRepository<TagEntity, String> {
-    fun findAllByOwnerIdOrderByName(ownerId: String): List<TagEntity>
-    fun findByIdAndOwnerId(id: String, ownerId: String): TagEntity?
-    fun existsByOwnerIdAndName(ownerId: String, name: String): Boolean
-}

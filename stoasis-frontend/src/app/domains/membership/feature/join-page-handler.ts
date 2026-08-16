@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MembershipService } from '../data/application/membership.service';
-import { JoinPageComponent } from '../ui/membership-components';
+import { JoinPageComponent } from '../ui/join-page';
 
 @Component({
   selector: 'feature-join-page-handler',

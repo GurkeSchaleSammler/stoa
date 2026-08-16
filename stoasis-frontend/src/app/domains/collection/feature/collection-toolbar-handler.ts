@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CollectionService } from '../data/application/collection.service';
-import { CollectionToolbarComponent } from '../ui/collection-components';
+import { CollectionToolbarComponent } from '../ui/collection-toolbar';
 import { BoardViewMode } from '../../../shared/models/board-view-mode';
 
 @Component({

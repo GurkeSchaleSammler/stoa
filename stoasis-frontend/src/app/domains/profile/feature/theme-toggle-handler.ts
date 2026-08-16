@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PrefsStore } from '../data/application/prefs.store';
-import { ThemeToggleComponent } from '../ui/profile-components';
+import { ThemeToggleComponent } from '../ui/theme-toggle';
 
 @Component({
   selector: 'feature-theme-toggle-handler',

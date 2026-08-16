@@ -11,7 +11,7 @@ import { form } from '@angular/forms/signals';
 import { LinkParserService } from '../data/application/link-parser.service';
 import { PhotoUploadService } from '../data/application/photo-upload.service';
 import { PinService } from '../data/application/pin.service';
-import { AddPinDialogComponent } from '../ui/board-components';
+import { AddPinDialogComponent } from '../ui/add-pin-dialog';
 import { AddPinDraft } from '../data/models/add-pin-draft';
 import { PinType } from '../../../shared/models/pin-type';
 import { CreatePinRequest } from '../data/models/create-pin-request';

@@ -3,15 +3,11 @@
   <section class="workspace-main">
     <nav class="utility-nav" [attr.aria-label]="'shell.accountMenu' | translate">
       <a class="search-link" routerLink="/search" routerLinkActive="active"
-      ><ui-app-icon name="search" />
+        ><ui-app-icon name="search" />
         <span class="search-label">{{ 'common.search' | translate }}</span></a
       >
 
-      <div
-        class="language-switcher"
-        role="group"
-        [attr.aria-label]="'language.label' | translate"
-      >
+      <div class="language-switcher" role="group" [attr.aria-label]="'language.label' | translate">
         @for (languageOption of languages; track languageOption.code) {
           <button
             type="button"
@@ -27,13 +23,13 @@
       </div>
 
       <a routerLink="/profile" routerLinkActive="active"
-      ><span class="user-avatar">
-              @if (session.user()?.avatarUrl; as avatarUrl) {
-                <img [src]="avatarUrl" alt="" />
-              } @else {
-                {{ session.user()?.name?.slice(0, 1) || 'S' }}
-              }</span
-      ><span class="user-name">{{
+        ><span class="user-avatar">
+          @if (session.user()?.avatarUrl; as avatarUrl) {
+            <img [src]="avatarUrl" alt="" />
+          } @else {
+            {{ session.user()?.name?.slice(0, 1) || 'S' }}
+          }</span
+        ><span class="user-name">{{
           session.user()?.name || ('common.profile' | translate)
         }}</span></a
       >

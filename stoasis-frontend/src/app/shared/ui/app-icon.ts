@@ -1,36 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-
-export type AppIconName =
-  | 'arrow-down'
-  | 'arrow-up'
-  | 'check'
-  | 'chevron-right'
-  | 'close'
-  | 'copy'
-  | 'edit'
-  | 'eye'
-  | 'eye-off'
-  | 'external'
-  | 'grid'
-  | 'image'
-  | 'link'
-  | 'layers'
-  | 'list'
-  | 'logout'
-  | 'mail'
-  | 'monitor'
-  | 'moon'
-  | 'note'
-  | 'plus'
-  | 'search'
-  | 'sparkles'
-  | 'send'
-  | 'settings'
-  | 'sun'
-  | 'trash'
-  | 'upload'
-  | 'user-plus'
-  | 'warning';
+import { AppIconName } from '../models/app-icon-name';
 
 @Component({
   selector: 'ui-app-icon',

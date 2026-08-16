@@ -1,0 +1,211 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.member-card,
+.join-card {
+  width: min(760px, calc(100% - 32px));
+  margin: clamp(24px, 6vw, 70px) auto;
+  padding: clamp(24px, 5vw, 42px);
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-lg);
+}
+.member-card > header,
+.invite-dialog > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+.eyebrow {
+  margin: 0 0 7px;
+  color: var(--accent-strong);
+  font-size: 0.67rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.member-card h1,
+.invite-dialog h1,
+.join-card h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.25rem);
+  letter-spacing: -0.035em;
+}
+.member-card header p:last-child,
+.invite-dialog > p,
+.join-card > p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.member-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 26px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.member-list article {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 2px;
+  border-bottom: 1px solid var(--border);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  clip-path: circle(50%);
+  background: var(--sage-soft);
+  color: var(--sage);
+  font-weight: 800;
+}
+.avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  border-radius: 50%;
+  clip-path: circle(50%);
+  object-fit: cover;
+  object-position: center;
+}
+.member-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.member-copy strong {
+  font-size: 0.86rem;
+}
+.member-copy small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-overflow: ellipsis;
+}
+.role-select select {
+  min-height: 36px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+.remove-button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+.remove-button:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.role-badge {
+  display: inline-flex;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  color: var(--muted);
+  font-size: 0.67rem;
+  font-weight: 750;
+}
+.role-badge.owner {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.role-badge.editor {
+  background: var(--sage-soft);
+  color: var(--sage);
+}
+.button {
+  min-height: 39px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+.button:disabled {
+  opacity: 0.45;
+}
+.button.primary {
+  background: var(--text);
+  color: var(--surface-raised);
+}
+.button.secondary {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+}
+.button.wide {
+  width: 100%;
+  min-height: 45px;
+  margin-top: 18px;
+}
+.error-banner {
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 0.78rem;
+}
+.dialog-backdrop {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgb(22 24 21 / 46%);
+  backdrop-filter: blur(3px);
+}
+.invite-dialog {
+  width: min(540px, 100%);
+  padding: 25px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-lg);
+}
+.close-button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
+}

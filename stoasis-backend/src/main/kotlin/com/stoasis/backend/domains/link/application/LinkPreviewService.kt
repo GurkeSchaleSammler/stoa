@@ -3,7 +3,7 @@ package com.stoasis.backend.domains.link.application
 import com.stoasis.backend.domains.link.data.LinkPreviewImageEntity
 import com.stoasis.backend.domains.link.data.LinkPreviewImageRepository
 import com.stoasis.backend.domains.pin.api.LinkPinData
-import com.stoasis.backend.shared.security.PublicUrlPolicy
+import com.stoasis.backend.shared.utils.PublicUrlPolicy
 import com.stoasis.backend.shared.security.SafeHttpFetcher
 import com.stoasis.backend.shared.web.ApiException
 import java.io.ByteArrayInputStream

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SearchService } from '../data/application/search.service';
 import { TagService } from '../data/application/tag.service';
-import { SearchResultsComponent } from '../ui/search-components';
+import { SearchResultsComponent } from '../ui/search-results';
 import { FilterBarHandlerComponent } from './filter-bar-handler';
 import { SearchBarHandlerComponent } from './search-bar-handler';
 import { TagManagerHandlerComponent } from './tag-manager-handler';

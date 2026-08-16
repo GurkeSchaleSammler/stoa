@@ -14,8 +14,6 @@ import javax.imageio.ImageWriteParam
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
-data class RenderedPreview(val content: ByteArray, val width: Int, val height: Int)
-
 @Component
 class PreviewImageRenderer {
     fun sanitizeRemoteImage(content: ByteArray): RenderedPreview {

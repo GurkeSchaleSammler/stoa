@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { form } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CollectionService } from '../data/application/collection.service';
-import { CollectionSettingsComponent } from '../ui/collection-components';
+import { CollectionSettingsComponent } from '../ui/collection-settings';
 import { ConfirmationDialogService } from '../../../shared/application/confirmation-dialog.service';
 import { PinType } from '../../../shared/models/pin-type';
 import { UpdateCollectionRequest } from '../data/models/update-collection-request';

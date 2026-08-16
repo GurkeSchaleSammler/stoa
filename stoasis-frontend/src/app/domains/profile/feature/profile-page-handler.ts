@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { form, minLength, required } from '@angular/forms/signals';
 import { ProfileService } from '../data/application/profile.service';
-import { ProfilePageComponent } from '../ui/profile-components';
+import { ProfilePageComponent } from '../ui/profile-page';
 import { DangerZoneHandlerComponent } from './danger-zone-handler';
 import { ImportExportHandlerComponent } from './import-export-handler';
 import { ThemeToggleHandlerComponent } from './theme-toggle-handler';

@@ -1,0 +1,204 @@
+.element-delete {
+  top: 10px;
+  right: 10px;
+}
+.soft-zone:hover .element-delete,
+.stack-block:hover .stack-dissolve,
+.board-sticker.selected .sticker-delete {
+  opacity: 1;
+}
+.zone-resize,
+.sticker-resize {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid color-mix(in srgb, var(--decor-color) 56%, transparent);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  cursor: nwse-resize;
+  opacity: 0;
+}
+.soft-zone:hover .zone-resize,
+.board-sticker.selected .sticker-resize {
+  opacity: 1;
+}
+
+.connector-layer {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.connector-thread {
+  fill: none;
+  stroke: var(--decor-color, var(--accent));
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  opacity: 0.28;
+  pointer-events: stroke;
+  transition:
+    opacity 0.18s var(--ease-soft),
+    stroke-width 0.18s var(--ease-soft);
+}
+.connector-thread:hover {
+  stroke-width: 4;
+  opacity: 0.58;
+}
+.connector-thread.draft {
+  stroke: var(--accent);
+  stroke-dasharray: 7 7;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.connect-handle {
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  right: -7px;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  transform: translateY(-50%) scale(0.7);
+  border: 3px solid var(--surface-raised);
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 3px 16px color-mix(in srgb, var(--accent) 24%, transparent);
+  cursor: crosshair;
+  opacity: 0;
+}
+
+.clip-card:hover .connect-handle,
+.connect-handle:focus-visible {
+  transform: translateY(-50%) scale(1);
+  opacity: 1;
+}
+
+.stack-block {
+  position: absolute;
+  transition:
+    left 0.38s var(--ease-spring),
+    top 0.38s var(--ease-spring),
+    filter 0.18s var(--ease-soft);
+}
+.stack-block.dragging {
+  transition: none;
+}
+.stack-sheet,
+.stack-child {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.stack-sheet {
+  border: 1px solid color-mix(in srgb, var(--border) 35%, transparent);
+  border-radius: var(--radius-card);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+}
+.sheet-one {
+  transform: translate(4px, 5px) rotate(1.2deg);
+}
+.sheet-two {
+  transform: translate(8px, 10px) rotate(-1deg);
+}
+.stack-child {
+  transform-origin: center;
+  transition: transform 0.34s var(--ease-spring);
+}
+.stack-child .pin-card {
+  width: 100%;
+}
+.stack-block.expanded {
+  z-index: 500 !important;
+}
+.stack-block.expanded .stack-child {
+  width: 100%;
+}
+.stack-child.dragging-out {
+  z-index: 20;
+  transition: none;
+}
+.stack-badge {
+  position: absolute;
+  z-index: 30;
+  right: -13px;
+  bottom: -13px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 9px;
+  border: 3px solid var(--surface-sunken);
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--surface-raised);
+  font-size: 0.67rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+.stack-dissolve {
+  z-index: 31;
+  top: -10px;
+  left: -10px;
+}
+.drop-target .pin-card,
+.stack-block.drop-target .top-card .pin-card {
+  transform: scale(1.025);
+  border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--accent) 12%, transparent),
+    var(--shadow-lg);
+  animation: stack-target-pulse 0.9s var(--ease-soft) infinite alternate;
+}
+@keyframes stack-target-pulse {
+  to {
+    transform: scale(1.04);
+  }
+}
+
+.floating-label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 30px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-soft) 92%, transparent);
+  color: var(--accent-strong);
+  font-size: 0.67rem;
+  font-weight: 650;
+  cursor: grab;
+  user-select: none;
+  backdrop-filter: blur(6px);
+}
+.floating-label button {
+  display: grid;
+  width: 21px;
+  height: 21px;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0;
+}
+.floating-label:hover button {
+  opacity: 0.65;
+}
+
+.board-sticker {
+  position: absolute;
+  color: var(--decor-color);
+  cursor: grab;
+  touch-action: none;
+  transform-origin: center;
+  transition:
+    filter 0.18s var(--ease-soft),
+    opacity 0.18s var(--ease-soft);
+}

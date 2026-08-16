@@ -5,7 +5,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.Instant
-import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Table(name = "users")
@@ -27,8 +26,3 @@ class UserEntity(
     @Column(name = "deletion_scheduled_at")
     var deletionScheduledAt: Instant? = null,
 )
-
-interface UserRepository : JpaRepository<UserEntity, String> {
-    fun findByEmailIgnoreCase(email: String): UserEntity?
-    fun existsByEmailIgnoreCase(email: String): Boolean
-}

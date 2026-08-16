@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ProfileService } from '../data/application/profile.service';
-import { DangerZoneComponent } from '../ui/profile-components';
+import { DangerZoneComponent } from '../ui/danger-zone';
 import { TranslationService } from '../../../shared/application/translation-service';
 import { ConfirmationDialogService } from '../../../shared/application/confirmation-dialog.service';
 

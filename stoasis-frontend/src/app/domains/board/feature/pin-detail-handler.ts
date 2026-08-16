@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { PinService } from '../data/application/pin.service';
-import { PinDetailComponent } from '../ui/board-components';
+import { PinDetailComponent } from '../ui/pin-detail';
 import { ConfirmationDialogService } from '../../../shared/application/confirmation-dialog.service';
 import { PinEditValue } from '../data/models/pin-edit-value';
 import { Pin } from '../../../shared/models/pin';

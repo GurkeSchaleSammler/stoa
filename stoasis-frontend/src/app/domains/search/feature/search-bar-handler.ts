@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SearchService } from '../data/application/search.service';
-import { SearchBarComponent } from '../ui/search-components';
+import { SearchBarComponent } from '../ui/search-bar';
 
 @Component({
   selector: 'feature-search-bar-handler',

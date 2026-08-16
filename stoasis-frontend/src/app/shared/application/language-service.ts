@@ -2,12 +2,8 @@ import { DOCUMENT } from '@angular/common';
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  AppLanguage,
-  appLanguageStorageKey,
-  defaultAppLanguage,
-  isAppLanguage,
-} from '../language.constants';
+import { appLanguageStorageKey, defaultAppLanguage, isAppLanguage } from '../language.constants';
+import { AppLanguage } from '../models/app-language';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {

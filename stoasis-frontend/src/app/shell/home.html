@@ -1,0 +1,139 @@
+<main
+  class="home"
+  (pointermove)="trackPointer($event)"
+  [style.--pointer-x]="pointerX() + '%'"
+  [style.--pointer-y]="pointerY() + '%'"
+  [style.--dot-x]="dotX() + 'px'"
+  [style.--dot-y]="dotY() + 'px'"
+>
+  <section class="hero" aria-labelledby="home-title">
+    <div class="hero-copy">
+      <div class="home-mark"><img src="/android-chrome-192x192.png" alt="" /></div>
+      <p class="eyebrow">{{ 'home.eyebrow' | translate }}</p>
+      <h1 id="home-title">
+        {{ 'home.title' | translate }}<br /><em>{{ 'home.titleAccent' | translate }}</em>
+      </h1>
+      <p class="lead">{{ 'home.lead' | translate }}</p>
+      <div class="home-actions">
+        <a routerLink="/collections/new"
+          >{{ 'collection.new' | translate }} <ui-app-icon name="chevron-right"
+        /></a>
+        <a class="secondary" routerLink="/search"
+          ><ui-app-icon name="search" /> {{ 'home.searchPins' | translate }}</a
+        >
+      </div>
+      <div class="principles" [attr.aria-label]="'home.principlesLabel' | translate">
+        <span
+          ><strong>{{ 'home.privateTitle' | translate }}</strong
+          >{{ 'home.privateText' | translate }}</span
+        ><span
+          ><strong>{{ 'home.sharedTitle' | translate }}</strong
+          >{{ 'home.sharedText' | translate }}</span
+        ><span
+          ><strong>{{ 'home.calmTitle' | translate }}</strong
+          >{{ 'home.calmText' | translate }}</span
+        >
+      </div>
+    </div>
+
+    <div class="demo-shell" [attr.aria-label]="'home.demoLabel' | translate">
+      <div class="demo-toolbar">
+        <span class="demo-brand"><img src="/android-chrome-192x192.png" alt="" /></span>
+        <strong>{{ 'home.demoBoard' | translate }}</strong>
+        <span class="demo-view"><ui-app-icon name="grid" /></span>
+      </div>
+      <div class="demo-board">
+        <article class="demo-pin demo-link">
+          <span class="pin-icon"><ui-app-icon name="link" /></span>
+          <small>{{ 'pin.link' | translate }}</small>
+          <strong>{{ 'home.demoLinkTitle' | translate }}</strong>
+          <span class="demo-lines"></span>
+        </article>
+        <article class="demo-pin demo-note">
+          <span class="pin-icon"><ui-app-icon name="note" /></span>
+          <small>{{ 'pin.note' | translate }}</small>
+          <strong>{{ 'home.demoNoteTitle' | translate }}</strong>
+          <span class="demo-tag">{{ 'home.demoTag' | translate }}</span>
+        </article>
+        <article class="demo-pin demo-photo">
+          <div class="photo-shape"><ui-app-icon name="image" /></div>
+          <small>{{ 'pin.photo' | translate }}</small>
+          <strong>{{ 'home.demoPhotoTitle' | translate }}</strong>
+        </article>
+        <span class="demo-cursor"><ui-app-icon name="plus" /></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section benefits" aria-labelledby="benefits-title">
+    <header class="section-heading">
+      <p class="eyebrow">{{ 'home.featureEyebrow' | translate }}</p>
+      <h2 id="benefits-title">{{ 'home.featureTitle' | translate }}</h2>
+      <p>{{ 'home.featureLead' | translate }}</p>
+    </header>
+    <div class="feature-grid">
+      <article>
+        <span><ui-app-icon name="plus" /></span>
+        <h3>{{ 'home.captureTitle' | translate }}</h3>
+        <p>{{ 'home.captureText' | translate }}</p>
+      </article>
+      <article>
+        <span><ui-app-icon name="grid" /></span>
+        <h3>{{ 'home.organizeTitle' | translate }}</h3>
+        <p>{{ 'home.organizeText' | translate }}</p>
+      </article>
+      <article>
+        <span><ui-app-icon name="user-plus" /></span>
+        <h3>{{ 'home.shareTitle' | translate }}</h3>
+        <p>{{ 'home.shareText' | translate }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section workflow" aria-labelledby="workflow-title">
+    <div class="workflow-visual" aria-hidden="true">
+      <span><ui-app-icon name="link" /></span>
+      <i></i>
+      <span><ui-app-icon name="note" /></span>
+      <i></i>
+      <span><ui-app-icon name="image" /></span>
+    </div>
+    <div class="workflow-copy">
+      <p class="eyebrow">{{ 'home.flowEyebrow' | translate }}</p>
+      <h2 id="workflow-title">{{ 'home.flowTitle' | translate }}</h2>
+      <ol>
+        <li>
+          <span>01</span>
+          <div>
+            <h3>{{ 'home.flowOneTitle' | translate }}</h3>
+            <p>{{ 'home.flowOneText' | translate }}</p>
+          </div>
+        </li>
+        <li>
+          <span>02</span>
+          <div>
+            <h3>{{ 'home.flowTwoTitle' | translate }}</h3>
+            <p>{{ 'home.flowTwoText' | translate }}</p>
+          </div>
+        </li>
+        <li>
+          <span>03</span>
+          <div>
+            <h3>{{ 'home.flowThreeTitle' | translate }}</h3>
+            <p>{{ 'home.flowThreeText' | translate }}</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="closing-cta" aria-labelledby="closing-title">
+    <img src="/android-chrome-192x192.png" alt="" />
+    <p class="eyebrow">{{ 'home.bottomEyebrow' | translate }}</p>
+    <h2 id="closing-title">{{ 'home.bottomTitle' | translate }}</h2>
+    <p>{{ 'home.bottomLead' | translate }}</p>
+    <a routerLink="/collections/new"
+      >{{ 'home.bottomCta' | translate }} <ui-app-icon name="chevron-right"
+    /></a>
+  </section>
+</main>
