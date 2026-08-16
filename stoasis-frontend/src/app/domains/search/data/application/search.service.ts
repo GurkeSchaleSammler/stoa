@@ -9,10 +9,12 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { PinType } from '../../../../shared/models/core.models';
 import { SearchApi } from '../api/search.api';
-import { initialSearchState, SearchQuery, SearchState } from '../models/search.models';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
+import { initialSearchState } from '../models/initial-search-state';
+import { SearchState } from '../models/search-state';
+import { SearchQuery } from '../models/search-query';
+import { PinType } from '../../../../shared/models/pin-type';
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {

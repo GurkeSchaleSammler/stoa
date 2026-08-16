@@ -8,9 +8,11 @@ import {
   signal,
 } from '@angular/core';
 import { PinService } from '../data/application/pin.service';
-import { Pin, PinEditValue, UpdatePinRequest } from '../data/models/board.models';
 import { PinDetailComponent } from '../ui/board-components';
 import { ConfirmationDialogService } from '../../../shared/application/confirmation-dialog.service';
+import { PinEditValue } from '../data/models/pin-edit-value';
+import { Pin } from '../../../shared/models/pin';
+import { UpdatePinRequest } from '../data/models/update-pin-request';
 
 @Component({
   selector: 'feature-pin-detail-handler',

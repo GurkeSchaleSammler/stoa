@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { User } from '../models/core.models';
+import { User } from '../models/user';
 
 @Injectable({ providedIn: 'root' })
 export class SessionContextStore {

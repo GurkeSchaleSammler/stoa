@@ -14,40 +14,38 @@ import {
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent, AppIconName } from '../../../shared/ui/app-icon';
-import {
-  AddPinDraft,
-  BOARD_HEIGHT_CLIPS,
-  BOARD_WIDTH_CLIPS,
-  BoardContext,
-  BoardColorVariant,
-  BoardElements,
-  BoardViewMode,
-  CARD_WIDTH_CLIPS,
-  CLIP_SIZE_PX,
-  GridBlock,
-  GridRect,
-  ConnectorThread,
-  CreateFloatingLabelRequest,
-  CreateSoftZoneRequest,
-  CreateStickerRequest,
-  FloatingLabel,
-  LinkPinData,
-  LinkPreview,
-  NotePinData,
-  PhotoPinData,
-  Pin,
-  PinEditValue,
-  PinMeta,
-  PinType,
-  SoftZone,
-  StackBlock,
-  StickerElement,
-  StickerMotif,
-  UpdateGridBlockRequest,
-  UpdateStickerRequest,
-  intersectionArea,
-  overlapAllowed,
-} from '../data/models/board.models';
+import { Pin } from '../../../shared/models/pin';
+import { UpdateGridBlockRequest } from '../data/models/update-grid-block-request';
+import { StickerElement } from '../data/models/sticker-element';
+import { LinkPinData } from '../../../shared/models/link-pin-data';
+import { PinMeta } from '../data/models/pin-meta';
+import { NotePinData } from '../../../shared/models/note-pin-data';
+import { PhotoPinData } from '../../../shared/models/photo-pin-data';
+import { BoardElements } from '../data/models/board-elements';
+import { BoardContext } from '../data/models/board-context';
+import { BoardViewMode } from '../../../shared/models/board-view-mode';
+import { StackBlock } from '../data/models/stack-block';
+import { BoardColorVariant } from '../data/models/board-color-variant';
+import { CreateSoftZoneRequest } from '../data/models/create-soft-zone-request';
+import { CreateFloatingLabelRequest } from '../data/models/create-floating-label-request';
+import { CreateStickerRequest } from '../data/models/create-sticker-request';
+import { UpdateStickerRequest } from '../data/models/update-sticker-request';
+import { CLIP_SIZE_PX } from '../data/models/clip-size-px';
+import { CARD_WIDTH_CLIPS } from '../data/models/card-width-clips';
+import { BOARD_WIDTH_CLIPS } from '../data/models/board-width-clips';
+import { BOARD_HEIGHT_CLIPS } from '../data/models/board-height-clips';
+import { StickerMotif } from '../data/models/sticker-motif';
+import { SoftZone } from '../data/models/soft-zone';
+import { FloatingLabel } from '../data/models/floating-label';
+import { ConnectorThread } from '../data/models/connector-thread';
+import { GridRect } from '../data/models/grid-rect';
+import { intersectionArea } from '../data/models/intersection-area';
+import { overlapAllowed } from '../data/models/overlap-allowed';
+import { GridBlock } from '../../../shared/models/grid-block';
+import { PinType } from '../../../shared/models/pin-type';
+import { AddPinDraft } from '../data/models/add-pin-draft';
+import { LinkPreview } from '../data/models/link-preview';
+import { PinEditValue } from '../data/models/pin-edit-value';
 
 export interface PinGridChange {
   pinId: string;

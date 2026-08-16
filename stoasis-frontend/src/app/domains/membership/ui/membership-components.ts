@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
-import { InviteInfo, Member, Role } from '../data/models/membership.models';
+import { Member } from '../data/models/member';
+import { Role } from '../../../shared/models/role';
+import { InviteInfo } from '../data/models/invite-info';
 
 @Component({
   selector: 'ui-role-badge',

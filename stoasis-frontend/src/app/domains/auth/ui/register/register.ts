@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { RegisterFieldErrors, RegisterFormValue } from '../../data/models/auth-models';
+import { RegisterFieldErrors } from '../../data/models/register-field-errors';
+import { RegisterFormValue } from '../../data/models/register-form-value';
 
 // ─── Register UI Component ────────────────────────────────────────
 // KEINE Logik. Keine injects. Keine Validierung.

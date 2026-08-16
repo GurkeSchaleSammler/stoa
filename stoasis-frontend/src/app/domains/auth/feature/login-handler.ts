@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { LoginComponent } from '../ui/login/login';
 import { AuthService } from '../data/application/auth-service';
-import { LoginFormValue, LoginMode } from '../data/models/auth-models';
 import { ActivatedRoute } from '@angular/router';
 import { TranslationService } from '../../../shared/application/translation-service';
+import { LoginFormValue } from '../data/models/login-form-value';
+import { LoginMode } from '../data/models/login-mode';
 
 // ─── Login Feature Handler ────────────────────────────────────────
 // Enthält ALLE Logik. UI-Component bekommt nur Signals als Input

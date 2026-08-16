@@ -2,8 +2,8 @@ import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { ProfileApi } from '../api/profile.api';
-import { ImportResult } from '../models/profile.models';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
+import { ImportResult } from '../models/import-result';
 
 @Injectable({ providedIn: 'root' })
 export class ImportService {

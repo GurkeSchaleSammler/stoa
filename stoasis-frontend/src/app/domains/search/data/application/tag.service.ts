@@ -2,8 +2,8 @@ import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { SearchApi } from '../api/search.api';
-import { Tag } from '../models/search.models';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
+import { Tag } from '../models/tag';
 
 @Injectable({ providedIn: 'root' })
 export class TagService {

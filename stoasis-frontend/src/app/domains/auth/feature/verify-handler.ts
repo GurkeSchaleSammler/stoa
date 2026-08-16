@@ -9,7 +9,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { VerifyComponent } from '../ui/verify/verify';
 import { AuthService } from '../data/application/auth-service';
-import { VerifyStatus } from '../data/models/auth-models';
+import { VerifyStatus } from '../data/models/verify-status';
 
 // ─── Verify Feature Handler ───────────────────────────────────────
 // Liest den Magic-Link-Token aus der Route und stösst die

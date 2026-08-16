@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BoardViewMode } from '../../../shared/models/core.models';
 import { CollectionService } from '../data/application/collection.service';
 import { CollectionToolbarComponent } from '../ui/collection-components';
+import { BoardViewMode } from '../../../shared/models/board-view-mode';
 
 @Component({
   selector: 'feature-collection-toolbar-handler',

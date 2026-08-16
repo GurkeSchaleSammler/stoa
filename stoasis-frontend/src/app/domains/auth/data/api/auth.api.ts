@@ -2,16 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import {
-  AuthResponse,
-  LoginRequest,
-  MagicLinkRequest,
-  MagicLinkResponse,
-  RegisterRequest,
-  User,
-  VerifyTokenRequest,
-} from '../models/auth-models';
 import { API_URL } from '../../../../shared/api/api-url';
+import { AuthResponse } from '../models/auth-response';
+import { LoginRequest } from '../models/login-request';
+import { RegisterRequest } from '../models/register-request';
+import { MagicLinkRequest } from '../models/magic-link-request';
+import { MagicLinkResponse } from '../models/magic-link-response';
+import { VerifyTokenRequest } from '../models/verify-token-request';
+import { User } from '../../../../shared/models/user';
 
 // ─── Auth API Repository ──────────────────────────────────────────
 // Reine HTTP-Schicht. Kein State, keine Seiteneffekte.

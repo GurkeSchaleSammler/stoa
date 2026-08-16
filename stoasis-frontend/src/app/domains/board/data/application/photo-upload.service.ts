@@ -2,8 +2,8 @@ import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { BoardApi } from '../api/board.api';
-import { UploadedPhoto } from '../models/board.models';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
+import { UploadedPhoto } from '../models/uploaded-photo';
 
 @Injectable({ providedIn: 'root' })
 export class PhotoUploadService {

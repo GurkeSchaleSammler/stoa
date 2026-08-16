@@ -2,8 +2,10 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
-import { PinType } from '../../../shared/models/core.models';
-import { SearchFilters, SearchResult, Tag } from '../data/models/search.models';
+import { Tag } from '../data/models/tag';
+import { SearchResult } from '../data/models/search-result';
+import { SearchFilters } from '../data/models/search-filters';
+import { PinType } from '../../../shared/models/pin-type';
 
 @Component({
   selector: 'ui-search-bar',

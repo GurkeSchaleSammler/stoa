@@ -2,7 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../../../../shared/api/api-url';
-import { InviteInfo, Member, Role } from '../models/membership.models';
+import { Role } from '../../../../shared/models/role';
+import { Member } from '../models/member';
+import { InviteInfo } from '../models/invite-info';
 
 @Injectable({ providedIn: 'root' })
 export class MembershipApi {

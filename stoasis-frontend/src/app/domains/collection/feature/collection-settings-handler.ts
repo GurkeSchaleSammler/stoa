@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { form } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PinType } from '../../../shared/models/core.models';
 import { CollectionService } from '../data/application/collection.service';
-import { UpdateCollectionRequest } from '../data/models/collection.models';
 import { CollectionSettingsComponent } from '../ui/collection-components';
 import { ConfirmationDialogService } from '../../../shared/application/confirmation-dialog.service';
+import { PinType } from '../../../shared/models/pin-type';
+import { UpdateCollectionRequest } from '../data/models/update-collection-request';
 
 @Component({
   selector: 'feature-collection-settings-handler',

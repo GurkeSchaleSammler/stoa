@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SearchService } from '../data/application/search.service';
 import { TagService } from '../data/application/tag.service';
-import { SearchResult } from '../data/models/search.models';
 import { SearchResultsComponent } from '../ui/search-components';
 import { FilterBarHandlerComponent } from './filter-bar-handler';
 import { SearchBarHandlerComponent } from './search-bar-handler';
 import { TagManagerHandlerComponent } from './tag-manager-handler';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SearchResult } from '../data/models/search-result';
 
 @Component({
   selector: 'feature-search-results-handler',

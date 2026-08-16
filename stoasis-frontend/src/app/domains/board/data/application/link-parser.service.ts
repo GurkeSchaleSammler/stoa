@@ -11,8 +11,8 @@ import {
   tap,
 } from 'rxjs';
 import { BoardApi } from '../api/board.api';
-import { LinkPreview } from '../models/board.models';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
+import { LinkPreview } from '../models/link-preview';
 
 @Injectable({ providedIn: 'root' })
 export class LinkParserService {

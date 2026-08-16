@@ -3,10 +3,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { SessionContextStore } from '../../../../shared/application/session-context.store';
-import { canEdit, canManage } from '../../../../shared/models/core.models';
 import { MembershipApi } from '../api/membership.api';
-import { initialMembershipState, MembershipState, Role } from '../models/membership.models';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
+import { initialMembershipState } from '../models/initial-membership-state';
+import { MembershipState } from '../models/membership-state';
+import { canManage } from '../../../../shared/models/can-manage';
+import { Role } from '../../../../shared/models/role';
+import { canEdit } from '../../../../shared/models/can-edit';
 
 @Injectable({ providedIn: 'root' })
 export class MembershipService {

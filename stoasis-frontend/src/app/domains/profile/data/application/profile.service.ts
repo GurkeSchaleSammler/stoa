@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { catchError, EMPTY, finalize, Observable, tap } from 'rxjs';
 import { SessionContextStore } from '../../../../shared/application/session-context.store';
 import { ProfileApi } from '../api/profile.api';
-import { ExportFormat, ProfileState, UpdateProfileRequest } from '../models/profile.models';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
+import { ExportFormat } from '../models/export-format';
+import { ProfileState } from '../models/profile-state';
+import { UpdateProfileRequest } from '../models/update-profile-request';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {

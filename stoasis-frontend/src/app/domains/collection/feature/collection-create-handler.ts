@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { form, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
-import { PinType } from '../../../shared/models/core.models';
 import { CollectionService } from '../data/application/collection.service';
-import { CreateCollectionRequest } from '../data/models/collection.models';
 import { CollectionCreateDialogComponent } from '../ui/collection-components';
+import { PinType } from '../../../shared/models/pin-type';
+import { CreateCollectionRequest } from '../data/models/create-collection-request';
 
 @Component({
   selector: 'feature-collection-create-handler',

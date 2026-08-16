@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { VerifyStatus } from '../../data/models/auth-models';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../../shared/ui/app-icon';
+import { VerifyStatus } from '../../data/models/verify-status';
 
 // ─── Verify UI Component ──────────────────────────────────────────
 // KEINE Logik. Zeigt nur den vom Feature berechneten Status an.

@@ -3,9 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { ImportService } from '../data/application/import.service';
 import { ProfileService } from '../data/application/profile.service';
-import { ExportFormat } from '../data/models/profile.models';
 import { ImportExportComponent } from '../ui/profile-components';
 import { SnackbarService } from '../../../shared/application/snackbar.service';
+import { ExportFormat } from '../data/models/export-format';
 
 @Component({
   selector: 'feature-import-export-handler',

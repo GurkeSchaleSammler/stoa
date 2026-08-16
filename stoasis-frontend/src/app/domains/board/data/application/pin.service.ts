@@ -2,30 +2,28 @@ import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize, forkJoin, Subscription, tap } from 'rxjs';
 import { SessionContextStore } from '../../../../shared/application/session-context.store';
-import { canEdit } from '../../../../shared/models/core.models';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
 import { BoardApi } from '../api/board.api';
-import {
-  BoardColorVariant,
-  BoardElements,
-  BoardState,
-  BoardViewMode,
-  CreateFloatingLabelRequest,
-  CreatePinRequest,
-  CreateSoftZoneRequest,
-  CreateStickerRequest,
-  FloatingLabel,
-  initialBoardState,
-  Pin,
-  PinComment,
-  PinType,
-  SoftZone,
-  StackBlock,
-  StickerElement,
-  UpdateGridBlockRequest,
-  UpdatePinRequest,
-  UpdateStickerRequest,
-} from '../models/board.models';
+import { BoardState } from '../models/board-state';
+import { initialBoardState } from '../models/initial-board-state';
+import { PinType } from '../../../../shared/models/pin-type';
+import { Pin } from '../../../../shared/models/pin';
+import { canEdit } from '../../../../shared/models/can-edit';
+import { BoardViewMode } from '../../../../shared/models/board-view-mode';
+import { CreatePinRequest } from '../models/create-pin-request';
+import { UpdatePinRequest } from '../models/update-pin-request';
+import { UpdateGridBlockRequest } from '../models/update-grid-block-request';
+import { StackBlock } from '../models/stack-block';
+import { BoardColorVariant } from '../models/board-color-variant';
+import { CreateSoftZoneRequest } from '../models/create-soft-zone-request';
+import { CreateFloatingLabelRequest } from '../models/create-floating-label-request';
+import { CreateStickerRequest } from '../models/create-sticker-request';
+import { UpdateStickerRequest } from '../models/update-sticker-request';
+import { PinComment } from '../../../../shared/models/pin-comment';
+import { BoardElements } from '../models/board-elements';
+import { SoftZone } from '../models/soft-zone';
+import { FloatingLabel } from '../models/floating-label';
+import { StickerElement } from '../models/sticker-element';
 
 @Injectable({ providedIn: 'root' })
 export class PinService {

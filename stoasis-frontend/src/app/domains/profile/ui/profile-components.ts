@@ -2,14 +2,13 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent, AppIconName } from '../../../shared/ui/app-icon';
-import { Plan, User } from '../../../shared/models/core.models';
-import {
-  ColorPalette,
-  ExportFormat,
-  ImportResult,
-  ProfileFormValue,
-  ThemeMode,
-} from '../data/models/profile.models';
+import { ThemeMode } from '../data/models/theme-mode';
+import { ProfileFormValue } from '../data/models/profile-form-value';
+import { ImportResult } from '../data/models/import-result';
+import { ExportFormat } from '../data/models/export-format';
+import { ColorPalette } from '../data/models/color-palette';
+import { User } from '../../../shared/models/user';
+import { Plan } from '../../../shared/models/plan';
 
 @Component({
   selector: 'ui-profile-page',

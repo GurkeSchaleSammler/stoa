@@ -2,16 +2,14 @@ import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
-import { canEdit } from '../../../../shared/models/core.models';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
 import { CollectionApi } from '../api/collection.api';
-import {
-  CollectionFilter,
-  CollectionState,
-  CreateCollectionRequest,
-  initialCollectionState,
-  UpdateCollectionRequest,
-} from '../models/collection.models';
+import { initialCollectionState } from '../models/initial-collection-state';
+import { CollectionState } from '../models/collection-state';
+import { canEdit } from '../../../../shared/models/can-edit';
+import { CollectionFilter } from '../models/collection-filter';
+import { CreateCollectionRequest } from '../models/create-collection-request';
+import { UpdateCollectionRequest } from '../models/update-collection-request';
 
 @Injectable({ providedIn: 'root' })
 export class CollectionService {

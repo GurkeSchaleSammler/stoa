@@ -10,10 +10,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { distinctUntilChanged, map } from 'rxjs';
 import { PinService } from '../data/application/pin.service';
-import { BoardViewMode } from '../data/models/board.models';
 import { BoardCanvasComponent, StackDrop } from '../ui/board-components';
 import { AddPinDialogHandlerComponent } from './add-pin-dialog-handler';
 import { PinDetailHandlerComponent } from './pin-detail-handler';
+import { BoardViewMode } from '../../../shared/models/board-view-mode';
 
 @Component({
   selector: 'feature-board-canvas-handler',

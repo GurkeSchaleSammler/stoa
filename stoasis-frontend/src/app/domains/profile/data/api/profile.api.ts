@@ -2,13 +2,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../../../../shared/api/api-url';
-import {
-  AvatarUpload,
-  ExportFormat,
-  ImportResult,
-  UpdateProfileRequest,
-} from '../models/profile.models';
-import { User } from '../../../../shared/models/core.models';
+import { UpdateProfileRequest } from '../models/update-profile-request';
+import { AvatarUpload } from '../models/avatar-upload';
+import { ExportFormat } from '../models/export-format';
+import { ImportResult } from '../models/import-result';
+import { User } from '../../../../shared/models/user';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileApi {

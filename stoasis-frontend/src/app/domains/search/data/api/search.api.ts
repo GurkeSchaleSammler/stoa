@@ -2,7 +2,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../../../../shared/api/api-url';
-import { SearchQuery, SearchResult, Tag } from '../models/search.models';
+import { SearchResult } from '../models/search-result';
+import { SearchQuery } from '../models/search-query';
+import { Tag } from '../models/tag';
 
 @Injectable({ providedIn: 'root' })
 export class SearchApi {

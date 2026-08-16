@@ -3,7 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../../shared/ui/app-icon';
-import { LoginFormValue, LoginMode } from '../../data/models/auth-models';
+import { LoginMode } from '../../data/models/login-mode';
+import { LoginFormValue } from '../../data/models/login-form-value';
 
 // ─── Login UI Component ───────────────────────────────────────────
 // KEINE Logik. Keine injects. Keine Service-Aufrufe.

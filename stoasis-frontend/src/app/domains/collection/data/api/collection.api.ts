@@ -2,13 +2,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../../../../shared/api/api-url';
-import {
-  CollectionDetail,
-  CollectionFilter,
-  CollectionSummary,
-  CreateCollectionRequest,
-  UpdateCollectionRequest,
-} from '../models/collection.models';
+import { CollectionSummary } from '../models/collection-summary';
+import { CollectionFilter } from '../models/collection-filter';
+import { CollectionDetail } from '../models/collection-detail';
+import { CreateCollectionRequest } from '../models/create-collection-request';
+import { UpdateCollectionRequest } from '../models/update-collection-request';
 
 @Injectable({ providedIn: 'root' })
 export class CollectionApi {

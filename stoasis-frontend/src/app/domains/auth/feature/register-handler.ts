@@ -2,11 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { email, form, minLength, required } from '@angular/forms/signals';
 import { RegisterComponent } from '../ui/register/register';
 import { AuthService } from '../data/application/auth-service';
-import {
-  noRegisterFieldErrors,
-  RegisterFieldErrors,
-  RegisterFormValue,
-} from '../data/models/auth-models';
+import { RegisterFieldErrors } from '../data/models/register-field-errors';
+import { noRegisterFieldErrors } from '../data/models/no-register-field-errors';
+import { RegisterFormValue } from '../data/models/register-form-value';
 
 // ─── Register Feature Handler ─────────────────────────────────────
 // Enthält ALLE Logik inkl. Validierung. UI bekommt nur Signals.

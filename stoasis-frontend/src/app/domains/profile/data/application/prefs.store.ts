@@ -1,12 +1,10 @@
 import { computed, effect, Injectable, signal } from '@angular/core';
-import { BoardViewMode } from '../../../../shared/models/core.models';
-import {
-  ColorPalette,
-  colorPalettes,
-  Preferences,
-  ThemeMode,
-  themeModes,
-} from '../models/profile.models';
+import { Preferences } from '../models/preferences';
+import { ThemeMode } from '../models/theme-mode';
+import { ColorPalette } from '../models/color-palette';
+import { themeModes } from '../models/theme-modes';
+import { colorPalettes } from '../models/color-palettes';
+import { BoardViewMode } from '../../../../shared/models/board-view-mode';
 
 const defaultPreferences: Preferences = {
   theme: 'system',

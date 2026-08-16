@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MembershipService } from '../data/application/membership.service';
-import { Role } from '../data/models/membership.models';
 import { MemberListComponent } from '../ui/membership-components';
 import { InviteDialogHandlerComponent } from './invite-dialog-handler';
 import { ConfirmationDialogService } from '../../../shared/application/confirmation-dialog.service';
+import { Role } from '../../../shared/models/role';
 
 @Component({
   selector: 'feature-member-list-handler',

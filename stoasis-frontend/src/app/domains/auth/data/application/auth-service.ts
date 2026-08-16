@@ -4,18 +4,16 @@ import { Router } from '@angular/router';
 import { catchError, EMPTY, finalize, map, Observable, of, tap } from 'rxjs';
 
 import { AuthApi } from '../api/auth.api';
-import {
-  AuthState,
-  AuthStatus,
-  initialAuthState,
-  LoginRequest,
-  MagicLinkRequest,
-  RegisterRequest,
-  User,
-  VerifyTokenRequest,
-} from '../models/auth-models';
 import { SessionContextStore } from '../../../../shared/application/session-context.store';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
+import { AuthState } from '../models/auth-state';
+import { initialAuthState } from '../models/initial-auth-state';
+import { User } from '../../../../shared/models/user';
+import { AuthStatus } from '../models/auth-status';
+import { LoginRequest } from '../models/login-request';
+import { RegisterRequest } from '../models/register-request';
+import { MagicLinkRequest } from '../models/magic-link-request';
+import { VerifyTokenRequest } from '../models/verify-token-request';
 
 // ─── Auth Application Service ─────────────────────────────────────
 // Orchestriert Auth-Flows. Hält den globalen Auth-State als Signals.

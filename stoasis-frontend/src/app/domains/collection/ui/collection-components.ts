@@ -2,14 +2,13 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
-import { BoardViewMode, PinType } from '../../../shared/models/core.models';
-import {
-  CollectionDetail,
-  CollectionFilter,
-  CollectionSummary,
-  CreateCollectionRequest,
-  UpdateCollectionRequest,
-} from '../data/models/collection.models';
+import { PinType } from '../../../shared/models/pin-type';
+import { BoardViewMode } from '../../../shared/models/board-view-mode';
+import { CollectionFilter } from '../data/models/collection-filter';
+import { CollectionSummary } from '../data/models/collection-summary';
+import { CreateCollectionRequest } from '../data/models/create-collection-request';
+import { CollectionDetail } from '../data/models/collection-detail';
+import { UpdateCollectionRequest } from '../data/models/update-collection-request';
 
 @Component({
   selector: 'ui-collection-list',

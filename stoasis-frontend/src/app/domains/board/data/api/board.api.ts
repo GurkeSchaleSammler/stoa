@@ -2,26 +2,24 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../../../../shared/api/api-url';
-import {
-  BoardContext,
-  BoardElements,
-  BoardColorVariant,
-  ConnectorThread,
-  CreateFloatingLabelRequest,
-  CreatePinRequest,
-  CreateSoftZoneRequest,
-  CreateStickerRequest,
-  FloatingLabel,
-  LinkPreview,
-  Pin,
-  PinComment,
-  SoftZone,
-  StackBlock,
-  StickerElement,
-  UpdateStickerRequest,
-  UpdatePinRequest,
-  UploadedPhoto,
-} from '../models/board.models';
+import { BoardContext } from '../models/board-context';
+import { Pin } from '../../../../shared/models/pin';
+import { BoardElements } from '../models/board-elements';
+import { CreatePinRequest } from '../models/create-pin-request';
+import { UpdatePinRequest } from '../models/update-pin-request';
+import { PinComment } from '../../../../shared/models/pin-comment';
+import { LinkPreview } from '../models/link-preview';
+import { UploadedPhoto } from '../models/uploaded-photo';
+import { StackBlock } from '../models/stack-block';
+import { BoardColorVariant } from '../models/board-color-variant';
+import { ConnectorThread } from '../models/connector-thread';
+import { CreateSoftZoneRequest } from '../models/create-soft-zone-request';
+import { SoftZone } from '../models/soft-zone';
+import { CreateFloatingLabelRequest } from '../models/create-floating-label-request';
+import { FloatingLabel } from '../models/floating-label';
+import { CreateStickerRequest } from '../models/create-sticker-request';
+import { StickerElement } from '../models/sticker-element';
+import { UpdateStickerRequest } from '../models/update-sticker-request';
 
 @Injectable({ providedIn: 'root' })
 export class BoardApi {

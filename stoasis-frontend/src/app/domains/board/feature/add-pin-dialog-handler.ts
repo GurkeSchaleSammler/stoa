@@ -11,15 +11,13 @@ import { form } from '@angular/forms/signals';
 import { LinkParserService } from '../data/application/link-parser.service';
 import { PhotoUploadService } from '../data/application/photo-upload.service';
 import { PinService } from '../data/application/pin.service';
-import {
-  AddPinDraft,
-  CreatePinRequest,
-  LinkPinData,
-  NotePinData,
-  PhotoPinData,
-  PinType,
-} from '../data/models/board.models';
 import { AddPinDialogComponent } from '../ui/board-components';
+import { AddPinDraft } from '../data/models/add-pin-draft';
+import { PinType } from '../../../shared/models/pin-type';
+import { CreatePinRequest } from '../data/models/create-pin-request';
+import { LinkPinData } from '../../../shared/models/link-pin-data';
+import { NotePinData } from '../../../shared/models/note-pin-data';
+import { PhotoPinData } from '../../../shared/models/photo-pin-data';
 
 const emptyDraft: AddPinDraft = {
   type: null,
