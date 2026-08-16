@@ -35,6 +35,16 @@ INSERT INTO pins (id, collection_id, type, created_by, sort_order, created_at, c
 ('pin-004', 'coll-japan', 'note', 'user-anna', 4, TIMESTAMP WITH TIME ZONE '2026-06-05 09:15:00+00', 'Flug: ~600 €\nHotels: ~1200 € (14 Nächte)\nJR Pass: ~280 €\nEssen/Tag: ~40 €\nGesamt: ~2640 €', 'blue'),
 ('pin-102', 'coll-dev', 'note', 'user-du', 2, TIMESTAMP WITH TIME ZONE '2026-07-02 14:20:00+00', 'Domain-Regel: feature/ hat inject(), ui/ hat null. Selector-Präfix feature- / ui- konsequent durchziehen.', 'yellow');
 
+UPDATE pins
+SET grid_x = MOD(sort_order - 1, 5) * 18,
+    grid_y = FLOOR((sort_order - 1) / 5) * 22,
+    height_clips = CASE type
+        WHEN 'link' THEN 18
+        WHEN 'photo' THEN 16
+        ELSE 14
+    END,
+    layer = sort_order;
+
 INSERT INTO pin_tags (pin_id, tag) VALUES
 ('pin-001', 'transport'), ('pin-002', 'sehenswuerdigkeit'), ('pin-004', 'budget'),
 ('pin-005', 'essen'), ('pin-101', 'angular'), ('pin-102', 'ddd'), ('pin-201', 'pasta');

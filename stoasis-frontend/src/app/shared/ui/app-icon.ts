@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 export type AppIconName =
+  | 'arrow-down'
+  | 'arrow-up'
   | 'check'
   | 'chevron-right'
   | 'close'
@@ -12,6 +14,7 @@ export type AppIconName =
   | 'grid'
   | 'image'
   | 'link'
+  | 'layers'
   | 'list'
   | 'logout'
   | 'mail'
@@ -20,6 +23,7 @@ export type AppIconName =
   | 'note'
   | 'plus'
   | 'search'
+  | 'sparkles'
   | 'send'
   | 'settings'
   | 'sun'
@@ -36,12 +40,18 @@ export type AppIconName =
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="1.9"
+      stroke-width="1.7"
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true"
     >
       @switch (name()) {
+        @case ('arrow-down') {
+          <path d="M12 4v16M6 14l6 6 6-6" />
+        }
+        @case ('arrow-up') {
+          <path d="M12 20V4M6 10l6-6 6 6" />
+        }
         @case ('check') {
           <path d="m5 12 4 4L19 6" />
         }
@@ -87,6 +97,10 @@ export type AppIconName =
             d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1"
           />
         }
+        @case ('layers') {
+          <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+          <path d="m3 12 9 5 9-5M3 16l9 5 9-5" />
+        }
         @case ('list') {
           <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
         }
@@ -114,6 +128,10 @@ export type AppIconName =
         @case ('search') {
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-4-4" />
+        }
+        @case ('sparkles') {
+          <path d="m12 3 1.4 4.1L17.5 8.5l-4.1 1.4L12 14l-1.4-4.1-4.1-1.4 4.1-1.4L12 3Z" />
+          <path d="m19 14 .8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14Z" />
         }
         @case ('send') {
           <path d="m22 2-7 20-4-9-9-4Z" />

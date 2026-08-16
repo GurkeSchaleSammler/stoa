@@ -13,6 +13,7 @@ describe('BoardCanvasHandlerComponent', () => {
   const internalBoardState = signal(0);
   const pins = {
     sortedPins: signal([]),
+    elements: signal({ stacks: [], connectors: [], zones: [], labels: [], stickers: [] }),
     context: signal(null),
     viewMode: signal('board'),
     selectedPinId: signal(null),
@@ -23,6 +24,23 @@ describe('BoardCanvasHandlerComponent', () => {
     loadPins: vi.fn(() => internalBoardState.set(internalBoardState() + 1)),
     selectPin: vi.fn(() => internalBoardState.set(internalBoardState() + 1)),
     reorderPin: vi.fn(),
+    updateGrid: vi.fn(),
+    updateStack: vi.fn(),
+    releaseStackChild: vi.fn(),
+    dissolveStack: vi.fn(),
+    createStack: vi.fn(),
+    addToStack: vi.fn(),
+    createConnector: vi.fn(),
+    deleteConnector: vi.fn(),
+    createZone: vi.fn(),
+    updateZone: vi.fn(),
+    deleteZone: vi.fn(),
+    createLabel: vi.fn(),
+    updateLabel: vi.fn(),
+    deleteLabel: vi.fn(),
+    createSticker: vi.fn(),
+    updateSticker: vi.fn(),
+    deleteSticker: vi.fn(),
     setViewMode: vi.fn(),
   };
 

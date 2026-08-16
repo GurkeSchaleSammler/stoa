@@ -32,6 +32,16 @@ data class PinCommentDto(
     val at: Instant,
 )
 
+data class GridBlockDto(
+    val id: String,
+    val x: Int,
+    val y: Int,
+    val width: Int = 16,
+    val heightClips: Int,
+    val layer: Int,
+    val contentType: PinType,
+)
+
 data class PinDto(
     val id: String,
     val collectionId: String,
@@ -43,8 +53,15 @@ data class PinDto(
     val createdAt: Instant,
     val type: PinType,
     val data: PinData,
+    val grid: GridBlockDto,
 )
 
 data class CreatePinRequest(val type: PinType, val data: JsonNode, val tags: Set<String> = emptySet())
-data class UpdatePinRequest(val data: JsonNode? = null, val tags: Set<String>? = null, val sortOrder: Int? = null)
+data class UpdateGridBlockRequest(val x: Int, val y: Int, val heightClips: Int, val layer: Int)
+data class UpdatePinRequest(
+    val data: JsonNode? = null,
+    val tags: Set<String>? = null,
+    val sortOrder: Int? = null,
+    val grid: UpdateGridBlockRequest? = null,
+)
 data class AddCommentRequest(@field:NotBlank(message = "Kommentar darf nicht leer sein.") val body: String)

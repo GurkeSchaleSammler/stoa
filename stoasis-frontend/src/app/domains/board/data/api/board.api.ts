@@ -4,10 +4,21 @@ import { Observable } from 'rxjs';
 import { API_URL } from '../../../../shared/api/api-url';
 import {
   BoardContext,
+  BoardElements,
+  BoardColorVariant,
+  ConnectorThread,
+  CreateFloatingLabelRequest,
   CreatePinRequest,
+  CreateSoftZoneRequest,
+  CreateStickerRequest,
+  FloatingLabel,
   LinkPreview,
   Pin,
   PinComment,
+  SoftZone,
+  StackBlock,
+  StickerElement,
+  UpdateStickerRequest,
   UpdatePinRequest,
   UploadedPhoto,
 } from '../models/board.models';
@@ -22,6 +33,10 @@ export class BoardApi {
 
   list(collectionId: string): Observable<Pin[]> {
     return this.http.get<Pin[]>(`${API_URL}/collections/${collectionId}/pins`);
+  }
+
+  elements(collectionId: string): Observable<BoardElements> {
+    return this.http.get<BoardElements>(`${API_URL}/collections/${collectionId}/board-elements`);
   }
 
   create(collectionId: string, body: CreatePinRequest): Observable<Pin> {
@@ -56,5 +71,144 @@ export class BoardApi {
         'X-File-Name': file.name,
       },
     });
+  }
+
+  createStack(
+    collectionId: string,
+    sourcePinId: string,
+    targetPinId: string,
+  ): Observable<StackBlock> {
+    return this.http.post<StackBlock>(
+      `${API_URL}/collections/${collectionId}/board-elements/stacks`,
+      {
+        sourcePinId,
+        targetPinId,
+      },
+    );
+  }
+
+  addStackChild(collectionId: string, stackId: string, pinId: string): Observable<StackBlock> {
+    return this.http.post<StackBlock>(
+      `${API_URL}/collections/${collectionId}/board-elements/stacks/${stackId}/children/${pinId}`,
+      {},
+    );
+  }
+
+  updateStack(
+    collectionId: string,
+    stackId: string,
+    body: Partial<Pick<StackBlock, 'x' | 'y' | 'layer' | 'expanded'>>,
+  ): Observable<StackBlock> {
+    return this.http.patch<StackBlock>(
+      `${API_URL}/collections/${collectionId}/board-elements/stacks/${stackId}`,
+      body,
+    );
+  }
+
+  releaseStackChild(
+    collectionId: string,
+    stackId: string,
+    body: { pinId: string; x: number; y: number; layer: number },
+  ): Observable<BoardElements> {
+    return this.http.post<BoardElements>(
+      `${API_URL}/collections/${collectionId}/board-elements/stacks/${stackId}/release`,
+      body,
+    );
+  }
+
+  dissolveStack(collectionId: string, stackId: string): Observable<BoardElements> {
+    return this.http.delete<BoardElements>(
+      `${API_URL}/collections/${collectionId}/board-elements/stacks/${stackId}`,
+    );
+  }
+
+  createConnector(
+    collectionId: string,
+    sourcePinId: string,
+    targetPinId: string,
+    colorVariant: BoardColorVariant = 'accent',
+  ): Observable<ConnectorThread> {
+    return this.http.post<ConnectorThread>(
+      `${API_URL}/collections/${collectionId}/board-elements/connectors`,
+      { sourcePinId, targetPinId, colorVariant },
+    );
+  }
+
+  deleteConnector(collectionId: string, connectorId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${API_URL}/collections/${collectionId}/board-elements/connectors/${connectorId}`,
+    );
+  }
+
+  createZone(collectionId: string, body: CreateSoftZoneRequest): Observable<SoftZone> {
+    return this.http.post<SoftZone>(
+      `${API_URL}/collections/${collectionId}/board-elements/zones`,
+      body,
+    );
+  }
+
+  updateZone(
+    collectionId: string,
+    zoneId: string,
+    body: Partial<CreateSoftZoneRequest>,
+  ): Observable<SoftZone> {
+    return this.http.patch<SoftZone>(
+      `${API_URL}/collections/${collectionId}/board-elements/zones/${zoneId}`,
+      body,
+    );
+  }
+
+  deleteZone(collectionId: string, zoneId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${API_URL}/collections/${collectionId}/board-elements/zones/${zoneId}`,
+    );
+  }
+
+  createLabel(collectionId: string, body: CreateFloatingLabelRequest): Observable<FloatingLabel> {
+    return this.http.post<FloatingLabel>(
+      `${API_URL}/collections/${collectionId}/board-elements/labels`,
+      body,
+    );
+  }
+
+  updateLabel(
+    collectionId: string,
+    labelId: string,
+    body: Partial<CreateFloatingLabelRequest>,
+  ): Observable<FloatingLabel> {
+    return this.http.patch<FloatingLabel>(
+      `${API_URL}/collections/${collectionId}/board-elements/labels/${labelId}`,
+      body,
+    );
+  }
+
+  deleteLabel(collectionId: string, labelId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${API_URL}/collections/${collectionId}/board-elements/labels/${labelId}`,
+    );
+  }
+
+  createSticker(collectionId: string, body: CreateStickerRequest): Observable<StickerElement> {
+    return this.http.post<StickerElement>(
+      `${API_URL}/collections/${collectionId}/board-elements/stickers`,
+      body,
+    );
+  }
+
+  updateSticker(
+    collectionId: string,
+    stickerId: string,
+    body: UpdateStickerRequest,
+  ): Observable<StickerElement> {
+    return this.http.patch<StickerElement>(
+      `${API_URL}/collections/${collectionId}/board-elements/stickers/${stickerId}`,
+      body,
+    );
+  }
+
+  deleteSticker(collectionId: string, stickerId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${API_URL}/collections/${collectionId}/board-elements/stickers/${stickerId}`,
+    );
   }
 }

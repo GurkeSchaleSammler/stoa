@@ -8,6 +8,8 @@ export interface SnackbarMessage {
   message: string;
   params?: InterpolationParameters;
   tone: SnackbarTone;
+  actionLabel?: string;
+  action?: () => void;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,6 +30,20 @@ export class SnackbarService {
     this.show(message, 'info', params);
   }
 
+  withAction(
+    message: string,
+    actionLabel: string,
+    action: () => void,
+    params?: InterpolationParameters,
+  ): void {
+    this.show(message, 'info', params, 6500, actionLabel, action);
+  }
+
+  runAction(message: SnackbarMessage): void {
+    message.action?.();
+    this.dismiss(message.id);
+  }
+
   dismiss(id: number): void {
     this.messageState.update((messages) => messages.filter((message) => message.id !== id));
   }
@@ -37,9 +53,14 @@ export class SnackbarService {
     tone: SnackbarTone,
     params?: InterpolationParameters,
     duration = 4200,
+    actionLabel?: string,
+    action?: () => void,
   ): void {
     const id = ++this.nextId;
-    this.messageState.update((messages) => [...messages.slice(-2), { id, message, params, tone }]);
+    this.messageState.update((messages) => [
+      ...messages.slice(-2),
+      { id, message, params, tone, actionLabel, action },
+    ]);
     window.setTimeout(() => this.dismiss(id), duration);
   }
 }

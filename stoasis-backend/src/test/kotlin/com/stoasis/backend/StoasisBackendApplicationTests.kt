@@ -101,6 +101,157 @@ class StoasisBackendApplicationTests {
             .andExpect { status { isNoContent() } }
     }
 
+    @Test
+    fun `clip position is persisted and excessive overlap is rejected`() {
+        val session = loginSession()
+        val collectionId = mvc.post("/api/collections") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"name":"Clip Grid Test","emoji":"◫","allowedTypes":["note"]}"""
+        }.andExpect {
+            status { isCreated() }
+        }.andReturn().response.contentAsString.field("id")
+
+        val firstPinId = createNote(collectionId, session, "Erste Karte")
+        val secondPinId = createNote(collectionId, session, "Zweite Karte")
+
+        mvc.patch("/api/collections/$collectionId/pins/$firstPinId") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"grid":{"x":36,"y":40,"heightClips":12,"layer":7}}"""
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.grid.x", `is`(36))
+            jsonPath("$.grid.y", `is`(40))
+            jsonPath("$.grid.width", `is`(16))
+            jsonPath("$.grid.layer", `is`(7))
+        }
+
+        mvc.get("/api/collections/$collectionId/pins") { this.session = session }.andExpect {
+            status { isOk() }
+            jsonPath("$[0].grid.x", `is`(36))
+            jsonPath("$[0].grid.heightClips", `is`(12))
+        }
+
+        mvc.patch("/api/collections/$collectionId/pins/$secondPinId") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"grid":{"x":36,"y":40,"heightClips":12,"layer":8}}"""
+        }.andExpect {
+            status { isConflict() }
+            jsonPath("$.message", `is`("Karten dürfen sich höchstens zur Hälfte überlagern."))
+        }
+
+        mvc.delete("/api/collections/$collectionId") { this.session = session }
+            .andExpect { status { isNoContent() } }
+    }
+
+    @Test
+    fun `board decorations stacks and connectors are persisted`() {
+        val session = loginSession()
+        val collectionId = mvc.post("/api/collections") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"name":"Board Elements Test","emoji":"✦","allowedTypes":["note"]}"""
+        }.andExpect {
+            status { isCreated() }
+        }.andReturn().response.contentAsString.field("id")
+
+        val firstPinId = createNote(collectionId, session, "Quelle")
+        val secondPinId = createNote(collectionId, session, "Ziel")
+
+        mvc.post("/api/collections/$collectionId/board-elements/connectors") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """{"sourcePinId":"$firstPinId","targetPinId":"$secondPinId","colorVariant":"accent"}"""
+        }.andExpect {
+            status { isCreated() }
+            jsonPath("$.sourcePinId", `is`(firstPinId))
+            jsonPath("$.targetPinId", `is`(secondPinId))
+        }
+
+        val stackId = mvc.post("/api/collections/$collectionId/board-elements/stacks") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"sourcePinId":"$firstPinId","targetPinId":"$secondPinId"}"""
+        }.andExpect {
+            status { isCreated() }
+            jsonPath("$.children", hasSize<Any>(2))
+        }.andReturn().response.contentAsString.field("id")
+
+        mvc.patch("/api/collections/$collectionId/board-elements/stacks/$stackId") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"expanded":true}"""
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.expanded", `is`(true))
+        }
+
+        mvc.post("/api/collections/$collectionId/board-elements/zones") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """{"x":48,"y":32,"widthClips":20,"heightClips":12,"colorVariant":"sage","label":"Ideen"}"""
+        }.andExpect {
+            status { isCreated() }
+            jsonPath("$.label", `is`("Ideen"))
+        }
+
+        mvc.post("/api/collections/$collectionId/board-elements/labels") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"x":70,"y":30,"widthClips":4,"text":"Merker","layer":4}"""
+        }.andExpect {
+            status { isCreated() }
+            jsonPath("$.text", `is`("Merker"))
+        }
+
+        mvc.post("/api/collections/$collectionId/board-elements/stickers") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """{"motif":"star","colorVariant":"amber","x":980.5,"y":420.25,"widthClips":4.5,"heightClips":4.5,"rotation":-8.0,"layer":5}"""
+        }.andExpect {
+            status { isCreated() }
+            jsonPath("$.motif", `is`("star"))
+            jsonPath("$.rotation", `is`(-8.0))
+        }
+
+        mvc.get("/api/collections/$collectionId/board-elements") { this.session = session }.andExpect {
+            status { isOk() }
+            jsonPath("$.stacks", hasSize<Any>(1))
+            jsonPath("$.stacks[0].expanded", `is`(true))
+            jsonPath("$.connectors", hasSize<Any>(1))
+            jsonPath("$.zones", hasSize<Any>(1))
+            jsonPath("$.labels", hasSize<Any>(1))
+            jsonPath("$.stickers", hasSize<Any>(1))
+        }
+
+        mvc.post("/api/collections/$collectionId/board-elements/stickers") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content =
+                """{"motif":"star","colorVariant":"amber","x":100.0,"y":100.0,"widthClips":4.0,"heightClips":4.0,"rotation":16.0,"layer":6}"""
+        }.andExpect {
+            status { isBadRequest() }
+            jsonPath("$.message", `is`("Ungültige Sticker-Geometrie."))
+        }
+
+        mvc.delete("/api/collections/$collectionId") { this.session = session }
+            .andExpect { status { isNoContent() } }
+    }
+
+    private fun createNote(collectionId: String, session: MockHttpSession, contentValue: String): String =
+        mvc.post("/api/collections/$collectionId/pins") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"type":"note","data":{"content":"$contentValue","color":"yellow"}}"""
+        }.andExpect {
+            status { isCreated() }
+        }.andReturn().response.contentAsString.field("id")
+
     private fun loginSession(): MockHttpSession = mvc.post("/api/auth/login") {
         contentType = MediaType.APPLICATION_JSON
         content = """{"email":"du@stoa.test","password":"test1234"}"""

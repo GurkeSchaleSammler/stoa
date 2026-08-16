@@ -22,6 +22,11 @@ import { AppIconComponent } from './app-icon';
             "
           />
           <span>{{ message.message | translate: message.params }}</span>
+          @if (message.actionLabel) {
+            <button type="button" class="snackbar-action" (click)="snackbars.runAction(message)">
+              {{ message.actionLabel | translate }}
+            </button>
+          }
           <button
             type="button"
             [attr.aria-label]="'common.close' | translate"

@@ -35,6 +35,10 @@ class PinEntity(
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "created_by", nullable = false)
     var createdBy: UserEntity? = null,
     @Column(name = "sort_order", nullable = false) var sortOrder: Int = 0,
+    @Column(name = "grid_x", nullable = false) var gridX: Int = 0,
+    @Column(name = "grid_y", nullable = false) var gridY: Int = 0,
+    @Column(name = "height_clips", nullable = false) var heightClips: Int = 16,
+    @Column(nullable = false) var layer: Int = 0,
     @Column(name = "created_at", nullable = false) var createdAt: Instant = Instant.now(),
     var url: String? = null,
     var title: String? = null,

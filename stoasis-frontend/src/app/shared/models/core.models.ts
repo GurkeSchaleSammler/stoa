@@ -3,6 +3,16 @@ export type Role = 'owner' | 'editor' | 'viewer';
 export type PinType = 'link' | 'note' | 'photo';
 export type BoardViewMode = 'board' | 'list';
 
+export interface GridBlock {
+  id: string;
+  x: number;
+  y: number;
+  width: 16;
+  heightClips: number;
+  layer: number;
+  contentType: PinType | 'stack';
+}
+
 export interface User {
   id: string;
   email: string;
@@ -52,6 +62,7 @@ interface PinBase {
   tags: string[];
   comments: PinComment[];
   createdAt: string;
+  grid: GridBlock;
 }
 
 export type Pin =

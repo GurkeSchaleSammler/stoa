@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { distinctUntilChanged, map } from 'rxjs';
 import { PinService } from '../data/application/pin.service';
 import { BoardViewMode } from '../data/models/board.models';
-import { BoardCanvasComponent } from '../ui/board-components';
+import { BoardCanvasComponent, StackDrop } from '../ui/board-components';
 import { AddPinDialogHandlerComponent } from './add-pin-dialog-handler';
 import { PinDetailHandlerComponent } from './pin-detail-handler';
 
@@ -22,6 +22,7 @@ import { PinDetailHandlerComponent } from './pin-detail-handler';
   template: `
     <ui-board-canvas
       [pins]="pins.sortedPins()"
+      [elements]="pins.elements()"
       [context]="pins.context()"
       [viewMode]="pins.viewMode()"
       [selectedPinId]="pins.selectedPinId()"
@@ -31,7 +32,26 @@ import { PinDetailHandlerComponent } from './pin-detail-handler';
       (onSelectPin)="selectPin($event)"
       (onAddPinClick)="addDialogOpen.set(true)"
       (onViewModeChange)="changeView($event)"
-      (onReorder)="pins.reorderPin(collectionId(), $event.pinId, $event.newOrder)"
+      (onGridChange)="pins.updateGrid(collectionId(), $event.pinId, $event.grid)"
+      (onStackDrop)="handleStackDrop($event)"
+      (onStackChange)="pins.updateStack(collectionId(), $event.id, $event.update)"
+      (onReleaseStackChild)="
+        pins.releaseStackChild(collectionId(), $event.stackId, $event.pinId, $event)
+      "
+      (onDissolveStack)="pins.dissolveStack(collectionId(), $event)"
+      (onCreateConnector)="
+        pins.createConnector(collectionId(), $event.sourcePinId, $event.targetPinId, $event.color)
+      "
+      (onDeleteConnector)="pins.deleteConnector(collectionId(), $event)"
+      (onCreateZone)="pins.createZone(collectionId(), $event)"
+      (onUpdateZone)="pins.updateZone(collectionId(), $event.id, $event.update)"
+      (onDeleteZone)="pins.deleteZone(collectionId(), $event)"
+      (onCreateLabel)="pins.createLabel(collectionId(), $event)"
+      (onUpdateLabel)="pins.updateLabel(collectionId(), $event.id, $event.update)"
+      (onDeleteLabel)="pins.deleteLabel(collectionId(), $event)"
+      (onCreateSticker)="pins.createSticker(collectionId(), $event)"
+      (onUpdateSticker)="pins.updateSticker(collectionId(), $event.id, $event.update)"
+      (onDeleteSticker)="pins.deleteSticker(collectionId(), $event)"
       (onMembersClick)="openMembers()"
       (onSettingsClick)="openSettings()"
     />
@@ -105,6 +125,13 @@ export class BoardCanvasHandlerComponent {
   }
   changeView(mode: BoardViewMode): void {
     this.pins.setViewMode(mode);
+  }
+  handleStackDrop(drop: StackDrop): void {
+    if (drop.targetType === 'stack') {
+      this.pins.addToStack(this.collectionId(), drop.targetId, drop.pinId);
+    } else {
+      this.pins.createStack(this.collectionId(), drop.pinId, drop.targetId);
+    }
   }
   openMembers(): void {
     void this.router.navigate(['/collections', this.collectionId(), 'members']);
