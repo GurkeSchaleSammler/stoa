@@ -79,6 +79,9 @@ describe("StoasisOAuthProvider", () => {
     );
     const transactionId = hidden(authorizeResponse.body, "transaction_id");
     const csrfToken = hidden(authorizeResponse.body, "csrf_token");
+    expect(authorizeResponse.headers["Content-Security-Policy"]).toContain(
+      "form-action 'self' https://chatgpt.com",
+    );
 
     const loginResponse = new MockResponse();
     await provider.completeAuthorization(

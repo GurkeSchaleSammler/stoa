@@ -297,6 +297,7 @@ ${error ? `<div class="error" role="alert">${escapeHtml(error)}</div>` : ""}
 <button type="submit">Sicher verbinden</button>
 </form><small>Dein Passwort wird nur zur Anmeldung an Stoasis verwendet und nicht im MCP-Dienst gespeichert.</small>
 </main></body></html>`,
+      [new URL(pending.params.redirectUri).origin],
     );
   }
 
@@ -309,13 +310,14 @@ ${error ? `<div class="error" role="alert">${escapeHtml(error)}</div>` : ""}
   }
 }
 
-function sendHtml(res: Response, status: number, body: string): void {
+function sendHtml(res: Response, status: number, body: string, formRedirectOrigins: string[] = []): void {
+  const formAction = ["'self'", ...formRedirectOrigins].join(" ");
   res
     .status(status)
     .set({
       "Content-Type": "text/html; charset=utf-8",
       "Cache-Control": "no-store",
-      "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+      "Content-Security-Policy": `default-src 'none'; style-src 'unsafe-inline'; form-action ${formAction}; base-uri 'none'; frame-ancestors 'none'`,
       "Referrer-Policy": "no-referrer",
       "X-Content-Type-Options": "nosniff",
       "X-Frame-Options": "DENY",
