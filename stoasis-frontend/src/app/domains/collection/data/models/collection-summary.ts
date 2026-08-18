@@ -11,4 +11,6 @@ export interface CollectionSummary {
   pinCount: number;
   members: MemberSummary[];
   updatedAt: string;
+  boardKind: 'WORK' | 'PERSONAL' | null;
+  isSystem: boolean;
 }

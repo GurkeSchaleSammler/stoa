@@ -78,6 +78,10 @@ export class SearchResultsHandlerComponent {
     this.tags.loadTags();
   }
   openResult(result: SearchResult): void {
+    if (result.type === 'skill') {
+      void this.router.navigate(['/skills']);
+      return;
+    }
     void this.router.navigate(['/collections', result.collectionId], {
       queryParams: { pin: result.id },
     });

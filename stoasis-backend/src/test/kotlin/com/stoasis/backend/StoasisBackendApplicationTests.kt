@@ -243,6 +243,122 @@ class StoasisBackendApplicationTests {
             .andExpect { status { isNoContent() } }
     }
 
+    @Test
+    fun `profile skills are private by default and can be shared explicitly`() {
+        val session = loginSession()
+        val boards = mvc.get("/api/profile-boards") { this.session = session }.andExpect {
+            status { isOk() }
+            jsonPath("$", hasSize<Any>(2))
+            jsonPath("$[0].boardKind", `is`("WORK"))
+            jsonPath("$[0].visibility", `is`("private"))
+        }.andReturn()
+        val workBoardId = boards.response.contentAsString.field("id")
+
+        val skill = mvc.post("/api/profile-boards/WORK/skills") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"skillName":"Kotlin","level":"ADVANCED","yearsExperience":6}"""
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.skills[0].skillName", `is`("Kotlin"))
+            jsonPath("$.skills[0].level", `is`("ADVANCED"))
+        }.andReturn()
+        val skillId = skill.response.contentAsString.firstSkillId()
+
+        mvc.patch("/api/profile-boards/WORK/skills/$skillId/grid") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"x":36,"y":40,"heightClips":12,"layer":7}"""
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.skills[0].grid.x", `is`(36))
+            jsonPath("$.skills[0].grid.y", `is`(40))
+        }
+
+        mvc.get("/api/public/profile-boards/$workBoardId").andExpect { status { isForbidden() } }
+
+        mvc.patch("/api/profile-boards/WORK/visibility") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"visibility":"public"}"""
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.visibility", `is`("public"))
+        }
+        mvc.get("/api/public/profile-boards/$workBoardId").andExpect {
+            status { isOk() }
+            jsonPath("$.skills[0].skillName", `is`("Kotlin"))
+            jsonPath("$.skills[0].grid.x", `is`(36))
+        }
+
+        mvc.delete("/api/collections/$workBoardId") { this.session = session }
+            .andExpect { status { isConflict() } }
+        mvc.delete("/api/profile-boards/WORK/skills/$skillId") { this.session = session }
+            .andExpect { status { isOk() } }
+        mvc.patch("/api/profile-boards/WORK/visibility") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"visibility":"private"}"""
+        }.andExpect { status { isOk() } }
+    }
+
+    @Test
+    fun `group skills require an explicit per-group sharing preference`() {
+        val session = loginSession()
+        val skill = mvc.post("/api/profile-boards/PERSONAL/skills") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"skillName":"Keramik","level":"INTERMEDIATE"}"""
+        }.andExpect { status { isOk() } }.andReturn()
+        val skillId = skill.response.contentAsString.firstSkillId()
+
+        val group = mvc.post("/api/groups") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"name":"Skill Testgruppe"}"""
+        }.andExpect {
+            status { isCreated() }
+            jsonPath("$.mySharingPreference", `is`("NONE"))
+        }.andReturn()
+        val groupId = group.response.contentAsString.field("id")
+        val inviteToken = group.response.contentAsString.field("inviteToken")
+
+        mvc.get("/api/groups/$groupId/skills") { this.session = session }.andExpect {
+            status { isOk() }
+            jsonPath("$", hasSize<Any>(0))
+        }
+        mvc.patch("/api/groups/$groupId/sharing") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"sharingPreference":"PERSONAL_ONLY"}"""
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.mySharingPreference", `is`("PERSONAL_ONLY"))
+        }
+        mvc.get("/api/groups/$groupId/skills") { this.session = session }.andExpect {
+            status { isOk() }
+            jsonPath("$[0].skills[0].skillName", `is`("Keramik"))
+            jsonPath("$[0].skills[0].boardKind", `is`("PERSONAL"))
+        }
+
+        val annaSession = loginSession("anna@stoa.test")
+        mvc.post("/api/groups/join/$inviteToken") { this.session = annaSession }.andExpect {
+            status { isOk() }
+            jsonPath("$.groupId", `is`(groupId))
+        }
+        mvc.get("/api/groups/$groupId") { this.session = annaSession }.andExpect {
+            status { isOk() }
+            jsonPath("$.mySharingPreference", `is`("NONE"))
+        }
+        mvc.delete("/api/groups/$groupId/membership") { this.session = annaSession }
+            .andExpect { status { isNoContent() } }
+
+        mvc.delete("/api/groups/$groupId") { this.session = session }
+            .andExpect { status { isNoContent() } }
+        mvc.delete("/api/profile-boards/PERSONAL/skills/$skillId") { this.session = session }
+            .andExpect { status { isOk() } }
+    }
+
     private fun createNote(collectionId: String, session: MockHttpSession, contentValue: String): String =
         mvc.post("/api/collections/$collectionId/pins") {
             this.session = session
@@ -252,12 +368,16 @@ class StoasisBackendApplicationTests {
             status { isCreated() }
         }.andReturn().response.contentAsString.field("id")
 
-    private fun loginSession(): MockHttpSession = mvc.post("/api/auth/login") {
+    private fun loginSession(email: String = "du@stoa.test"): MockHttpSession = mvc.post("/api/auth/login") {
         contentType = MediaType.APPLICATION_JSON
-        content = """{"email":"du@stoa.test","password":"test1234"}"""
+        content = """{"email":"$email","password":"test1234"}"""
     }.andReturn().request.getSession(false) as MockHttpSession
 
     private fun String.field(name: String): String =
         Regex("\\\"$name\\\":\\\"([^\\\"]+)\\\"").find(this)?.groupValues?.get(1)
             ?: error("Feld $name fehlt in $this")
+
+    private fun String.firstSkillId(): String =
+        Regex("\\\"skills\\\":\\[\\{\\\"id\\\":\\\"([^\\\"]+)\\\"").find(this)?.groupValues?.get(1)
+            ?: error("Skill-ID fehlt in $this")
 }

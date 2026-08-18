@@ -68,6 +68,7 @@ class ProfileService(
                     PinType.link -> pin.title.orEmpty()
                     PinType.note -> pin.content.orEmpty()
                     PinType.photo -> pin.caption.orEmpty()
+                    PinType.skill -> pinService.toDto(pin).data.toString()
                 }
                 rows.add(listOf(collection.name, pin.type.name, value, pin.url.orEmpty(), pin.tags.joinToString("|")))
             }

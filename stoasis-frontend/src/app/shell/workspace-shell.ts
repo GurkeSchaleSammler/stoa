@@ -7,6 +7,7 @@ import { LanguageService } from '../shared/application/language-service';
 import { supportedAppLanguages } from '../shared/language.constants';
 import { SessionContextStore } from '../shared/application/session-context.store';
 import { AppIconComponent } from '../shared/ui/app-icon';
+import { FeatureFlagsService } from '../shared/application/feature-flags.service';
 
 @Component({
   selector: 'app-shell',
@@ -28,4 +29,9 @@ export class WorkspaceShellComponent {
   protected readonly auth = inject(AuthService);
   protected readonly language = inject(LanguageService);
   protected readonly languages = supportedAppLanguages;
+  protected readonly features = inject(FeatureFlagsService);
+
+  constructor() {
+    this.features.load();
+  }
 }

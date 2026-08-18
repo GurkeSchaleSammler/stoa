@@ -1,6 +1,7 @@
 package com.stoasis.backend.domains.collection.api
 
 import com.stoasis.backend.domains.collection.model.PinType
+import com.stoasis.backend.domains.collection.model.BoardKind
 import com.stoasis.backend.domains.collection.model.Role
 import com.stoasis.backend.domains.collection.model.Visibility
 import java.time.Instant
@@ -14,7 +15,11 @@ class CollectionDetail(
     pinCount: Long,
     members: List<MemberSummary>,
     updatedAt: Instant,
+    boardKind: BoardKind?,
+    isSystem: Boolean,
     val ownerId: String,
     val inviteToken: String?,
     val currentUserRole: Role?,
-) : CollectionSummary(id, name, emoji, allowedTypes, visibility, pinCount, members, updatedAt)
+) : CollectionSummary(
+    id, name, emoji, allowedTypes, visibility, pinCount, members, updatedAt, boardKind, isSystem,
+)

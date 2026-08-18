@@ -12,4 +12,7 @@ class CurrentUser {
             ?: throw ApiException(HttpStatus.UNAUTHORIZED, "Nicht angemeldet.")
 
     fun id(): String = principal().id
+
+    fun idOrNull(): String? =
+        (SecurityContextHolder.getContext().authentication?.principal as? StoasisPrincipal)?.id
 }

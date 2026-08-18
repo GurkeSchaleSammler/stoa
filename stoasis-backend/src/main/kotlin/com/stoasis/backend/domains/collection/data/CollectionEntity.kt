@@ -1,6 +1,7 @@
 package com.stoasis.backend.domains.collection.data
 
 import com.stoasis.backend.domains.collection.model.PinType
+import com.stoasis.backend.domains.collection.model.BoardKind
 import com.stoasis.backend.domains.collection.model.Visibility
 import jakarta.persistence.CascadeType
 import jakarta.persistence.CollectionTable
@@ -27,6 +28,8 @@ class CollectionEntity(
     @Column(name = "invite_token") var inviteToken: String? = null,
     @Column(name = "created_at", nullable = false) var createdAt: Instant = Instant.now(),
     @Column(name = "updated_at", nullable = false) var updatedAt: Instant = Instant.now(),
+    @Enumerated(EnumType.STRING) @Column(name = "board_kind") var boardKind: BoardKind? = null,
+    @Column(name = "is_system", nullable = false) var isSystem: Boolean = false,
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "collection_allowed_types", joinColumns = [JoinColumn(name = "collection_id")])
     @Column(name = "pin_type")

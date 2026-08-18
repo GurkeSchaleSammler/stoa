@@ -9,6 +9,7 @@ import com.stoasis.backend.domains.search.api.TagDto
 import com.stoasis.backend.domains.search.api.toSearchResult
 import com.stoasis.backend.domains.search.data.TagEntity
 import com.stoasis.backend.domains.search.data.TagRepository
+import com.stoasis.backend.domains.skill.data.SkillDataRepository
 import com.stoasis.backend.shared.web.ApiException
 import java.util.UUID
 import org.springframework.http.HttpStatus
@@ -21,19 +22,24 @@ class SearchService(
     private val pinService: PinService,
     private val tags: TagRepository,
     private val users: UserRepository,
+    private val skillData: SkillDataRepository,
 ) {
     @Transactional(readOnly = true)
     fun search(userId: String, query: String, type: PinType?, tag: String?): List<SearchResultDto> {
         val q = query.trim().lowercase()
         if (q.isBlank()) return emptyList()
-        return pins.findAllVisibleTo(userId)
+        val visiblePins = pins.findAllVisibleTo(userId)
+        val skillsByPin = skillData.findAllByPinIdIn(visiblePins.map { it.id }).associateBy { it.pinId }
+        return visiblePins
             .asSequence()
             .filter { type == null || it.type == type }
             .filter { tag.isNullOrBlank() || it.tags.any { value -> value.equals(tag, true) } }
             .filter { pin ->
                 listOf(pin.title, pin.description, pin.content, pin.caption, pin.url, pin.siteName)
                     .filterNotNull()
-                    .any { it.lowercase().contains(q) } || pin.tags.any { it.lowercase().contains(q) }
+                    .any { it.lowercase().contains(q) } ||
+                    skillsByPin[pin.id]?.skillName?.lowercase()?.contains(q) == true ||
+                    pin.tags.any { it.lowercase().contains(q) }
             }
             .map { pinService.toDto(it).toSearchResult(it.collection?.name.orEmpty()) }
             .toList()

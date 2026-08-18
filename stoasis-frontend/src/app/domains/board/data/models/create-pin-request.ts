@@ -2,9 +2,10 @@ import { LinkPinData } from '../../../../shared/models/link-pin-data';
 import { PinType } from '../../../../shared/models/pin-type';
 import { NotePinData } from '../../../../shared/models/note-pin-data';
 import { PhotoPinData } from '../../../../shared/models/photo-pin-data';
+import { SkillPinData } from '../../../../shared/models/skill-pin-data';
 
 export interface CreatePinRequest {
   type: PinType;
-  data: LinkPinData | NotePinData | PhotoPinData | { url: string };
+  data: LinkPinData | NotePinData | PhotoPinData | SkillPinData | { url: string };
   tags?: string[];
 }

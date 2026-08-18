@@ -132,7 +132,9 @@
     "profile": "Das Profil konnte nicht aktualisiert werden.",
     "avatarUpload": "Das Profilbild konnte nicht hochgeladen werden.",
     "export": "Der Export konnte nicht erstellt werden.",
-    "logout": "Die Abmeldung konnte nicht abgeschlossen werden."
+    "logout": "Die Abmeldung konnte nicht abgeschlossen werden.",
+    "skills": "Die Skills konnten nicht aktualisiert werden.",
+    "groups": "Die Gruppe konnte nicht aktualisiert werden."
   },
   "snackbar": {
     "stackCreated": "Stack erstellt.",

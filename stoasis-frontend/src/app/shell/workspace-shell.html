@@ -2,6 +2,16 @@
   <aside class="workspace-sidebar"><feature-collection-list-handler /></aside>
   <section class="workspace-main">
     <nav class="utility-nav" [attr.aria-label]="'shell.accountMenu' | translate">
+      @if (features.skillsEnabled()) {
+        <a routerLink="/skills" routerLinkActive="active"
+          ><ui-app-icon name="sparkles" />
+          <span class="search-label">{{ 'skills.nav' | translate }}</span></a
+        >
+        <a routerLink="/groups" routerLinkActive="active"
+          ><ui-app-icon name="layers" />
+          <span class="search-label">{{ 'groups.nav' | translate }}</span></a
+        >
+      }
       <a class="search-link" routerLink="/search" routerLinkActive="active"
         ><ui-app-icon name="search" />
         <span class="search-label">{{ 'common.search' | translate }}</span></a

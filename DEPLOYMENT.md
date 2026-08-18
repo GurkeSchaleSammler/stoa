@@ -1,10 +1,10 @@
 # Deployment
 
-Stoasis besteht aus zwei Images. Das Frontend ist der einzige öffentliche Dienst und leitet `/api` intern an das Backend weiter. Der Browser sieht dadurch nie eine interne Container-Adresse.
+Stoasis besteht aus drei Images. Das Frontend ist der öffentliche Einstieg für die Web-App und leitet `/api` intern an das Backend weiter. Der MCP-Dienst besitzt für ChatGPT einen eigenen öffentlichen HTTPS-Endpunkt und erreicht dasselbe Backend über das interne Netzwerk.
 
 ## Lokal mit Docker
 
-Ohne Startargument laufen beide Images im Dev-Modus:
+Ohne Startargument laufen alle Images im Dev-Modus:
 
 ```bash
 docker compose up --build
@@ -13,11 +13,12 @@ docker compose up --build
 - App: `http://localhost:8080`
 - Backend direkt: `http://localhost:4000`
 - Mailpit: `http://localhost:8025`
+- MCP: `http://localhost:3000/mcp`
 
-Die Container erreichen sich im Compose-Netz als `frontend` und `backend`. Abweichende Host-Ports können bei belegten Ports gesetzt werden:
+Die Container erreichen sich im Compose-Netz als `frontend`, `backend` und `mcp`. Abweichende Host-Ports können bei belegten Ports gesetzt werden:
 
 ```bash
-STOASIS_FRONTEND_PORT=8180 STOASIS_BACKEND_PORT=4100 MAILPIT_UI_PORT=8125 MAILPIT_SMTP_PORT=1125 docker compose up
+STOASIS_FRONTEND_PORT=8180 STOASIS_BACKEND_PORT=4100 STOASIS_MCP_PORT=3100 MAILPIT_UI_PORT=8125 MAILPIT_SMTP_PORT=1125 docker compose up
 ```
 
 Die Images einzeln:
@@ -25,29 +26,33 @@ Die Images einzeln:
 ```bash
 docker build -t stoasis-backend ./stoasis-backend
 docker build -t stoasis-frontend ./stoasis-frontend
+docker build -t stoasis-mcp ./stoasis-mcp
 
 docker run stoasis-backend
 docker run stoasis-backend prod
 docker run stoasis-frontend
 docker run stoasis-frontend prod
+docker run --env-file stoasis-mcp/.env.prod -p 3000:3000 stoasis-mcp
 ```
 
 Ohne Argument wird `dev` geladen; das Argument `prod` aktiviert das Produktionsprofil beziehungsweise das optimierte Angular-Bundle.
 
 ## Railway-Produktion
 
-Im Railway-Projekt werden drei Services angelegt:
+Im Railway-Projekt werden vier Services angelegt:
 
 1. `frontend` aus diesem GitHub-Repository mit Root Directory `/stoasis-frontend`
 2. `backend` aus demselben Repository mit Root Directory `/stoasis-backend`
-3. ein Railway-PostgreSQL-Service
+3. `mcp` aus demselben Repository mit Root Directory `/stoasis-mcp`
+4. ein Railway-PostgreSQL-Service
 
-Für beide App-Services muss unter **Config file path** der absolute Pfad gesetzt werden:
+Für alle drei App-Services muss unter **Config file path** der absolute Pfad gesetzt werden:
 
 - Frontend: `/stoasis-frontend/railway.toml`
 - Backend: `/stoasis-backend/railway.toml`
+- MCP: `/stoasis-mcp/railway.toml`
 
-Die beiden Dateien wählen den jeweiligen Dockerfile, starten mit `prod`, setzen Healthchecks und verhindern über Watch-Patterns unnötige Cross-Builds.
+Die Dateien wählen den jeweiligen Dockerfile, setzen Healthchecks und verhindern über Watch-Patterns unnötige Cross-Builds.
 
 ### Frontend-Variablen
 
@@ -56,7 +61,7 @@ BACKEND_URL=http://backend.railway.internal:4000
 PORT=8080
 ```
 
-Nur der Frontend-Service bekommt Public Networking und die Custom Domain `stoasis.gurkeschale.dev` auf Port `8080`. Der Backend-Service bleibt ohne öffentliche Domain.
+Der Frontend-Service bekommt die Custom Domain `stoasis.gurkeschale.dev` auf Port `8080`. Der MCP-Service bekommt eine eigene stabile HTTPS-Domain, beispielsweise `mcp.stoasis.gurkeschale.dev`, auf Port `3000`. Der Backend-Service bleibt ohne öffentliche Domain.
 
 ### Backend-Variablen
 
@@ -74,11 +79,28 @@ STOASIS_CORS_ALLOWED_ORIGINS=https://stoasis.gurkeschale.dev
 
 `Postgres` muss dabei exakt dem Railway-Service-Namen der Datenbank entsprechen. Für produktive E-Mails kommen zusätzlich `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS` und `STOASIS_MAIL_FROM` hinzu.
 
+### MCP-Variablen
+
+```text
+NODE_ENV=production
+PORT=3000
+PUBLIC_BASE_URL=https://mcp.stoasis.gurkeschale.dev
+STOASIS_API_BASE_URL=http://backend.railway.internal:4000
+STOASIS_WEB_BASE_URL=https://stoasis.gurkeschale.dev
+OAUTH_STORAGE=postgres
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+SESSION_ENCRYPTION_KEY=<openssl rand -base64 32>
+TRUST_PROXY=true
+```
+
+ChatGPT verbindet `https://mcp.stoasis.gurkeschale.dev/mcp`. Der MCP legt seine OAuth-Tabellen mit dem Präfix `stoasis_mcp_` in PostgreSQL an. Details zu Authentifizierung, Tests und ChatGPT-Verbindung stehen in [`stoasis-mcp/README.md`](stoasis-mcp/README.md).
+
 ## GitHub Actions und Images
 
 - `.github/workflows/backend-image.yml` reagiert ausschließlich auf Änderungen unter `stoasis-backend/**`.
 - `.github/workflows/frontend-image.yml` reagiert ausschließlich auf Änderungen unter `stoasis-frontend/**`.
-- Ändern sich beide Bereiche, laufen beide Workflows.
+- `.github/workflows/mcp-image.yml` reagiert ausschließlich auf Änderungen unter `stoasis-mcp/**`.
+- Ändern sich mehrere Bereiche, laufen die entsprechenden Workflows.
 - Pull Requests bauen nur; Pushes veröffentlichen Branch-, SHA- und auf dem Default-Branch zusätzlich `latest`-Tags.
 
 Die veröffentlichten Images heißen:
@@ -86,4 +108,5 @@ Die veröffentlichten Images heißen:
 ```text
 ghcr.io/gurkeschalesammler/stoasis-backend
 ghcr.io/gurkeschalesammler/stoasis-frontend
+ghcr.io/gurkeschalesammler/stoasis-mcp
 ```

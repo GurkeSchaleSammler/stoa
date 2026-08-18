@@ -23,6 +23,20 @@ services:
     depends_on:
       - backend
 
+  mcp:
+    image: stoasis-mcp:dev
+    build:
+      context: ./stoasis-mcp
+    environment:
+      PUBLIC_BASE_URL: ${STOASIS_MCP_PUBLIC_URL:-http://localhost:3000}
+      STOASIS_API_BASE_URL: http://backend:4000
+      STOASIS_WEB_BASE_URL: ${STOASIS_FRONTEND_URL:-http://localhost:8080}
+      OAUTH_STORAGE: memory
+    ports:
+      - "${STOASIS_MCP_PORT:-3000}:3000"
+    depends_on:
+      - backend
+
   mailpit:
     image: axllent/mailpit:v1.30.0
     ports:

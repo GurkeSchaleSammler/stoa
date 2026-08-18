@@ -1,5 +1,6 @@
 package com.stoasis.backend.domains.collection.data
 
+import com.stoasis.backend.domains.collection.model.BoardKind
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -16,4 +17,7 @@ interface CollectionRepository : JpaRepository<CollectionEntity, String> {
 
     @EntityGraph(attributePaths = ["members", "members.user", "allowedTypes"])
     fun findByInviteToken(inviteToken: String): CollectionEntity?
+
+    @EntityGraph(attributePaths = ["members", "members.user", "allowedTypes"])
+    fun findByOwnerIdAndBoardKind(ownerId: String, boardKind: BoardKind): CollectionEntity?
 }

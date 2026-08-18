@@ -10,6 +10,7 @@ import com.stoasis.backend.domains.auth.data.MagicLinkTokenRepository
 import com.stoasis.backend.domains.auth.data.UserEntity
 import com.stoasis.backend.domains.auth.data.UserRepository
 import com.stoasis.backend.shared.web.ApiException
+import com.stoasis.backend.domains.skill.application.ProfileBoardService
 import java.time.Duration
 import java.time.Instant
 import java.security.MessageDigest
@@ -28,6 +29,7 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder,
     private val magicLinkMailSender: MagicLinkMailSender,
     private val magicLinkRateLimiter: MagicLinkRateLimiter,
+    private val profileBoards: ProfileBoardService,
 ) {
     private val sessionDuration = Duration.ofDays(30)
 
@@ -55,6 +57,7 @@ class AuthService(
                 passwordHash = passwordEncoder.encode(request.password),
             ),
         )
+        profileBoards.ensureForUser(user)
         return user to response(user)
     }
 
@@ -89,13 +92,15 @@ class AuthService(
         if (tokens.markUsedIfValid(tokenHash, now) != 1) {
             throw ApiException(HttpStatus.BAD_REQUEST, "Dieser Link wurde bereits verwendet.")
         }
-        val user = users.findByEmailIgnoreCase(entry.email) ?: users.save(
+        val existingUser = users.findByEmailIgnoreCase(entry.email)
+        val user = existingUser ?: users.save(
             UserEntity(
                 id = "user-${UUID.randomUUID().toString().take(8)}",
                 email = entry.email,
                 name = entry.email.substringBefore('@'),
             ),
         )
+        if (existingUser == null) profileBoards.ensureForUser(user)
         return user to response(user)
     }
 

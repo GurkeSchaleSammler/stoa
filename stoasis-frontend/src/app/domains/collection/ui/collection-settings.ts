@@ -62,6 +62,13 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
             >
               {{ 'collection.viaLink' | translate }}
             </button>
+            <button
+              type="button"
+              [class.active]="item.visibility === 'public'"
+              (click)="onFieldChange.emit({ visibility: 'public' })"
+            >
+              {{ 'collection.public' | translate }}
+            </button>
           </div>
           @if (item.visibility === 'link' && item.inviteToken) {
             <div class="invite-box">

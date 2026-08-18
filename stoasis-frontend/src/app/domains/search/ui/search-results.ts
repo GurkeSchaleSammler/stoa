@@ -35,7 +35,15 @@ import { SearchResult } from '../data/models/search-result';
           <button type="button" class="result-card" (click)="onResultClick.emit(result)">
             <span class="result-icon">
               <ui-app-icon
-                [name]="result.type === 'link' ? 'link' : result.type === 'note' ? 'note' : 'image'"
+                [name]="
+                  result.type === 'link'
+                    ? 'link'
+                    : result.type === 'note'
+                      ? 'note'
+                      : result.type === 'photo'
+                        ? 'image'
+                        : 'sparkles'
+                "
               />
             </span>
             <span class="result-copy">
@@ -50,6 +58,9 @@ import { SearchResult } from '../data/models/search-result';
                   }
                   @case ('photo') {
                     {{ result.data.caption || ('pin.photo' | translate) }}
+                  }
+                  @case ('skill') {
+                    {{ result.data.skillName }}
                   }
                 }
               </strong>

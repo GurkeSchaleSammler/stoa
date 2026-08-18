@@ -8,12 +8,15 @@ spring:
     password: ${PGPASSWORD}
     driver-class-name: org.postgresql.Driver
   flyway:
+    enabled: false
     locations: classpath:db/migration
   h2:
     console:
       enabled: false
 
 stoasis:
+  features:
+    skills-enabled: ${STOASIS_SKILLS_ENABLED:false}
   public-api-base-url: ${STOASIS_PUBLIC_API_URL:https://stoasis.gurkeschale.dev}
   cors:
     allowed-origins: ${STOASIS_CORS_ALLOWED_ORIGINS:https://stoasis.gurkeschale.dev}

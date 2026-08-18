@@ -1,6 +1,7 @@
 package com.stoasis.backend.domains.collection.api
 
 import com.stoasis.backend.domains.collection.model.PinType
+import com.stoasis.backend.domains.collection.model.BoardKind
 import com.stoasis.backend.domains.collection.model.Role
 import com.stoasis.backend.domains.collection.model.Visibility
 import java.time.Instant
@@ -16,4 +17,6 @@ open class CollectionSummary(
     val pinCount: Long,
     val members: List<MemberSummary>,
     val updatedAt: Instant,
+    val boardKind: BoardKind?,
+    val isSystem: Boolean,
 )

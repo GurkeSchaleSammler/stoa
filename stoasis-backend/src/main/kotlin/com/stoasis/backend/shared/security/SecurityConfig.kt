@@ -43,6 +43,8 @@ class SecurityConfig(
                 "/h2-console/**",
             ).permitAll()
             it.requestMatchers(HttpMethod.GET, "/api/uploads/**").permitAll()
+            it.requestMatchers(HttpMethod.GET, "/api/public/profile-boards/**").permitAll()
+            it.requestMatchers(HttpMethod.GET, "/api/public/collections/**").permitAll()
             it.anyRequest().authenticated()
         }
         .exceptionHandling {

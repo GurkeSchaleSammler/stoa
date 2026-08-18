@@ -132,7 +132,9 @@
     "profile": "Impossible de mettre à jour le profil.",
     "avatarUpload": "Impossible d’envoyer la photo de profil.",
     "export": "Impossible de créer l’export.",
-    "logout": "Impossible de terminer la déconnexion."
+    "logout": "Impossible de terminer la déconnexion.",
+    "skills": "Les compétences n’ont pas pu être mises à jour.",
+    "groups": "Le groupe n’a pas pu être mis à jour."
   },
   "snackbar": {
     "stackCreated": "Pile créée.",

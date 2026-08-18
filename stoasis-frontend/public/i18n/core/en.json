@@ -132,7 +132,9 @@
     "profile": "The profile could not be updated.",
     "avatarUpload": "The profile picture could not be uploaded.",
     "export": "The export could not be created.",
-    "logout": "Sign-out could not be completed."
+    "logout": "Sign-out could not be completed.",
+    "skills": "Skills could not be updated.",
+    "groups": "The group could not be updated."
   },
   "snackbar": {
     "stackCreated": "Stack created.",

@@ -12,6 +12,19 @@ export const routes: Routes = [
     loadChildren: () => import('./domains/membership/membership.routes').then((m) => m.JOIN_ROUTES),
   },
   {
+    path: 'groups/join/:token',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./domains/group/group-join-page').then((m) => m.GroupJoinPageComponent),
+  },
+  {
+    path: 'profile-boards/:id',
+    loadComponent: () =>
+      import('./domains/skill/public-profile-board-page').then(
+        (m) => m.PublicProfileBoardPageComponent,
+      ),
+  },
+  {
     path: '',
     canActivate: [authGuard],
     loadComponent: () => import('./shell/workspace-shell').then((m) => m.WorkspaceShellComponent),
@@ -30,6 +43,21 @@ export const routes: Routes = [
       {
         path: 'collections/:id',
         loadChildren: () => import('./domains/board/board.routes').then((m) => m.BOARD_ROUTES),
+      },
+      {
+        path: 'skills',
+        loadComponent: () =>
+          import('./domains/skill/profile-skills-page').then((m) => m.ProfileSkillsPageComponent),
+      },
+      {
+        path: 'groups',
+        loadComponent: () =>
+          import('./domains/group/group-list-page').then((m) => m.GroupListPageComponent),
+      },
+      {
+        path: 'groups/:id',
+        loadComponent: () =>
+          import('./domains/group/group-detail-page').then((m) => m.GroupDetailPageComponent),
       },
       {
         path: 'search',

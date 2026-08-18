@@ -132,7 +132,9 @@
     "profile": "Impossibile aggiornare il profilo.",
     "avatarUpload": "Impossibile caricare l’immagine del profilo.",
     "export": "Impossibile creare l’esportazione.",
-    "logout": "Impossibile completare la disconnessione."
+    "logout": "Impossibile completare la disconnessione.",
+    "skills": "Non è stato possibile aggiornare le competenze.",
+    "groups": "Non è stato possibile aggiornare il gruppo."
   },
   "snackbar": {
     "stackCreated": "Pila creata.",

@@ -14,6 +14,7 @@ import com.stoasis.backend.domains.pin.api.PhotoPinData
 import com.stoasis.backend.domains.pin.api.PinCommentDto
 import com.stoasis.backend.domains.pin.api.PinData
 import com.stoasis.backend.domains.pin.api.PinDto
+import com.stoasis.backend.domains.pin.api.SkillPinData
 import com.stoasis.backend.domains.pin.api.UpdatePinRequest
 import com.stoasis.backend.domains.pin.api.UpdateGridBlockRequest
 import com.stoasis.backend.domains.pin.data.PinCommentEntity
@@ -24,6 +25,9 @@ import com.stoasis.backend.domains.pin.model.PinGridRect
 import com.stoasis.backend.domains.pin.utils.estimatedPinHeight
 import com.stoasis.backend.domains.pin.utils.findFreePinPosition
 import com.stoasis.backend.domains.pin.utils.pinOverlapAllowed
+import com.stoasis.backend.domains.skill.data.SkillDataEntity
+import com.stoasis.backend.domains.skill.data.SkillDataRepository
+import com.stoasis.backend.domains.skill.model.SkillLevel
 import com.stoasis.backend.shared.web.ApiException
 import java.time.Instant
 import java.util.UUID
@@ -40,6 +44,7 @@ class PinService(
     private val users: UserRepository,
     private val stacks: PinStackRepository,
     private val stackChildren: PinStackChildRepository,
+    private val skillData: SkillDataRepository,
 ) {
     companion object {
         const val CARD_WIDTH_CLIPS = 16
@@ -51,6 +56,13 @@ class PinService(
     fun list(collectionId: String, userId: String): List<PinDto> {
         val collection = collections.get(collectionId)
         collections.requireView(collection, userId)
+        return pins.findAllByCollectionIdOrderBySortOrder(collectionId).map(::toDto)
+    }
+
+    @Transactional(readOnly = true)
+    fun listShared(collectionId: String, token: String?, viewerId: String?): List<PinDto> {
+        val collection = collections.get(collectionId)
+        collections.requireSharedView(collection, token, viewerId)
         return pins.findAllByCollectionIdOrderBySortOrder(collectionId).map(::toDto)
     }
 
@@ -69,7 +81,7 @@ class PinService(
             sortOrder = pins.countByCollectionId(collectionId).toInt() + 1,
             tags = request.tags.map { it.trim().lowercase() }.filter { it.isNotBlank() }.toMutableSet(),
         )
-        applyData(pin, request.data)
+        if (request.type != PinType.skill) applyData(pin, request.data)
         val existing = pins.findAllByCollectionIdOrderBySortOrder(collectionId)
         pin.heightClips = estimatedPinHeight(pin)
         val position = findFreePinPosition(pin.heightClips, occupiedRects(collectionId, existing))
@@ -77,7 +89,9 @@ class PinService(
         pin.gridY = position.second
         pin.layer = (existing.maxOfOrNull(PinEntity::layer) ?: 0) + 1
         collection.updatedAt = Instant.now()
-        return toDto(pins.save(pin))
+        val saved = pins.save(pin)
+        if (request.type == PinType.skill) applySkillData(saved.id, request.data)
+        return toDto(saved)
     }
 
     @Transactional
@@ -85,7 +99,9 @@ class PinService(
         val collection = collections.get(collectionId)
         collections.requireEdit(collection, userId)
         val pin = get(collectionId, pinId)
-        request.data?.let { applyData(pin, it) }
+        request.data?.let {
+            if (pin.type == PinType.skill) applySkillData(pin.id, it) else applyData(pin, it)
+        }
         request.tags?.let {
             pin.tags.clear()
             pin.tags.addAll(it.map(String::trim).map(String::lowercase).filter(String::isNotBlank))
@@ -151,6 +167,9 @@ class PinService(
                 height = pin.imageHeight ?: 0,
                 imageUrl = pin.imageUrl ?: pin.fileKey?.let { "/api/uploads/$it" },
             )
+            PinType.skill -> skillData.findById(pin.id).orElseThrow {
+                ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Skill-Daten fehlen.")
+            }.let { SkillPinData(it.skillName, it.level, it.yearsExperience?.toInt()) }
         }
         return PinDto(
             id = pin.id,
@@ -266,6 +285,37 @@ class PinService(
                 if (data.has("imageUrl")) pin.imageUrl = text("imageUrl")
                 if (pin.fileKey.isNullOrBlank()) throw ApiException(HttpStatus.BAD_REQUEST, "Foto fehlt.")
             }
+            PinType.skill -> applySkillData(pin.id, data)
         }
+    }
+
+    private fun applySkillData(pinId: String, data: JsonNode) {
+        fun text(name: String): String? = data.get(name)?.takeUnless { it.isNull }?.asString()?.trim()
+        val entry = skillData.findById(pinId).orElse(SkillDataEntity(pinId = pinId))
+        text("skillName")?.let { entry.skillName = it }
+        text("level")?.let { value ->
+            entry.level = runCatching { SkillLevel.valueOf(value.uppercase()) }.getOrElse {
+                throw ApiException(HttpStatus.BAD_REQUEST, "Ungültiges Skill-Level.")
+            }
+        }
+        if (data.has("yearsExperience")) {
+            val years = data.get("yearsExperience")
+                ?.takeUnless { it.isNull }
+                ?.asInt()
+            if (years != null && years !in 0..80) {
+                throw ApiException(HttpStatus.BAD_REQUEST, "Berufserfahrung muss zwischen 0 und 80 Jahren liegen.")
+            }
+            entry.yearsExperience = years?.toShort()
+        }
+        if (entry.skillName.isBlank()) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Skill-Name ist erforderlich.")
+        }
+        if (entry.skillName.length > 120) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Skill-Name darf höchstens 120 Zeichen lang sein.")
+        }
+        if (entry.yearsExperience?.toInt()?.let { it !in 0..80 } == true) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Berufserfahrung muss zwischen 0 und 80 Jahren liegen.")
+        }
+        skillData.save(entry)
     }
 }

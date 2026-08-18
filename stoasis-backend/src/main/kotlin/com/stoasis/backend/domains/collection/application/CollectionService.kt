@@ -6,6 +6,7 @@ import com.stoasis.backend.domains.collection.api.CollectionIdResponse
 import com.stoasis.backend.domains.collection.api.CollectionSummary
 import com.stoasis.backend.domains.collection.api.CreateCollectionRequest
 import com.stoasis.backend.domains.collection.api.MemberSummary
+import com.stoasis.backend.domains.collection.api.PublicCollectionDto
 import com.stoasis.backend.domains.collection.api.UpdateCollectionRequest
 import com.stoasis.backend.domains.collection.data.CollectionEntity
 import com.stoasis.backend.domains.collection.data.CollectionMemberEntity
@@ -32,6 +33,7 @@ class CollectionService(
     @Transactional(readOnly = true)
     fun list(userId: String, filter: String): List<CollectionSummary> =
         collections.findAllForUser(userId)
+            .filterNot { it.isSystem }
             .filter {
                 when (filter) {
                     "personal" -> it.members.size == 1
@@ -46,7 +48,7 @@ class CollectionService(
     fun detail(id: String, userId: String): CollectionDetail {
         val collection = get(id)
         val role = roleOf(collection, userId)
-        if (role == null && collection.visibility != Visibility.link) forbidden()
+        if (role == null && collection.visibility != Visibility.public) forbidden()
         return detail(collection, role)
     }
 
@@ -71,6 +73,9 @@ class CollectionService(
         val collection = get(id)
         val role = roleOf(collection, userId)
         if (role?.canEdit() != true) forbidden()
+        if (collection.isSystem && (request.name != null || request.emoji != null || request.allowedTypes != null)) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Profil-Boards können nur geleert oder sichtbar gemacht werden.")
+        }
         request.name?.let {
             if (it.isBlank()) throw ApiException(HttpStatus.BAD_REQUEST, "Name ist erforderlich.")
             collection.name = it.trim()
@@ -91,6 +96,9 @@ class CollectionService(
         val collection = get(id)
         if (roleOf(collection, userId) != Role.owner) {
             throw ApiException(HttpStatus.FORBIDDEN, "Nur der Owner darf löschen.")
+        }
+        if (collection.isSystem) {
+            throw ApiException(HttpStatus.CONFLICT, "Profil-Boards können nicht gelöscht werden.")
         }
         collections.delete(collection)
     }
@@ -121,7 +129,7 @@ class CollectionService(
 
     fun requireView(collection: CollectionEntity, userId: String): Role? {
         val role = roleOf(collection, userId)
-        if (role == null && collection.visibility != Visibility.link) forbidden()
+        if (role == null && collection.visibility != Visibility.public) forbidden()
         return role
     }
 
@@ -131,11 +139,35 @@ class CollectionService(
         return role
     }
 
+    fun requireSharedView(collection: CollectionEntity, token: String?, viewerId: String?) {
+        val isMember = viewerId != null && roleOf(collection, viewerId) != null
+        val isPublic = collection.visibility == Visibility.public
+        val hasLink = collection.visibility == Visibility.link && token != null && token == collection.inviteToken
+        if (!isMember && !isPublic && !hasLink) forbidden()
+    }
+
+    @Transactional(readOnly = true)
+    fun publicDetail(id: String, token: String?, viewerId: String?): PublicCollectionDto {
+        val collection = get(id)
+        requireSharedView(collection, token, viewerId)
+        return PublicCollectionDto(
+            collection.id,
+            collection.name,
+            collection.emoji,
+            collection.allowedTypes,
+            collection.visibility,
+            pins.countByCollectionId(collection.id),
+            collection.updatedAt,
+            collection.boardKind,
+        )
+    }
+
     fun setVisibility(collection: CollectionEntity, visibility: Visibility) {
         collection.visibility = visibility
         collection.inviteToken = when (visibility) {
             Visibility.private -> null
             Visibility.link -> collection.inviteToken ?: "invite-${UUID.randomUUID().toString().take(8)}"
+            Visibility.public -> null
         }
     }
 
@@ -150,6 +182,8 @@ class CollectionService(
             membership.user?.let { MemberSummary(it.id, membership.role, it.name) }
         },
         updatedAt = collection.updatedAt,
+        boardKind = collection.boardKind,
+        isSystem = collection.isSystem,
         ownerId = collection.ownerId,
         inviteToken = collection.inviteToken,
         currentUserRole = role,
@@ -166,6 +200,8 @@ class CollectionService(
             membership.user?.let { MemberSummary(it.id, membership.role, it.name) }
         },
         updatedAt = collection.updatedAt,
+        boardKind = collection.boardKind,
+        isSystem = collection.isSystem,
     )
 
     private fun forbidden(): Nothing = throw ApiException(HttpStatus.FORBIDDEN, "Kein Zugriff.")
