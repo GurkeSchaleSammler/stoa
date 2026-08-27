@@ -34,6 +34,7 @@ class PinEntity(
     @Column(name = "height_clips", nullable = false) var heightClips: Int = 16,
     @Column(nullable = false) var layer: Int = 0,
     @Column(name = "created_at", nullable = false) var createdAt: Instant = Instant.now(),
+    @Column(name = "pin_color", length = 32) var color: String? = null,
     var url: String? = null,
     var title: String? = null,
     @Column(columnDefinition = "TEXT") var description: String? = null,

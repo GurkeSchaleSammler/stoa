@@ -171,11 +171,14 @@
 }
 .pin-card {
   position: relative;
+  display: block;
   width: 100%;
   overflow: hidden;
+  box-sizing: border-box;
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--border) 35%, transparent);
   border-radius: var(--radius-card);
+  outline: 0;
   background: var(--surface-raised);
   color: var(--text);
   text-align: left;

@@ -4,12 +4,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
 import { BoardColorVariant } from '../data/models/board-color-variant';
 import { StickerMotif } from '../data/models/sticker-motif';
+import { boardColorCssValue } from '../data/models/board-color';
+import { BoardColorPickerComponent } from './board-color-picker';
 import { BoardTool } from './models/board-tool';
 
 @Component({
   selector: 'ui-board-palette',
   standalone: true,
-  imports: [AppIconComponent, FormsModule, TranslatePipe],
+  imports: [AppIconComponent, FormsModule, TranslatePipe, BoardColorPickerComponent],
   template: `
     <aside class="board-palette" [attr.aria-label]="'board.decorate' | translate">
       <div class="palette-heading">
@@ -43,18 +45,12 @@ import { BoardTool } from './models/board-tool';
         >
           <ui-app-icon name="layers" /> {{ 'board.drawZone' | translate }}
         </button>
-        <div class="palette-colors">
-          @for (color of colorVariants; track color) {
-            <button
-              type="button"
-              class="color-dot"
-              [class]="'color-dot ' + color"
-              [class.active]="selectedColor() === color"
-              [attr.aria-label]="'board.color.' + color | translate"
-              (click)="colorChange.emit(color)"
-            ></button>
-          }
-        </div>
+        <ui-board-color-picker
+          labelKey="board.elementColor"
+          [compact]="true"
+          [value]="selectedColor()"
+          (valueChange)="colorChange.emit($event)"
+        />
       </div>
       <div class="palette-section label-creator">
         <span>{{ 'board.annotation' | translate }}</span>
@@ -84,7 +80,7 @@ import { BoardTool } from './models/board-tool';
               (dragstart)="startStickerDrag($event, motif)"
               (click)="addSticker.emit(motif)"
             >
-              <span class="sticker-mini" [class]="'sticker-mini ' + selectedColor()">
+              <span class="sticker-mini" [style.--decor-color]="colorCssValue(selectedColor())">
                 {{ stickerGlyph(motif) }}
               </span>
             </button>
@@ -110,7 +106,10 @@ export class BoardPaletteComponent {
   readonly labelTextChange = output<string>();
   readonly addLabel = output<void>();
   readonly addSticker = output<StickerMotif>();
-  readonly colorVariants: BoardColorVariant[] = ['accent', 'sage', 'clay', 'ink', 'amber'];
+
+  colorCssValue(color: string): string {
+    return boardColorCssValue(color);
+  }
 
   startStickerDrag(event: DragEvent, motif: StickerMotif): void {
     event.dataTransfer?.setData('application/x-stoasis-sticker', motif);

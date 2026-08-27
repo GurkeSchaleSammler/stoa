@@ -1,3 +1,4 @@
+import { Directive } from '@angular/core';
 import { BOARD_HEIGHT_CLIPS } from '../data/models/board-height-clips';
 import { BOARD_WIDTH_CLIPS } from '../data/models/board-width-clips';
 import { CLIP_SIZE_PX } from '../data/models/clip-size-px';
@@ -12,17 +13,19 @@ export abstract class BoardCanvasZoneInteractions extends BoardCanvasConnectorIn
   }
 
   startBoardPointer(event: PointerEvent): void {
-    if (!this.canEdit() || this.activeTool() !== 'zone' || event.target !== event.currentTarget)
+    if (event.target === event.currentTarget) this.selectedConnectorId.set(null);
+    if (!this.canEdit() || this.activeTool() !== 'zone' || event.target !== event.currentTarget) {
       return;
+    }
     const board = event.currentTarget as HTMLElement;
     const rect = board.getBoundingClientRect();
     const x = this.clamp(
-      Math.floor((event.clientX - rect.left) / CLIP_SIZE_PX),
+      Math.floor(this.boardDelta(event.clientX - rect.left) / CLIP_SIZE_PX),
       0,
       BOARD_WIDTH_CLIPS - 2,
     );
     const y = this.clamp(
-      Math.floor((event.clientY - rect.top) / CLIP_SIZE_PX),
+      Math.floor(this.boardDelta(event.clientY - rect.top) / CLIP_SIZE_PX),
       0,
       BOARD_HEIGHT_CLIPS - 2,
     );
@@ -71,8 +74,8 @@ export abstract class BoardCanvasZoneInteractions extends BoardCanvasConnectorIn
     const state = this.zonePointer();
     if (!state || state.pointerId !== event.pointerId) return;
     event.preventDefault();
-    const deltaX = Math.round((event.clientX - state.startClientX) / CLIP_SIZE_PX);
-    const deltaY = Math.round((event.clientY - state.startClientY) / CLIP_SIZE_PX);
+    const deltaX = Math.round(this.boardDelta(event.clientX - state.startClientX) / CLIP_SIZE_PX);
+    const deltaY = Math.round(this.boardDelta(event.clientY - state.startClientY) / CLIP_SIZE_PX);
     if (state.mode === 'draw') {
       const currentX = this.clamp(state.startX + deltaX, 0, BOARD_WIDTH_CLIPS - 1);
       const currentY = this.clamp(state.startY + deltaY, 0, BOARD_HEIGHT_CLIPS - 1);
@@ -205,12 +208,14 @@ export abstract class BoardCanvasZoneInteractions extends BoardCanvasConnectorIn
     this.labelPointer.set({
       ...state,
       x: this.clamp(
-        state.originX + Math.round((event.clientX - state.startClientX) / CLIP_SIZE_PX),
+        state.originX +
+          Math.round(this.boardDelta(event.clientX - state.startClientX) / CLIP_SIZE_PX),
         0,
         BOARD_WIDTH_CLIPS - label.widthClips,
       ),
       y: this.clamp(
-        state.originY + Math.round((event.clientY - state.startClientY) / CLIP_SIZE_PX),
+        state.originY +
+          Math.round(this.boardDelta(event.clientY - state.startClientY) / CLIP_SIZE_PX),
         0,
         BOARD_HEIGHT_CLIPS - 2,
       ),
@@ -237,4 +242,3 @@ export abstract class BoardCanvasZoneInteractions extends BoardCanvasConnectorIn
     return state?.labelId === label.id ? state : label;
   }
 }
-import { Directive } from '@angular/core';

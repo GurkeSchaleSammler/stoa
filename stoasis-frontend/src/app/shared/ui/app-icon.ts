@@ -80,6 +80,14 @@ import { AppIconName } from '../models/app-icon-name';
           <rect x="3" y="5" width="18" height="14" rx="2" />
           <path d="m3 7 9 6 9-6" />
         }
+        @case ('maximize') {
+          <path
+            d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"
+          />
+        }
+        @case ('minus') {
+          <path d="M5 12h14" />
+        }
         @case ('monitor') {
           <rect x="3" y="4" width="18" height="13" rx="2" />
           <path d="M8 21h8M12 17v4" />

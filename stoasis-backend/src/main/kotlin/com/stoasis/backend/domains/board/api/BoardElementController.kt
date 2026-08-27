@@ -57,6 +57,13 @@ class BoardElementController(
     fun createConnector(@PathVariable collectionId: String, @RequestBody request: CreateConnectorRequest) =
         elements.createConnector(collectionId, currentUser.id(), request)
 
+    @PatchMapping("/connectors/{connectorId}")
+    fun updateConnector(
+        @PathVariable collectionId: String,
+        @PathVariable connectorId: String,
+        @RequestBody request: UpdateConnectorRequest,
+    ) = elements.updateConnector(collectionId, connectorId, currentUser.id(), request)
+
     @DeleteMapping("/connectors/{connectorId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteConnector(@PathVariable collectionId: String, @PathVariable connectorId: String) =

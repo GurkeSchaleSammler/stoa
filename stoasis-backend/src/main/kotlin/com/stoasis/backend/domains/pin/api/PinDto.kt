@@ -12,6 +12,7 @@ data class PinDto(
     val tags: Set<String>,
     val comments: List<PinCommentDto>,
     val createdAt: Instant,
+    val color: String?,
     val type: PinType,
     val data: PinData,
     val grid: GridBlockDto,

@@ -5,6 +5,7 @@ import { NotePinData } from '../../../../shared/models/note-pin-data';
 
 export interface UpdatePinRequest {
   data?: Partial<LinkPinData | NotePinData | PhotoPinData>;
+  color?: string | null;
   tags?: string[];
   sortOrder?: number;
   grid?: UpdateGridBlockRequest;

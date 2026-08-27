@@ -2,6 +2,7 @@ package com.stoasis.backend.domains.board.application
 
 import com.stoasis.backend.domains.board.api.ConnectorThreadDto
 import com.stoasis.backend.domains.board.api.CreateConnectorRequest
+import com.stoasis.backend.domains.board.api.UpdateConnectorRequest
 import com.stoasis.backend.domains.board.data.BoardConnectorEntity
 import com.stoasis.backend.domains.board.data.BoardConnectorRepository
 import com.stoasis.backend.domains.board.utils.badRequest
@@ -44,6 +45,21 @@ class BoardConnectorService(
                 colorVariant = validBoardColor(request.colorVariant),
             ),
         )
+        touchCollection(collection)
+        return connector.toDto()
+    }
+
+    @Transactional
+    fun updateConnector(
+        collectionId: String,
+        connectorId: String,
+        userId: String,
+        request: UpdateConnectorRequest,
+    ): ConnectorThreadDto {
+        val collection = support.editableCollection(collectionId, userId)
+        val connector = connectors.findByIdAndCollectionId(connectorId, collectionId)
+            ?: throw ApiException(HttpStatus.NOT_FOUND, "Verbindung nicht gefunden.")
+        connector.colorVariant = validBoardColor(request.colorVariant)
         touchCollection(collection)
         return connector.toDto()
     }

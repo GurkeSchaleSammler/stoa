@@ -1,1 +1,3 @@
-export type BoardColorVariant = 'accent' | 'sage' | 'clay' | 'ink' | 'amber';
+import { BoardColor } from './board-color';
+
+export type BoardColorVariant = BoardColor;

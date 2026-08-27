@@ -1,10 +1,10 @@
 package com.stoasis.backend.domains.board.utils
 
 import com.stoasis.backend.domains.collection.data.CollectionEntity
+import com.stoasis.backend.shared.utils.normalizeUiColor
 import java.time.Instant
 import java.util.UUID
 
-private val colors = setOf("accent", "sage", "clay", "ink", "amber")
 private val stickerMotifs = setOf(
     "circle",
     "triangle",
@@ -21,7 +21,7 @@ private val stickerMotifs = setOf(
     "camera",
 )
 
-fun validBoardColor(value: String): String = value.takeIf(colors::contains)
+fun validBoardColor(value: String): String = normalizeUiColor(value)
     ?: badRequest("Unbekannte Farbvariante.")
 
 fun validStickerMotif(value: String): String = value.takeIf(stickerMotifs::contains)

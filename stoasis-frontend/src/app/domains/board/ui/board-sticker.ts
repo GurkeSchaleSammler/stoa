@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
+import { boardColorCssValue } from '../data/models/board-color';
 import { StickerElement } from '../data/models/sticker-element';
 import { BoardStickerIconComponent } from './board-sticker-icon';
 import { StickerPointerState } from './models/sticker-pointer-state';
@@ -12,8 +13,8 @@ import { StickerPointerState } from './models/sticker-pointer-state';
   template: `
     <div
       class="board-sticker"
-      [class]="'board-sticker ' + sticker().colorVariant"
       [class.selected]="selected()"
+      [style.--decor-color]="colorCssValue(value().colorVariant)"
       [style.left.px]="value().x"
       [style.top.px]="value().y"
       [style.width.px]="value().widthClips * clipSizePx()"
@@ -92,4 +93,8 @@ export class BoardStickerComponent {
   readonly select = output<void>();
   readonly layerChange = output<'back' | 'front'>();
   readonly delete = output<void>();
+
+  colorCssValue(color: string): string {
+    return boardColorCssValue(color);
+  }
 }

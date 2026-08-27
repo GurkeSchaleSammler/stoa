@@ -1,14 +1,30 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
 import { Pin } from '../../../shared/models/pin';
 import { PinEditValue } from '../data/models/pin-edit-value';
+import { BoardColorPickerComponent } from './board-color-picker';
+import { ImageFullViewComponent } from './image-full-view';
+import { ImageFullView } from './models/image-full-view';
 
 @Component({
   selector: 'ui-pin-detail',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, AppIconComponent],
+  imports: [
+    FormsModule,
+    TranslatePipe,
+    AppIconComponent,
+    BoardColorPickerComponent,
+    ImageFullViewComponent,
+  ],
   template: `
     @if (pin(); as item) {
       <div class="detail-backdrop" (click)="onClose.emit()">
@@ -68,6 +84,13 @@ import { PinEditValue } from '../data/models/pin-edit-value';
                   /></label>
                 }
               }
+              <ui-board-color-picker
+                labelKey="pin.pinColor"
+                [value]="editValue().pinColor"
+                [allowClear]="true"
+                (valueChange)="onDraftChange.emit({ pinColor: $event })"
+                (clear)="onDraftChange.emit({ pinColor: null })"
+              />
               <label class="dialog-field"
                 ><span>{{ 'common.tags' | translate }}</span
                 ><input
@@ -85,6 +108,25 @@ import { PinEditValue } from '../data/models/pin-edit-value';
               @switch (item.type) {
                 @case ('link') {
                   <p class="eyebrow">{{ item.data.siteName || ('pin.webLink' | translate) }}</p>
+                  @if (item.data.imageUrl) {
+                    <button
+                      type="button"
+                      class="detail-image-preview"
+                      [attr.aria-label]="'pin.openFullView' | translate"
+                      (click)="openPinImage(item)"
+                    >
+                      <img
+                        [src]="item.data.imageUrl"
+                        [alt]="
+                          item.data.title || item.data.siteName || ('pin.imagePreview' | translate)
+                        "
+                        loading="lazy"
+                        decoding="async"
+                        referrerpolicy="no-referrer"
+                      />
+                      <span class="detail-image-action"><ui-app-icon name="maximize" /></span>
+                    </button>
+                  }
                   <h1 id="pin-detail-title">{{ item.data.title }}</h1>
                   <p class="detail-lead">{{ item.data.description }}</p>
                   <a class="visit-link" [href]="item.data.url" target="_blank" rel="noopener"
@@ -96,7 +138,24 @@ import { PinEditValue } from '../data/models/pin-edit-value';
                   <h1 id="pin-detail-title">{{ item.data.content }}</h1>
                 }
                 @case ('photo') {
-                  <div class="detail-photo"><ui-app-icon name="image" /></div>
+                  @if (item.data.imageUrl) {
+                    <button
+                      type="button"
+                      class="detail-photo has-image"
+                      [attr.aria-label]="'pin.openFullView' | translate"
+                      (click)="openPinImage(item)"
+                    >
+                      <img
+                        [src]="item.data.imageUrl"
+                        [alt]="item.data.caption || ('pin.photoPin' | translate)"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span class="detail-image-action"><ui-app-icon name="maximize" /></span>
+                    </button>
+                  } @else {
+                    <div class="detail-photo"><ui-app-icon name="image" /></div>
+                  }
                   <h1 id="pin-detail-title">
                     {{ item.data.caption || ('pin.photo' | translate) }}
                   </h1>
@@ -154,8 +213,11 @@ import { PinEditValue } from '../data/models/pin-edit-value';
         </aside>
       </div>
     }
+    @if (imageFullView(); as image) {
+      <ui-image-full-view [image]="image" (close)="closeImageFullView()" />
+    }
   `,
-  styleUrl: './board.scss',
+  styleUrls: ['./board.scss', './pin-detail.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PinDetailComponent {
@@ -170,7 +232,31 @@ export class PinDetailComponent {
   readonly onDelete = output<void>();
   readonly onCommentSubmit = output<string>();
   readonly onClose = output<void>();
+  readonly imageFullView = signal<ImageFullView | null>(null);
   commentDraft = '';
+
+  @HostListener('document:keydown.escape')
+  closeImageFullViewFromKeyboard(): void {
+    if (this.imageFullView()) this.closeImageFullView();
+  }
+
+  openPinImage(pin: Pin): void {
+    if (pin.type === 'photo' && pin.data.imageUrl) {
+      this.imageFullView.set({ src: pin.data.imageUrl, caption: pin.data.caption });
+      return;
+    }
+    if (pin.type === 'link' && pin.data.imageUrl) {
+      this.imageFullView.set({
+        src: pin.data.imageUrl,
+        caption: pin.data.title || pin.data.siteName || pin.data.url,
+      });
+    }
+  }
+
+  closeImageFullView(): void {
+    this.imageFullView.set(null);
+  }
+
   submitComment(): void {
     this.onCommentSubmit.emit(this.commentDraft);
     this.commentDraft = '';

@@ -28,6 +28,7 @@ import com.stoasis.backend.domains.pin.utils.pinOverlapAllowed
 import com.stoasis.backend.domains.skill.data.SkillDataEntity
 import com.stoasis.backend.domains.skill.data.SkillDataRepository
 import com.stoasis.backend.domains.skill.model.SkillLevel
+import com.stoasis.backend.shared.utils.normalizeUiColor
 import com.stoasis.backend.shared.web.ApiException
 import java.time.Instant
 import java.util.UUID
@@ -79,6 +80,7 @@ class PinService(
             type = request.type,
             createdBy = users.getReferenceById(userId),
             sortOrder = pins.countByCollectionId(collectionId).toInt() + 1,
+            color = cleanPinColor(request.color),
             tags = request.tags.map { it.trim().lowercase() }.filter { it.isNotBlank() }.toMutableSet(),
         )
         if (request.type != PinType.skill) applyData(pin, request.data)
@@ -102,6 +104,7 @@ class PinService(
         request.data?.let {
             if (pin.type == PinType.skill) applySkillData(pin.id, it) else applyData(pin, it)
         }
+        request.color?.let { pin.color = cleanPinColor(it) }
         request.tags?.let {
             pin.tags.clear()
             pin.tags.addAll(it.map(String::trim).map(String::lowercase).filter(String::isNotBlank))
@@ -180,6 +183,7 @@ class PinService(
             tags = pin.tags,
             comments = pin.comments.map(::toDto),
             createdAt = pin.createdAt,
+            color = pin.color,
             type = pin.type,
             data = data,
             grid = GridBlockDto(
@@ -287,6 +291,13 @@ class PinService(
             }
             PinType.skill -> applySkillData(pin.id, data)
         }
+    }
+
+    private fun cleanPinColor(value: String?): String? {
+        val trimmed = value?.trim()
+        if (trimmed.isNullOrBlank()) return null
+        return normalizeUiColor(trimmed)
+            ?: throw ApiException(HttpStatus.BAD_REQUEST, "Ungültiger Farbcode.")
     }
 
     private fun applySkillData(pinId: String, data: JsonNode) {

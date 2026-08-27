@@ -2,6 +2,7 @@ package com.stoasis.backend
 
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -72,20 +73,30 @@ class StoasisBackendApplicationTests {
         val pinResponse = mvc.post("/api/collections/$collectionId/pins") {
             this.session = session
             contentType = MediaType.APPLICATION_JSON
-            content = """{"type":"note","data":{"content":"Backend Test","color":"green"},"tags":["kotlin"]}"""
+            content = """{"type":"note","data":{"content":"Backend Test","color":"green"},"color":"#86A873","tags":["kotlin"]}"""
         }.andExpect {
             status { isCreated() }
             jsonPath("$.data.content", `is`("Backend Test"))
+            jsonPath("$.color", `is`("#86a873"))
         }.andReturn()
         val pinId = pinResponse.response.contentAsString.field("id")
 
         mvc.patch("/api/collections/$collectionId/pins/$pinId") {
             this.session = session
             contentType = MediaType.APPLICATION_JSON
-            content = """{"data":{"content":"Aktualisiert","color":"blue"}}"""
+            content = """{"data":{"content":"Aktualisiert","color":"blue"},"color":"amber"}"""
         }.andExpect {
             status { isOk() }
             jsonPath("$.data.content", `is`("Aktualisiert"))
+            jsonPath("$.color", `is`("amber"))
+        }
+        mvc.patch("/api/collections/$collectionId/pins/$pinId") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"color":""}"""
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.color", nullValue())
         }
         mvc.get("/api/search") {
             this.session = session
@@ -160,15 +171,25 @@ class StoasisBackendApplicationTests {
         val firstPinId = createNote(collectionId, session, "Quelle")
         val secondPinId = createNote(collectionId, session, "Ziel")
 
-        mvc.post("/api/collections/$collectionId/board-elements/connectors") {
+        val connectorId = mvc.post("/api/collections/$collectionId/board-elements/connectors") {
             this.session = session
             contentType = MediaType.APPLICATION_JSON
             content =
-                """{"sourcePinId":"$firstPinId","targetPinId":"$secondPinId","colorVariant":"accent"}"""
+                """{"sourcePinId":"$firstPinId","targetPinId":"$secondPinId","colorVariant":"#D94A4A"}"""
         }.andExpect {
             status { isCreated() }
             jsonPath("$.sourcePinId", `is`(firstPinId))
             jsonPath("$.targetPinId", `is`(secondPinId))
+            jsonPath("$.colorVariant", `is`("#d94a4a"))
+        }.andReturn().response.contentAsString.field("id")
+
+        mvc.patch("/api/collections/$collectionId/board-elements/connectors/$connectorId") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"colorVariant":"86a873"}"""
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.colorVariant", `is`("#86a873"))
         }
 
         val stackId = mvc.post("/api/collections/$collectionId/board-elements/stacks") {

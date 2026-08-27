@@ -7,5 +7,6 @@ import { SkillPinData } from '../../../../shared/models/skill-pin-data';
 export interface CreatePinRequest {
   type: PinType;
   data: LinkPinData | NotePinData | PhotoPinData | SkillPinData | { url: string };
+  color?: string | null;
   tags?: string[];
 }

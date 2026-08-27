@@ -20,5 +20,5 @@ class BoardConnectorEntity(
     var sourcePin: PinEntity? = null,
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "target_pin_id", nullable = false)
     var targetPin: PinEntity? = null,
-    @Column(name = "color_variant", nullable = false) var colorVariant: String = "accent",
+    @Column(name = "color_variant", nullable = false, length = 32) var colorVariant: String = "accent",
 )

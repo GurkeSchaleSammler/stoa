@@ -49,6 +49,7 @@ import { BoardViewMode } from '../../../shared/models/board-view-mode';
         )
       "
       (onDeleteConnector)="pins.connectorActions.delete(collectionId(), $event)"
+      (onUpdateConnector)="pins.connectorActions.update(collectionId(), $event.id, $event.color)"
       (onCreateZone)="pins.decorationActions.createZone(collectionId(), $event)"
       (onUpdateZone)="pins.decorationActions.updateZone(collectionId(), $event.id, $event.update)"
       (onDeleteZone)="pins.decorationActions.deleteZone(collectionId(), $event)"

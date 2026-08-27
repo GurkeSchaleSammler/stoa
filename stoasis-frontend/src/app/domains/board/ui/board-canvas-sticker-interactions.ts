@@ -1,3 +1,4 @@
+import { Directive } from '@angular/core';
 import { CLIP_SIZE_PX } from '../data/models/clip-size-px';
 import { StickerElement } from '../data/models/sticker-element';
 import { StickerMotif } from '../data/models/sticker-motif';
@@ -33,12 +34,12 @@ export abstract class BoardCanvasStickerInteractions extends BoardCanvasZoneInte
     this.addSticker(
       motif,
       this.clamp(
-        event.clientX - rect.left - CLIP_SIZE_PX * 2,
+        this.boardDelta(event.clientX - rect.left) - CLIP_SIZE_PX * 2,
         0,
         this.boardWidthPx - CLIP_SIZE_PX * 4,
       ),
       this.clamp(
-        event.clientY - rect.top - CLIP_SIZE_PX * 2,
+        this.boardDelta(event.clientY - rect.top) - CLIP_SIZE_PX * 2,
         0,
         this.boardHeightPx - CLIP_SIZE_PX * 4,
       ),
@@ -97,8 +98,8 @@ export abstract class BoardCanvasStickerInteractions extends BoardCanvasZoneInte
     const state = this.stickerPointer();
     if (!state || state.pointerId !== event.pointerId) return;
     event.preventDefault();
-    const deltaX = event.clientX - state.startClientX;
-    const deltaY = event.clientY - state.startClientY;
+    const deltaX = this.boardDelta(event.clientX - state.startClientX);
+    const deltaY = this.boardDelta(event.clientY - state.startClientY);
     let current = state.current;
     if (state.mode === 'move') {
       current = {
@@ -162,4 +163,3 @@ export abstract class BoardCanvasStickerInteractions extends BoardCanvasZoneInte
     });
   }
 }
-import { Directive } from '@angular/core';

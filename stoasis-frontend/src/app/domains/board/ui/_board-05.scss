@@ -81,22 +81,6 @@
   opacity: 0.45;
   cursor: default;
 }
-.palette-colors {
-  display: flex;
-  gap: 8px;
-}
-.color-dot {
-  width: 30px;
-  height: 30px;
-  border: 4px solid transparent;
-  border-radius: 999px;
-  background: var(--decor-color);
-  background-clip: padding-box;
-  cursor: pointer;
-}
-.color-dot.active {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--decor-color) 25%, transparent);
-}
 .label-creator input,
 .zone-label-input {
   min-height: 40px;
@@ -131,27 +115,6 @@
   color: var(--muted);
   font-size: 0.66rem;
   line-height: 1.5;
-}
-
-.accent {
-  --decor-color: var(--accent);
-  --decor-soft: color-mix(in srgb, var(--accent) 13%, transparent);
-}
-.sage {
-  --decor-color: var(--sage);
-  --decor-soft: color-mix(in srgb, var(--sage) 13%, transparent);
-}
-.clay {
-  --decor-color: color-mix(in srgb, var(--amber) 72%, var(--danger));
-  --decor-soft: color-mix(in srgb, var(--amber) 13%, transparent);
-}
-.ink {
-  --decor-color: var(--text);
-  --decor-soft: color-mix(in srgb, var(--text) 9%, transparent);
-}
-.amber {
-  --decor-color: var(--amber);
-  --decor-soft: color-mix(in srgb, var(--amber) 13%, transparent);
 }
 
 .clip-board.drawing-zone {

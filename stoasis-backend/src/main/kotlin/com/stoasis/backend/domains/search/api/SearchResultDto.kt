@@ -13,6 +13,7 @@ data class SearchResultDto(
     val tags: Set<String>,
     val comments: List<com.stoasis.backend.domains.pin.api.PinCommentDto>,
     val createdAt: java.time.Instant,
+    val color: String?,
     val type: com.stoasis.backend.domains.collection.model.PinType,
     val data: PinData,
 )
@@ -27,6 +28,7 @@ fun PinDto.toSearchResult(collectionName: String) = SearchResultDto(
     tags,
     comments,
     createdAt,
+    color,
     type,
     data,
 )

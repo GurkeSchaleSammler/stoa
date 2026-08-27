@@ -18,8 +18,8 @@ export abstract class BoardCanvasConnectorInteractions extends BoardCanvasCardIn
     if (!card || !board) return;
     const cardRect = card.getBoundingClientRect();
     const boardRect = board.getBoundingClientRect();
-    const startX = cardRect.right - boardRect.left;
-    const startY = cardRect.top + cardRect.height / 2 - boardRect.top;
+    const startX = this.boardDelta(cardRect.right - boardRect.left);
+    const startY = this.boardDelta(cardRect.top + cardRect.height / 2 - boardRect.top);
     handle.setPointerCapture?.(event.pointerId);
     this.connectorDraft.set({
       pointerId: event.pointerId,
@@ -40,8 +40,8 @@ export abstract class BoardCanvasConnectorInteractions extends BoardCanvasCardIn
     event.stopPropagation();
     this.connectorDraft.set({
       ...draft,
-      endX: event.clientX - draft.boardLeft,
-      endY: event.clientY - draft.boardTop,
+      endX: this.boardDelta(event.clientX - draft.boardLeft),
+      endY: this.boardDelta(event.clientY - draft.boardTop),
     });
   }
 
@@ -74,6 +74,28 @@ export abstract class BoardCanvasConnectorInteractions extends BoardCanvasCardIn
     const source = this.pinAnchor(connector.sourcePinId);
     const target = this.pinAnchor(connector.targetPinId);
     return this.curvePath(source.x, source.y, target.x, target.y);
+  }
+
+  selectConnector(event: Event, connector: ConnectorThread): void {
+    if (!this.canEdit()) return;
+    event.stopPropagation();
+    this.selectedConnectorId.set(connector.id);
+  }
+
+  connectorEditorLeft(connector: ConnectorThread): number {
+    const source = this.pinAnchor(connector.sourcePinId);
+    const target = this.pinAnchor(connector.targetPinId);
+    return this.clamp((source.x + target.x) / 2 - 125, 0, this.boardWidthPx - 250);
+  }
+
+  connectorEditorTop(connector: ConnectorThread): number {
+    const source = this.pinAnchor(connector.sourcePinId);
+    const target = this.pinAnchor(connector.targetPinId);
+    return this.clamp((source.y + target.y) / 2 - 74, 0, this.boardHeightPx - 128);
+  }
+
+  changeConnectorColor(connectorId: string, color: string): void {
+    this.onUpdateConnector.emit({ id: connectorId, color });
   }
 
   draftConnectorPath(draft: ConnectorDraft): string {

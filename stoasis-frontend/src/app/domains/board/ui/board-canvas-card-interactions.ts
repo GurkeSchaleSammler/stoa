@@ -75,9 +75,11 @@ export abstract class BoardCanvasCardInteractions extends BoardCanvasLayout {
   moveDrag(event: PointerEvent): void {
     const active = this.drag();
     if (!active || active.pointerId !== event.pointerId) return;
-    const deltaX = event.clientX - active.startClientX;
-    const deltaY = event.clientY - active.startClientY;
-    const moved = active.moved || Math.hypot(deltaX, deltaY) >= 8;
+    const screenDeltaX = event.clientX - active.startClientX;
+    const screenDeltaY = event.clientY - active.startClientY;
+    const deltaX = this.boardDelta(screenDeltaX);
+    const deltaY = this.boardDelta(screenDeltaY);
+    const moved = active.moved || Math.hypot(screenDeltaX, screenDeltaY) >= 8;
     if (!moved) return;
     event.preventDefault();
     const next = {

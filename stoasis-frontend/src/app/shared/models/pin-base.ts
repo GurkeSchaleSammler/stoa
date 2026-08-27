@@ -10,5 +10,6 @@ export interface PinBase {
   tags: string[];
   comments: PinComment[];
   createdAt: string;
+  color?: string | null;
   grid: GridBlock;
 }

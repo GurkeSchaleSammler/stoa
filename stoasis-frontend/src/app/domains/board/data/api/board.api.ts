@@ -132,6 +132,17 @@ export class BoardApi {
     );
   }
 
+  updateConnector(
+    collectionId: string,
+    connectorId: string,
+    colorVariant: BoardColorVariant,
+  ): Observable<ConnectorThread> {
+    return this.http.patch<ConnectorThread>(
+      `${API_URL}/collections/${collectionId}/board-elements/connectors/${connectorId}`,
+      { colorVariant },
+    );
+  }
+
   deleteConnector(collectionId: string, connectorId: string): Observable<void> {
     return this.http.delete<void>(
       `${API_URL}/collections/${collectionId}/board-elements/connectors/${connectorId}`,

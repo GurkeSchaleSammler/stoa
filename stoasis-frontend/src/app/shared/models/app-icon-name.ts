@@ -16,6 +16,8 @@ export type AppIconName =
   | 'list'
   | 'logout'
   | 'mail'
+  | 'maximize'
+  | 'minus'
   | 'monitor'
   | 'moon'
   | 'note'

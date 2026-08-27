@@ -24,6 +24,7 @@ const emptyDraft: AddPinDraft = {
   url: '',
   content: '',
   color: 'yellow',
+  pinColor: null,
   caption: '',
   tags: '',
 };
@@ -115,11 +116,16 @@ export class AddPinDialogHandlerComponent {
         readingTimeMin: null,
         parseStatus: 'failed',
       };
-      return { type: 'link', data: { ...data, url: draft.url.trim() }, tags };
+      return {
+        type: 'link',
+        data: { ...data, url: draft.url.trim() },
+        color: draft.pinColor,
+        tags,
+      };
     }
     if (draft.type === 'note') {
       const data: NotePinData = { content: draft.content.trim(), color: draft.color };
-      return { type: 'note', data, tags };
+      return { type: 'note', data, color: draft.pinColor, tags };
     }
     if (draft.type === 'photo' && this.upload.photo()) {
       const photo = this.upload.photo()!;
@@ -130,7 +136,7 @@ export class AddPinDialogHandlerComponent {
         height: photo.height,
         imageUrl: photo.imageUrl,
       };
-      return { type: 'photo', data, tags };
+      return { type: 'photo', data, color: draft.pinColor, tags };
     }
     return null;
   }

@@ -6,6 +6,7 @@ export interface AddPinDraft {
   url: string;
   content: string;
   color: NotePinData['color'];
+  pinColor: string | null;
   caption: string;
   tags: string;
 }

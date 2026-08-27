@@ -7,11 +7,12 @@ import { NotePinData } from '../../../shared/models/note-pin-data';
 import { PinType } from '../../../shared/models/pin-type';
 import { AddPinDraft } from '../data/models/add-pin-draft';
 import { LinkPreview } from '../data/models/link-preview';
+import { BoardColorPickerComponent } from './board-color-picker';
 
 @Component({
   selector: 'ui-add-pin-dialog',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, AppIconComponent],
+  imports: [FormsModule, TranslatePipe, AppIconComponent, BoardColorPickerComponent],
   template: `
     @if (isOpen()) {
       <div class="dialog-backdrop" (click)="onCancel.emit()">
@@ -136,6 +137,13 @@ import { LinkPreview } from '../data/models/link-preview';
             }
           }
           @if (selectedType()) {
+            <ui-board-color-picker
+              labelKey="pin.pinColor"
+              [value]="draft().pinColor"
+              [allowClear]="true"
+              (valueChange)="onDraftChange.emit({ pinColor: $event })"
+              (clear)="onDraftChange.emit({ pinColor: null })"
+            />
             <label class="dialog-field"
               ><span
                 >{{ 'common.tags' | translate }}

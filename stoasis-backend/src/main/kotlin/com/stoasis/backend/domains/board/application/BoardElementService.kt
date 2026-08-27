@@ -13,6 +13,7 @@ import com.stoasis.backend.domains.board.api.SoftZoneDto
 import com.stoasis.backend.domains.board.api.StackBlockDto
 import com.stoasis.backend.domains.board.api.StickerElementDto
 import com.stoasis.backend.domains.board.api.UpdateFloatingLabelRequest
+import com.stoasis.backend.domains.board.api.UpdateConnectorRequest
 import com.stoasis.backend.domains.board.api.UpdateSoftZoneRequest
 import com.stoasis.backend.domains.board.api.UpdateStackRequest
 import com.stoasis.backend.domains.board.api.UpdateStickerRequest
@@ -59,6 +60,13 @@ class BoardElementService(
         userId: String,
         request: CreateConnectorRequest,
     ): ConnectorThreadDto = connectors.createConnector(collectionId, userId, request)
+
+    fun updateConnector(
+        collectionId: String,
+        connectorId: String,
+        userId: String,
+        request: UpdateConnectorRequest,
+    ): ConnectorThreadDto = connectors.updateConnector(collectionId, connectorId, userId, request)
 
     fun deleteConnector(collectionId: String, connectorId: String, userId: String) =
         connectors.deleteConnector(collectionId, connectorId, userId)

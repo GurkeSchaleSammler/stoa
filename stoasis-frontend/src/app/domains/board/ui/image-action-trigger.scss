@@ -1,0 +1,33 @@
+.image-fullview-trigger {
+  position: absolute;
+  z-index: 2;
+  right: 9px;
+  bottom: 9px;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--border) 62%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+  cursor: zoom-in;
+  backdrop-filter: blur(8px);
+  transition:
+    transform 0.18s var(--ease-soft),
+    background 0.18s var(--ease-soft),
+    color 0.18s var(--ease-soft);
+}
+
+.image-fullview-trigger:hover,
+.image-fullview-trigger:focus-visible {
+  transform: translateY(-1px);
+  background: var(--surface-raised);
+  color: var(--accent-strong);
+}
+
+.clip-card.can-move .image-fullview-trigger {
+  cursor: zoom-in;
+}

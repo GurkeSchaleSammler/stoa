@@ -7,6 +7,8 @@ import { BoardPaletteComponent } from './board-palette';
 import { BoardStatusComponent } from './board-status';
 import { BoardStickerComponent } from './board-sticker';
 import { BoardToolbarComponent } from './board-toolbar';
+import { BoardColorPickerComponent } from './board-color-picker';
+import { ImageFullViewComponent } from './image-full-view';
 import { PinCardComponent } from './pin-card';
 import { PinEditButtonComponent } from './pin-edit-button';
 
@@ -20,12 +22,14 @@ import { PinEditButtonComponent } from './pin-edit-button';
     BoardStatusComponent,
     BoardStickerComponent,
     BoardToolbarComponent,
+    BoardColorPickerComponent,
+    ImageFullViewComponent,
     PinCardComponent,
     PinEditButtonComponent,
     TranslatePipe,
   ],
   templateUrl: './board-canvas.html',
-  styleUrl: './board.scss',
+  styleUrls: ['./board.scss', './board-canvas-extras.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

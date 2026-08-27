@@ -46,11 +46,13 @@ export class PinDetailHandlerComponent {
   readonly editValue = computed<PinEditValue>(() => {
     const pin = this.pin();
     const current = this.draft();
+    const hasPinColorDraft = Object.prototype.hasOwnProperty.call(current, 'pinColor');
     return {
       title: current.title ?? (pin.type === 'link' ? pin.data.title : ''),
       description: current.description ?? (pin.type === 'link' ? (pin.data.description ?? '') : ''),
       content: current.content ?? (pin.type === 'note' ? pin.data.content : ''),
       color: current.color ?? (pin.type === 'note' ? pin.data.color : 'yellow'),
+      pinColor: hasPinColorDraft ? (current.pinColor ?? null) : (pin.color ?? null),
       caption: current.caption ?? (pin.type === 'photo' ? (pin.data.caption ?? '') : ''),
       tags: current.tags ?? pin.tags.join(', '),
     };
@@ -67,6 +69,7 @@ export class PinDetailHandlerComponent {
     const pin = this.pin();
     const values = this.editValue();
     const request: UpdatePinRequest = {
+      color: values.pinColor ?? '',
       tags: values.tags
         .split(',')
         .map((tag) => tag.trim().toLocaleLowerCase('de'))

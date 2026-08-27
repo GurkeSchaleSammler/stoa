@@ -30,9 +30,11 @@ export abstract class BoardCanvasStackInteractions extends BoardCanvasStickerInt
   moveStackPointer(event: PointerEvent): void {
     const state = this.stackDrag();
     if (!state || state.pointerId !== event.pointerId) return;
-    const deltaX = event.clientX - state.startClientX;
-    const deltaY = event.clientY - state.startClientY;
-    const moved = state.moved || Math.hypot(deltaX, deltaY) >= 4;
+    const screenDeltaX = event.clientX - state.startClientX;
+    const screenDeltaY = event.clientY - state.startClientY;
+    const deltaX = this.boardDelta(screenDeltaX);
+    const deltaY = this.boardDelta(screenDeltaY);
+    const moved = state.moved || Math.hypot(screenDeltaX, screenDeltaY) >= 4;
     if (!moved) return;
     event.preventDefault();
     const next = {
@@ -103,13 +105,15 @@ export abstract class BoardCanvasStackInteractions extends BoardCanvasStickerInt
     if (!state || state.pointerId !== event.pointerId) return;
     event.preventDefault();
     event.stopPropagation();
-    const deltaX = event.clientX - state.startClientX;
-    const deltaY = event.clientY - state.startClientY;
+    const screenDeltaX = event.clientX - state.startClientX;
+    const screenDeltaY = event.clientY - state.startClientY;
+    const deltaX = this.boardDelta(screenDeltaX);
+    const deltaY = this.boardDelta(screenDeltaY);
     this.stackChildDrag.set({
       ...state,
       deltaX,
       deltaY,
-      moved: state.moved || Math.hypot(deltaX, deltaY) >= 6,
+      moved: state.moved || Math.hypot(screenDeltaX, screenDeltaY) >= 6,
     });
   }
 

@@ -22,5 +22,5 @@ class StickerEntity(
     @Column(nullable = false) var rotation: Double = 0.0,
     @Column(nullable = false) var layer: Int = 0,
     @Column(nullable = false) var motif: String = "star",
-    @Column(name = "color_variant", nullable = false) var colorVariant: String = "sage",
+    @Column(name = "color_variant", nullable = false, length = 32) var colorVariant: String = "sage",
 )

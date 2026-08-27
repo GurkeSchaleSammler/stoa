@@ -35,6 +35,24 @@ export class ConnectorActionsService {
       .subscribe();
   }
 
+  update(collectionId: string, connectorId: string, color: BoardColorVariant): void {
+    this.api
+      .updateConnector(collectionId, connectorId, color)
+      .pipe(
+        tap((updated) =>
+          this.store.update((elements) => ({
+            ...elements,
+            connectors: elements.connectors.map((connector) =>
+              connector.id === updated.id ? updated : connector,
+            ),
+          })),
+        ),
+        catchError((error) => this.store.handleError(error)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
   delete(collectionId: string, connectorId: string): void {
     this.api
       .deleteConnector(collectionId, connectorId)

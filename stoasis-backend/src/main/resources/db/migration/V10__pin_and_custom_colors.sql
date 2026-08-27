@@ -1,0 +1,1 @@
+ALTER TABLE pins ADD COLUMN pin_color VARCHAR(32);

@@ -48,7 +48,7 @@
   opacity: 0.58;
 }
 .connector-thread.draft {
-  stroke: var(--accent);
+  stroke: var(--decor-color, var(--accent));
   stroke-dasharray: 7 7;
   opacity: 0.55;
   pointer-events: none;

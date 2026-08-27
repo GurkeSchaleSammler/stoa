@@ -19,6 +19,6 @@ class SoftZoneEntity(
     @Column(name = "grid_y", nullable = false) var gridY: Int = 0,
     @Column(name = "width_clips", nullable = false) var widthClips: Int = 24,
     @Column(name = "height_clips", nullable = false) var heightClips: Int = 20,
-    @Column(name = "color_variant", nullable = false) var colorVariant: String = "sage",
+    @Column(name = "color_variant", nullable = false, length = 32) var colorVariant: String = "sage",
     var label: String? = null,
 )
