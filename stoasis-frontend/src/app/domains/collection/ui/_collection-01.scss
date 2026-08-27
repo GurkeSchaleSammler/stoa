@@ -20,26 +20,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 18px 14px;
+  padding: 22px 18px 14px;
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   color: var(--text);
-  font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
   font-weight: 700;
   text-decoration: none;
 }
 .brand span {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 31px;
+  height: 31px;
   border: 1px solid var(--border-strong);
-  border-radius: 9px;
-  background: #121411;
+  border-radius: var(--radius-control);
+  background: var(--accent);
   overflow: hidden;
 }
 .brand img {
@@ -53,7 +53,7 @@
   min-width: 36px;
   min-height: 36px;
   border: 0;
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--muted);
   font-size: 1.25rem;
@@ -71,19 +71,17 @@
   color: var(--muted);
 }
 .collection-tabs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
-  margin: 0 14px 12px;
-  padding: 3px;
-  border-radius: 10px;
-  background: var(--surface-sunken);
+  display: flex;
+  gap: 18px;
+  margin: 0 18px 14px;
+  padding: 0;
+  background: transparent;
 }
 .collection-tabs button,
 .segmented button {
-  min-height: 32px;
+  min-height: 30px;
   border: 0;
-  border-radius: 7px;
+  border-radius: 0;
   background: transparent;
   color: var(--muted);
   font: inherit;
@@ -92,21 +90,20 @@
 }
 .collection-tabs button.active,
 .segmented button.active {
-  background: var(--surface-raised);
+  box-shadow: inset 0 -2px 0 var(--accent);
   color: var(--text);
-  box-shadow: 0 1px 3px rgb(30 31 27 / 10%);
 }
 .sidebar-search {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0 14px 12px;
-  padding: 0 11px;
-  min-height: 38px;
+  margin: 0 18px 14px;
+  padding: 0 10px;
+  min-height: 36px;
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   color: var(--muted);
-  background: var(--surface-raised);
+  background: color-mix(in srgb, var(--surface-raised) 58%, transparent);
 }
 .sidebar-search input {
   width: 100%;
@@ -121,17 +118,17 @@
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding: 0 9px 12px;
+  padding: 0 10px 12px;
 }
 .collection-item {
   width: 100%;
   display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) auto;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 9px;
+  padding: 9px 8px;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--text);
   text-align: left;
@@ -139,20 +136,20 @@
 }
 .collection-item:hover,
 .collection-item.active {
-  background: var(--surface-raised);
+  background: color-mix(in srgb, var(--surface-raised) 56%, transparent);
 }
 .collection-item.active {
-  box-shadow: inset 3px 0 0 var(--accent);
+  box-shadow: inset 2px 0 0 var(--accent);
 }
 .collection-emoji {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   background: var(--surface-sunken);
-  font-size: 1.1rem;
+  font-size: 0.98rem;
 }
 .collection-copy {
   min-width: 0;
@@ -173,9 +170,9 @@
 }
 .visibility {
   padding: 2px 5px;
-  margin-right: 5px;
-  border-radius: 999px;
-  background: var(--accent-soft);
+  margin-right: 4px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent-soft) 74%, transparent);
   color: var(--accent-strong);
 }
 .avatar-stack {
@@ -200,10 +197,10 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  margin: 10px 14px 14px;
-  min-height: 42px;
+  margin: 10px 18px 16px;
+  min-height: 40px;
   border: 1px dashed var(--border-strong);
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--muted);
   font: inherit;
