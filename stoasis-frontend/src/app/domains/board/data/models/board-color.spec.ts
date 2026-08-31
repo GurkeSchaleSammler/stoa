@@ -1,13 +1,11 @@
-import {
-  boardColorCssValue,
-  boardColorNativeValue,
-  normalizeBoardColor,
-} from './board-color';
+import { boardColorCssValue, boardColorNativeValue, normalizeBoardColor } from './board-color';
 
 describe('board colors', () => {
   it('keeps preset colors as semantic values', () => {
     expect(normalizeBoardColor('sage')).toBe('sage');
     expect(boardColorCssValue('amber')).toBe('var(--amber)');
+    expect(normalizeBoardColor('black')).toBe('black');
+    expect(boardColorCssValue('white')).toBe('#ffffff');
   });
 
   it('normalizes custom hex colors with or without a hash', () => {

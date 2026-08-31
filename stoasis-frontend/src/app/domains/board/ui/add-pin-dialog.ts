@@ -3,9 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
 import { AppIconName } from '../../../shared/models/app-icon-name';
-import { NotePinData } from '../../../shared/models/note-pin-data';
 import { PinType } from '../../../shared/models/pin-type';
 import { AddPinDraft } from '../data/models/add-pin-draft';
+import { NOTE_BACKGROUND_PRESETS } from '../data/models/board-color';
 import { LinkPreview } from '../data/models/link-preview';
 import { BoardColorPickerComponent } from './board-color-picker';
 
@@ -98,19 +98,13 @@ import { BoardColorPickerComponent } from './board-color-picker';
                   (ngModelChange)="onDraftChange.emit({ content: $event })"
                 ></textarea>
               </label>
-              <div class="color-picker" [attr.aria-label]="'pin.noteColor' | translate">
-                @for (color of colors; track color) {
-                  <button
-                    type="button"
-                    [class]="color"
-                    [class.active]="draft().color === color"
-                    (click)="onDraftChange.emit({ color })"
-                    [attr.aria-label]="
-                      'pin.colorLabel' | translate: { color: 'pin.colors.' + color | translate }
-                    "
-                  ></button>
-                }
-              </div>
+              <ui-board-color-picker
+                labelKey="pin.backgroundColor"
+                [value]="draft().color"
+                [presetColors]="backgroundColors"
+                [allowCustom]="allowCustomColors()"
+                (valueChange)="onDraftChange.emit({ color: $event })"
+              />
             }
             @case ('photo') {
               <label class="file-drop"
@@ -141,6 +135,7 @@ import { BoardColorPickerComponent } from './board-color-picker';
               labelKey="pin.pinColor"
               [value]="draft().pinColor"
               [allowClear]="true"
+              [allowCustom]="allowCustomColors()"
               (valueChange)="onDraftChange.emit({ pinColor: $event })"
               (clear)="onDraftChange.emit({ pinColor: null })"
             />
@@ -185,6 +180,7 @@ export class AddPinDialogComponent {
   readonly uploadProgress = input(0);
   readonly uploadedFileName = input<string | null>(null);
   readonly error = input<string | null>(null);
+  readonly allowCustomColors = input(false);
   readonly onTypeSelect = output<PinType>();
   readonly onUrlChange = output<string>();
   readonly onFileSelect = output<File>();
@@ -196,7 +192,7 @@ export class AddPinDialogComponent {
     { value: 'note', labelKey: 'pin.note', icon: 'note' },
     { value: 'photo', labelKey: 'pin.photo', icon: 'image' },
   ];
-  readonly colors: NotePinData['color'][] = ['yellow', 'blue', 'green'];
+  readonly backgroundColors = NOTE_BACKGROUND_PRESETS;
   selectFile(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) this.onFileSelect.emit(file);

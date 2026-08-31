@@ -18,12 +18,13 @@ import { CreatePinRequest } from '../data/models/create-pin-request';
 import { LinkPinData } from '../../../shared/models/link-pin-data';
 import { NotePinData } from '../../../shared/models/note-pin-data';
 import { PhotoPinData } from '../../../shared/models/photo-pin-data';
+import { SessionContextStore } from '../../../shared/application/session-context.store';
 
 const emptyDraft: AddPinDraft = {
   type: null,
   url: '',
   content: '',
-  color: 'yellow',
+  color: 'white',
   pinColor: null,
   caption: '',
   tags: '',
@@ -46,6 +47,7 @@ const emptyDraft: AddPinDraft = {
       [uploadProgress]="upload.progress()"
       [uploadedFileName]="upload.photo()?.originalName || null"
       [error]="parser.error() || upload.error() || pins.error()"
+      [allowCustomColors]="allowCustomColors()"
       (onTypeSelect)="selectType($event)"
       (onUrlChange)="parser.parseMetadata($event)"
       (onFileSelect)="upload.upload($event)"
@@ -60,6 +62,7 @@ export class AddPinDialogHandlerComponent {
   protected readonly pins = inject(PinService);
   protected readonly parser = inject(LinkParserService);
   protected readonly upload = inject(PhotoUploadService);
+  private readonly session = inject(SessionContextStore);
   readonly collectionId = input.required<string>();
   readonly allowedTypes = input.required<PinType[]>();
   readonly isOpen = input(false);
@@ -67,6 +70,7 @@ export class AddPinDialogHandlerComponent {
   private readonly draftModel = signal<AddPinDraft>(emptyDraft);
   readonly pinForm = form(this.draftModel);
   readonly draft = computed(() => this.draftModel());
+  readonly allowCustomColors = computed(() => this.session.user()?.plan === 'premium');
   readonly canSubmit = computed(() => {
     const draft = this.draftModel();
     if (!draft.type || !this.allowedTypes().includes(draft.type)) return false;

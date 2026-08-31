@@ -16,34 +16,41 @@ import {
     <div class="board-color-picker" [class.compact]="compact()">
       <span class="board-color-picker-label">{{ labelKey() | translate }}</span>
       <div class="board-color-picker-row">
-        @for (color of presets; track color) {
+        @for (color of presetColors(); track color) {
           <button
             type="button"
             class="board-color-swatch"
             [class.active]="normalizedValue() === color"
+            [class.light-swatch]="color === 'white'"
             [style.--swatch-color]="cssColor(color)"
             [attr.aria-label]="'board.color.' + color | translate"
             (click)="setPreset(color)"
           ></button>
         }
-        <label class="native-color" [attr.aria-label]="'pin.customColorPicker' | translate">
-          <input
-            type="color"
-            [value]="nativeColor()"
+        @if (allowCustom()) {
+          <label
+            class="native-color"
+            [class.active]="normalizedValue()?.startsWith('#')"
             [attr.aria-label]="'pin.customColorPicker' | translate"
-            (input)="setCustomFromInput($event)"
+          >
+            <input
+              type="color"
+              [value]="nativeColor()"
+              [attr.aria-label]="'pin.customColorPicker' | translate"
+              (input)="setCustomFromInput($event)"
+            />
+          </label>
+          <input
+            class="color-code-input"
+            maxlength="7"
+            inputmode="text"
+            [placeholder]="'pin.customColorCode' | translate"
+            [ngModel]="customInputValue()"
+            (ngModelChange)="setCustomText($event)"
+            (blur)="commitCustom()"
+            (keydown.enter)="commitCustom($event)"
           />
-        </label>
-        <input
-          class="color-code-input"
-          maxlength="7"
-          inputmode="text"
-          [placeholder]="'pin.customColorCode' | translate"
-          [ngModel]="customInputValue()"
-          (ngModelChange)="setCustomText($event)"
-          (blur)="commitCustom()"
-          (keydown.enter)="commitCustom($event)"
-        />
+        }
         @if (allowClear()) {
           <button type="button" class="color-clear" (click)="clearColor()">
             {{ 'common.reset' | translate }}
@@ -60,9 +67,10 @@ export class BoardColorPickerComponent {
   readonly labelKey = input('pin.pinColor');
   readonly compact = input(false);
   readonly allowClear = input(false);
+  readonly allowCustom = input(true);
+  readonly presetColors = input<readonly string[]>(BOARD_COLOR_PRESETS);
   readonly valueChange = output<string>();
   readonly clear = output<void>();
-  readonly presets = BOARD_COLOR_PRESETS;
   private readonly customDraft = signal('');
 
   normalizedValue(): string | null {

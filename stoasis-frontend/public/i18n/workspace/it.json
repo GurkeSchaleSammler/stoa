@@ -37,7 +37,9 @@
       "sage": "Salvia",
       "clay": "Argilla",
       "ink": "Inchiostro",
-      "amber": "Ambra"
+      "amber": "Ambra",
+      "black": "Nero",
+      "white": "Bianco"
     },
     "sticker": {
       "circle": "Cerchio",
@@ -118,6 +120,7 @@
     "imageFullView": "Vista completa immagine",
     "openFullView": "Apri immagine a schermo intero",
     "pinColor": "Colore pin",
+    "backgroundColor": "Colore di sfondo",
     "customColorPicker": "Scegli colore personalizzato",
     "customColorCode": "#86a873",
     "readingTime": "{{minutes}} min",

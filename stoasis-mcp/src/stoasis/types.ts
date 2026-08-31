@@ -82,6 +82,7 @@ export type Pin = {
   tags: string[];
   comments: PinComment[];
   createdAt: string;
+  color?: string | null;
   type: PinType;
   data: Record<string, unknown>;
   grid: GridBlock;

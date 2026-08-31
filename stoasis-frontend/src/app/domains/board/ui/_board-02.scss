@@ -61,8 +61,8 @@
   min-height: 152px;
   padding: 44px 20px 24px;
   box-sizing: border-box;
-  background: #fff5bd;
-  color: #534817;
+  background: var(--note-background, #fff5bd);
+  color: var(--note-foreground, #534817);
   white-space: pre-line;
 }
 .note-visual.blue {

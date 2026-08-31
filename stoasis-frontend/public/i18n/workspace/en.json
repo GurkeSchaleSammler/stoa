@@ -37,7 +37,9 @@
       "sage": "Sage",
       "clay": "Clay",
       "ink": "Ink",
-      "amber": "Amber"
+      "amber": "Amber",
+      "black": "Black",
+      "white": "White"
     },
     "sticker": {
       "circle": "Circle",
@@ -118,6 +120,7 @@
     "imageFullView": "Image full view",
     "openFullView": "Open image full view",
     "pinColor": "Pin colour",
+    "backgroundColor": "Background colour",
     "customColorPicker": "Choose custom colour",
     "customColorCode": "#86a873",
     "readingTime": "{{minutes}} min",
