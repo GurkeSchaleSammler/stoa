@@ -179,7 +179,7 @@ class CollectionService(
         visibility = collection.visibility,
         pinCount = pins.countByCollectionId(collection.id),
         members = collection.members.mapNotNull { membership ->
-            membership.user?.let { MemberSummary(it.id, membership.role, it.name) }
+            membership.user?.let { MemberSummary(it.id, membership.role, it.name, it.avatarUrl) }
         },
         updatedAt = collection.updatedAt,
         boardKind = collection.boardKind,
@@ -197,7 +197,7 @@ class CollectionService(
         visibility = collection.visibility,
         pinCount = pins.countByCollectionId(collection.id),
         members = collection.members.mapNotNull { membership ->
-            membership.user?.let { MemberSummary(it.id, membership.role, it.name) }
+            membership.user?.let { MemberSummary(it.id, membership.role, it.name, it.avatarUrl) }
         },
         updatedAt = collection.updatedAt,
         boardKind = collection.boardKind,

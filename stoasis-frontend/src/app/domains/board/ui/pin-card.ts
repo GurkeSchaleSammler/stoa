@@ -53,7 +53,16 @@ import { PhotoPinComponent } from './photo-pin';
         }
       }
       <footer class="pin-footer">
-        <span>{{ pin().createdByName }}</span
+        <span class="pin-author">
+          <span class="pin-author-avatar" aria-hidden="true">
+            @if (pin().createdByAvatarUrl) {
+              <img [src]="pin().createdByAvatarUrl" alt="" loading="lazy" decoding="async" />
+            } @else {
+              {{ pin().createdByName.slice(0, 1) }}
+            }
+          </span>
+          <span>{{ pin().createdByName }}</span>
+        </span
         ><time [attr.datetime]="pin().createdAt">{{ pin().createdAt.slice(0, 10) }}</time>
       </footer>
     </article>

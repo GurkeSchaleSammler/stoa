@@ -14,21 +14,21 @@ import { ExportFormat } from '../data/models/export-format';
       <p>{{ 'profile.importExportLead' | translate }}</p>
     </div>
     <div class="data-actions">
-      <label class="button secondary file-button"
-        ><input type="file" accept=".csv,text/csv" (change)="selectFile($event)" />{{
+      <label class="button secondary file-button disabled" aria-disabled="true"
+        ><input type="file" accept=".csv,text/csv" disabled />{{
           (isImporting() ? 'profile.importing' : 'profile.importPocket') | translate
         }}</label
       ><button
         type="button"
         class="button secondary"
-        [disabled]="isExporting()"
+        disabled
         (click)="onExport.emit('json')"
       >
         {{ 'profile.exportJson' | translate }}</button
       ><button
         type="button"
         class="button secondary"
-        [disabled]="isExporting()"
+        disabled
         (click)="onExport.emit('csv')"
       >
         {{ 'profile.exportCsv' | translate }}

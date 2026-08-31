@@ -25,6 +25,9 @@ import { ImageFullView } from './models/image-full-view';
           [attr.aria-label]="'pin.openFullView' | translate"
           [attr.title]="'pin.openFullView' | translate"
           (pointerdown)="$event.stopPropagation()"
+          (pointerup)="$event.stopPropagation()"
+          (mousedown)="$event.stopPropagation()"
+          (mouseup)="$event.stopPropagation()"
           (keydown)="$event.stopPropagation()"
           (click)="openFullView($event)"
         >

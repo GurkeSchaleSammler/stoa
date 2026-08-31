@@ -72,15 +72,10 @@ interface SkillDragState {
               <button
                 type="button"
                 [class.active]="board.visibility === option"
-                [disabled]="isSaving()"
+                [disabled]="isSaving() || isVisibilityOptionDisabled(option)"
                 (click)="setVisibility(option)"
               >
                 {{ 'skills.visibilityValue.' + option | translate }}
-              </button>
-            }
-            @if (board.visibility !== 'private') {
-              <button type="button" class="copy-button" (click)="copyShareLink(board)">
-                <ui-app-icon name="copy" /> {{ 'common.copy' | translate }}
               </button>
             }
           </div>
@@ -340,6 +335,7 @@ export class ProfileSkillsPageComponent implements OnInit {
   }
 
   setVisibility(visibility: ProfileBoardVisibility): void {
+    if (this.isVisibilityOptionDisabled(visibility)) return;
     if (visibility === this.activeBoard()?.visibility) return;
     this.isSaving.set(true);
     this.api
@@ -390,6 +386,10 @@ export class ProfileSkillsPageComponent implements OnInit {
 
   private clamp(value: number, min: number, max: number): number {
     return Math.max(min, Math.min(max, value));
+  }
+
+  isVisibilityOptionDisabled(visibility: ProfileBoardVisibility): boolean {
+    return visibility !== 'private';
   }
 
   private fail() {

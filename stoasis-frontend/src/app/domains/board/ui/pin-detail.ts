@@ -169,8 +169,15 @@ import { ImageFullView } from './models/image-full-view';
                 </div>
               }
               <p class="detail-meta">
-                {{ 'pin.pinnedBy' | translate: { name: item.createdByName } }} ·
-                {{ item.createdAt.slice(0, 10) }}
+                <span class="detail-author-avatar" aria-hidden="true">
+                  @if (item.createdByAvatarUrl) {
+                    <img [src]="item.createdByAvatarUrl" alt="" loading="lazy" decoding="async" />
+                  } @else {
+                    {{ item.createdByName.slice(0, 1) }}
+                  }
+                </span>
+                <span>{{ 'pin.pinnedBy' | translate: { name: item.createdByName } }}</span>
+                <span>{{ item.createdAt.slice(0, 10) }}</span>
               </p>
               @if (canEdit()) {
                 <div class="detail-actions">
@@ -189,9 +196,18 @@ import { ImageFullView } from './models/image-full-view';
               </h2>
               @for (comment of item.comments; track comment.at + comment.authorId) {
                 <article [class.pending]="comment.pending">
-                  <strong>{{ comment.authorName | translate }}</strong>
-                  <p>{{ comment.body }}</p>
-                  <time>{{ comment.at.slice(0, 10) }}</time>
+                  <span class="comment-avatar" aria-hidden="true">
+                    @if (comment.authorAvatarUrl) {
+                      <img [src]="comment.authorAvatarUrl" alt="" loading="lazy" decoding="async" />
+                    } @else {
+                      {{ (comment.authorName | translate).slice(0, 1) }}
+                    }
+                  </span>
+                  <div>
+                    <strong>{{ comment.authorName | translate }}</strong>
+                    <p>{{ comment.body }}</p>
+                    <time>{{ comment.at.slice(0, 10) }}</time>
+                  </div>
                 </article>
               } @empty {
                 <p class="helper">{{ 'pin.noComments' | translate }}</p>

@@ -23,3 +23,40 @@
   background: color-mix(in srgb, var(--pin-color) 16%, var(--surface-raised));
   color: var(--pin-color);
 }
+
+.pin-footer {
+  align-items: center;
+}
+
+.pin-author {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 6px;
+}
+
+.pin-author > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pin-author-avatar {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--sage-soft);
+  color: var(--sage);
+  font-size: 0.58rem;
+  font-weight: 800;
+}
+
+.pin-author-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

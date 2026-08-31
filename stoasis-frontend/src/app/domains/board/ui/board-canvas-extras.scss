@@ -1,10 +1,11 @@
 .board-zoom-controls {
-  position: sticky;
-  z-index: 34;
-  top: 0;
+  position: fixed;
+  z-index: 38;
+  top: calc(env(safe-area-inset-top) + 88px);
+  right: calc(env(safe-area-inset-right) + 24px);
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 10px;
+  margin: 0;
   pointer-events: none;
 }
 
@@ -65,8 +66,8 @@
 }
 
 .connector-thread.selected {
-  stroke-width: 3;
-  opacity: 0.72;
+  stroke-width: 5.2;
+  opacity: 0.78;
 }
 
 .connector-editor {

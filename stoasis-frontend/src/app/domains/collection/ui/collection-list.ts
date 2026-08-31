@@ -83,7 +83,13 @@ import { CollectionSummary } from '../data/models/collection-summary';
                   "
                 >
                   @for (member of collection.members.slice(0, 3); track member.userId) {
-                    <span>{{ member.name.slice(0, 1) }}</span>
+                    <span [attr.title]="member.name">
+                      @if (member.avatarUrl) {
+                        <img [src]="member.avatarUrl" alt="" loading="lazy" decoding="async" />
+                      } @else {
+                        {{ member.name.slice(0, 1) }}
+                      }
+                    </span>
                   }
                 </span>
               }

@@ -8,6 +8,7 @@ data class PinDto(
     val collectionId: String,
     val createdBy: String,
     val createdByName: String,
+    val createdByAvatarUrl: String?,
     val sortOrder: Int,
     val tags: Set<String>,
     val comments: List<PinCommentDto>,

@@ -179,6 +179,7 @@ class PinService(
             collectionId = collectionId,
             createdBy = pin.createdBy?.id.orEmpty(),
             createdByName = pin.createdBy?.name ?: "Unbekannt",
+            createdByAvatarUrl = pin.createdBy?.avatarUrl,
             sortOrder = pin.sortOrder,
             tags = pin.tags,
             comments = pin.comments.map(::toDto),
@@ -200,6 +201,7 @@ class PinService(
     private fun toDto(comment: PinCommentEntity) = PinCommentDto(
         authorId = comment.author?.id.orEmpty(),
         authorName = comment.author?.name ?: "Unbekannt",
+        authorAvatarUrl = comment.author?.avatarUrl,
         body = comment.body,
         at = comment.createdAt,
     )

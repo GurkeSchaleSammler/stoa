@@ -8,21 +8,26 @@ import com.stoasis.backend.shared.security.SafeHttpFetcher
 import com.stoasis.backend.shared.web.ApiException
 import java.io.ByteArrayInputStream
 import java.net.URI
+import java.net.URLEncoder
 import java.security.MessageDigest
 import java.time.Instant
+import java.nio.charset.StandardCharsets
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
 
 @Service
 class LinkPreviewService(
     private val fetcher: SafeHttpFetcher,
     private val images: LinkPreviewImageRepository,
     private val renderer: PreviewImageRenderer,
+    private val objectMapper: ObjectMapper,
 ) {
     fun preview(rawUrl: String, backendBaseUrl: String): LinkPinData {
         val uri = PublicUrlPolicy.parse(rawUrl)
+        youtubePreview(uri, backendBaseUrl)?.let { return it }
         val response = fetcher.get(uri, "text/html,application/xhtml+xml;q=0.9", MAX_HTML_BYTES)
         if (response.status !in 200..299) {
             throw ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "Die Seite lieferte HTTP ${response.status}.")
@@ -65,6 +70,52 @@ class LinkPreviewService(
         )
     }
 
+    private fun youtubePreview(uri: URI, backendBaseUrl: String): LinkPinData? = runCatching {
+        if (!isYoutubeUrl(uri)) return@runCatching null
+        val pageUrl = uri.toString()
+        val encodedUrl = URLEncoder.encode(pageUrl, StandardCharsets.UTF_8)
+        val oembedUri = URI.create("https://www.youtube.com/oembed?url=$encodedUrl&format=json")
+        val response = fetcher.get(oembedUri, "application/json", MAX_OEMBED_BYTES)
+        if (response.status !in 200..299) return@runCatching null
+        val json = objectMapper.readTree(String(response.body, StandardCharsets.UTF_8))
+        val title = json.get("title")?.takeUnless { it.isNull }?.asString()?.takeIf(String::isNotBlank)
+            ?: return@runCatching null
+        val siteName = json.get("provider_name")?.takeUnless { it.isNull }?.asString()?.takeIf(String::isNotBlank)
+            ?: "YouTube"
+        val thumbnail = json.get("thumbnail_url")
+            ?.takeUnless { it.isNull }
+            ?.asString()
+            ?.takeIf(String::isNotBlank)
+            ?.let { runCatching { URI.create(it) }.getOrNull() }
+        val rendered = thumbnail?.let(::fetchRasterPreview)
+            ?: renderer.renderMetadata(siteName, title, null)
+        val previewId = fingerprint(uri, thumbnail, rendered.content)
+        images.save(
+            LinkPreviewImageEntity(
+                id = previewId,
+                sourceUrl = (thumbnail ?: uri).toString().take(4096),
+                content = rendered.content,
+                imageWidth = rendered.width,
+                imageHeight = rendered.height,
+                createdAt = Instant.now(),
+            ),
+        )
+        LinkPinData(
+            url = pageUrl,
+            title = title.take(1_000),
+            description = null,
+            imageUrl = "$backendBaseUrl/api/links/previews/$previewId",
+            siteName = siteName.take(512),
+            readingTimeMin = null,
+            parseStatus = "ok",
+        )
+    }.getOrNull()
+
+    private fun isYoutubeUrl(uri: URI): Boolean {
+        val host = uri.host?.lowercase()?.removePrefix("www.")?.removePrefix("m.") ?: return false
+        return host == "youtube.com" || host.endsWith(".youtube.com") || host == "youtu.be"
+    }
+
     private fun fetchRasterPreview(uri: URI): RenderedPreview? = runCatching {
         PublicUrlPolicy.validate(uri)
         val response = fetcher.get(uri, "image/png,image/jpeg;q=0.9", MAX_IMAGE_BYTES)
@@ -96,5 +147,6 @@ class LinkPreviewService(
     companion object {
         private const val MAX_HTML_BYTES = 1_048_576
         private const val MAX_IMAGE_BYTES = 5_242_880
+        private const val MAX_OEMBED_BYTES = 65_536
     }
 }

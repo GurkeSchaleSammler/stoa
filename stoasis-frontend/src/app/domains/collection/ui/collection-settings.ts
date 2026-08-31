@@ -51,6 +51,7 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
             <button
               type="button"
               [class.active]="item.visibility === 'private'"
+              [disabled]="isVisibilityOptionDisabled('private')"
               (click)="onFieldChange.emit({ visibility: 'private' })"
             >
               {{ 'collection.private' | translate }}
@@ -58,6 +59,7 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
             <button
               type="button"
               [class.active]="item.visibility === 'link'"
+              [disabled]="isVisibilityOptionDisabled('link')"
               (click)="onFieldChange.emit({ visibility: 'link' })"
             >
               {{ 'collection.viaLink' | translate }}
@@ -65,19 +67,12 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
             <button
               type="button"
               [class.active]="item.visibility === 'public'"
+              [disabled]="isVisibilityOptionDisabled('public')"
               (click)="onFieldChange.emit({ visibility: 'public' })"
             >
               {{ 'collection.public' | translate }}
             </button>
           </div>
-          @if (item.visibility === 'link' && item.inviteToken) {
-            <div class="invite-box">
-              <code>{{ inviteUrl() }}</code
-              ><button type="button" (click)="onCopyInvite.emit()">
-                <ui-app-icon name="copy" /> {{ 'common.copy' | translate }}
-              </button>
-            </div>
-          }
         </fieldset>
         <div class="panel-actions split">
           <button
@@ -125,4 +120,8 @@ export class CollectionSettingsComponent {
     { value: 'note', labelKey: 'pin.types.notes' },
     { value: 'photo', labelKey: 'pin.types.photos' },
   ];
+
+  isVisibilityOptionDisabled(value: 'private' | 'link' | 'public'): boolean {
+    return value !== 'private';
+  }
 }

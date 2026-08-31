@@ -22,6 +22,12 @@
   box-shadow: var(--shadow-md);
   font-size: 1.1rem;
 }
+.search-input:focus-within {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent),
+    var(--shadow-md);
+}
 .search-input > span:first-child {
   color: var(--muted);
   font-size: 1.5rem;
@@ -35,6 +41,9 @@
   background: transparent;
   color: var(--text);
   font: inherit;
+}
+.search-input input:focus-visible {
+  box-shadow: none;
 }
 .search-input button {
   border: 0;
@@ -245,6 +254,10 @@
   margin-top: 12px;
 }
 .tag-list > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
   padding: 6px 8px;
   border-radius: 999px;
   background: var(--surface-sunken);
@@ -252,10 +265,21 @@
   font-size: 0.68rem;
 }
 .tag-list button {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
   border: 0;
+  border-radius: 50%;
   background: transparent;
   color: inherit;
+  line-height: 1;
   cursor: pointer;
+}
+.tag-list button ui-app-icon {
+  width: 13px;
+  height: 13px;
 }
 @media (max-width: 650px) {
   .filter-bar {

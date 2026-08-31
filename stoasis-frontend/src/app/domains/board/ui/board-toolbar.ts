@@ -20,6 +20,24 @@ import { BoardContext } from '../data/models/board-context';
           <span class="member-count">
             {{ 'membership.personCount' | translate: { count: active.members.length } }}
           </span>
+          @if (active.members.length) {
+            <span
+              class="member-avatars"
+              [attr.aria-label]="
+                'membership.memberCount' | translate: { count: active.members.length }
+              "
+            >
+              @for (member of active.members.slice(0, 4); track member.userId) {
+                <span [attr.title]="member.name">
+                  @if (member.avatarUrl) {
+                    <img [src]="member.avatarUrl" alt="" loading="lazy" decoding="async" />
+                  } @else {
+                    {{ member.name.slice(0, 1) }}
+                  }
+                </span>
+              }
+            </span>
+          }
         </div>
         <div class="board-actions">
           <div class="view-toggle" role="group" [attr.aria-label]="'board.view' | translate">
@@ -66,6 +84,32 @@ import { BoardContext } from '../data/models/board-context';
     }
   `,
   host: { style: 'display: contents' },
+  styles: `
+    .member-avatars {
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+    }
+    .member-avatars span {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      margin-left: -8px;
+      overflow: hidden;
+      border: 2px solid var(--surface-raised);
+      border-radius: 50%;
+      background: var(--sage-soft);
+      color: var(--sage);
+      font-size: 0.64rem;
+      font-weight: 800;
+    }
+    .member-avatars img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardToolbarComponent {

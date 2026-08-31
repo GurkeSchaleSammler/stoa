@@ -45,6 +45,7 @@ const emptyDraft: AddPinDraft = {
       [isParsing]="parser.isLoading()"
       [uploadProgress]="upload.progress()"
       [uploadedFileName]="upload.photo()?.originalName || null"
+      [uploadedPhoto]="upload.photo()"
       [error]="parser.error() || upload.error() || pins.error()"
       (onTypeSelect)="selectType($event)"
       (onUrlChange)="parser.parseMetadata($event)"

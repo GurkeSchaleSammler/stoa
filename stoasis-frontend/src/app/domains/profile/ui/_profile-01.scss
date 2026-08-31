@@ -96,6 +96,10 @@
   font-size: 0.72rem;
 }
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   min-height: 39px;
   padding: 0 14px;
   border: 1px solid transparent;
@@ -103,10 +107,17 @@
   font: inherit;
   font-size: 0.76rem;
   font-weight: 750;
+  white-space: nowrap;
   cursor: pointer;
 }
 .button:disabled {
   opacity: 0.45;
+  cursor: not-allowed;
+}
+.button.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 .button.primary {
   background: var(--text);

@@ -31,7 +31,14 @@ import { Pin } from '../../../shared/models/pin';
               }
             </strong>
             <small
-              >{{ pin.createdByName }} ·
+              ><span class="row-author-avatar" aria-hidden="true">
+                @if (pin.createdByAvatarUrl) {
+                  <img [src]="pin.createdByAvatarUrl" alt="" loading="lazy" decoding="async" />
+                } @else {
+                  {{ pin.createdByName.slice(0, 1) }}
+                }
+              </span>
+              {{ pin.createdByName }} ·
               {{ pin.tags.join(', ') || ('pin.withoutTags' | translate) }}</small
             >
           </span>
@@ -40,7 +47,7 @@ import { Pin } from '../../../shared/models/pin';
       }
     </div>
   `,
-  styleUrl: './board.scss',
+  styleUrls: ['./board.scss', './board-list-view.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardListViewComponent {

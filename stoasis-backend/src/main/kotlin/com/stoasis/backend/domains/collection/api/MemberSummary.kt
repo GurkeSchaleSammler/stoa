@@ -6,7 +6,7 @@ import com.stoasis.backend.domains.collection.model.Role
 import com.stoasis.backend.domains.collection.model.Visibility
 import java.time.Instant
 
-data class MemberSummary(val userId: String, val role: Role, val name: String)
+data class MemberSummary(val userId: String, val role: Role, val name: String, val avatarUrl: String?)
 
 open class CollectionSummary(
     val id: String,

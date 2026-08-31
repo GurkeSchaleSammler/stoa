@@ -34,13 +34,14 @@
   right: 12px;
   bottom: 12px;
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--border) 64%, transparent);
   border-radius: 10px;
   background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
   box-shadow: var(--shadow-sm);
+  pointer-events: none;
   backdrop-filter: blur(8px);
 }
 
@@ -49,4 +50,56 @@
 .detail-photo.has-image:hover .detail-image-action,
 .detail-photo.has-image:focus-visible .detail-image-action {
   color: var(--accent-strong);
+}
+
+.detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-author-avatar,
+.comment-avatar {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--sage-soft);
+  color: var(--sage);
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.detail-author-avatar img,
+.comment-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comments article {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 8px;
+}
+
+.comment-form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 102px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.comment-form button ui-app-icon {
+  width: 18px;
+  height: 18px;
 }

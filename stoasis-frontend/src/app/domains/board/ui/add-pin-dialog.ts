@@ -7,6 +7,7 @@ import { NotePinData } from '../../../shared/models/note-pin-data';
 import { PinType } from '../../../shared/models/pin-type';
 import { AddPinDraft } from '../data/models/add-pin-draft';
 import { LinkPreview } from '../data/models/link-preview';
+import { UploadedPhoto } from '../data/models/uploaded-photo';
 import { BoardColorPickerComponent } from './board-color-picker';
 
 @Component({
@@ -77,9 +78,9 @@ import { BoardColorPickerComponent } from './board-color-picker';
                       loading="lazy"
                       decoding="async"
                       referrerpolicy="no-referrer"
-                    />
+                  />
                   } @else {
-                    <ui-app-icon name="link" />
+                    <span class="link-preview-icon"><ui-app-icon name="link" /></span>
                   }
                   <div>
                     <strong>{{ link.title }}</strong
@@ -128,6 +129,21 @@ import { BoardColorPickerComponent } from './board-color-picker';
               @if (uploadedFileName()) {
                 <p class="file-name"><ui-app-icon name="check" /> {{ uploadedFileName() }}</p>
               }
+              @if (uploadedPhoto(); as photo) {
+                <figure class="upload-preview">
+                  @if (photo.imageUrl) {
+                    <img
+                      [src]="photo.imageUrl"
+                      [alt]="draft().caption || ('pin.imagePreview' | translate)"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  } @else {
+                    <ui-app-icon name="image" />
+                  }
+                  <figcaption>{{ photo.originalName }}</figcaption>
+                </figure>
+              }
               <label class="dialog-field"
                 ><span>{{ 'pin.caption' | translate }}</span
                 ><input
@@ -160,7 +176,7 @@ import { BoardColorPickerComponent } from './board-color-picker';
             ><button
               type="button"
               class="button primary"
-              [disabled]="!canSubmit() || isUploading()"
+              [disabled]="!canSubmit() || isUploading() || (selectedType() === 'link' && isParsing())"
               (click)="onSubmit.emit()"
             >
               {{ 'pin.add' | translate }}
@@ -184,6 +200,7 @@ export class AddPinDialogComponent {
   readonly isParsing = input(false);
   readonly uploadProgress = input(0);
   readonly uploadedFileName = input<string | null>(null);
+  readonly uploadedPhoto = input<UploadedPhoto | null>(null);
   readonly error = input<string | null>(null);
   readonly onTypeSelect = output<PinType>();
   readonly onUrlChange = output<string>();

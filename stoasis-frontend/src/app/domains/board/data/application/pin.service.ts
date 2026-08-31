@@ -192,6 +192,7 @@ export class PinService {
     const temporary: PinComment = {
       authorId: this.session.userId() ?? 'current-user',
       authorName: this.session.user()?.name ?? 'common.you',
+      authorAvatarUrl: this.session.user()?.avatarUrl ?? null,
       body,
       at: new Date().toISOString(),
       pending: true,

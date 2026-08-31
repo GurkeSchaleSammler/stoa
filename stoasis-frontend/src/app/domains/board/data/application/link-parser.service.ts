@@ -9,6 +9,7 @@ import {
   Subject,
   switchMap,
   tap,
+  timeout,
 } from 'rxjs';
 import { BoardApi } from '../api/board.api';
 import { SnackbarService } from '../../../../shared/application/snackbar.service';
@@ -32,23 +33,16 @@ export class LinkParserService {
       .pipe(
         debounceTime(350),
         distinctUntilChanged(),
-        filter((url) => url.length > 5),
+        filter((url) => this.isPreviewableUrl(url)),
         tap(() => {
           this.loadingState.set(true);
           this.errorState.set(null);
         }),
         switchMap((url) =>
           this.api.parseLink(url).pipe(
+            timeout(8000),
             catchError(() => {
-              this.previewState.set({
-                url,
-                title: url,
-                description: null,
-                imageUrl: null,
-                siteName: null,
-                readingTimeMin: null,
-                parseStatus: 'failed',
-              });
+              this.previewState.set(this.fallbackPreview(url, 'failed'));
               this.errorState.set('errors.linkPreview');
               this.snackbars.error('errors.linkPreview');
               this.loadingState.set(false);
@@ -64,17 +58,55 @@ export class LinkParserService {
   }
 
   parseMetadata(url: string): void {
-    if (!url.trim()) {
+    const trimmed = url.trim();
+    if (!trimmed) {
       this.previewState.set(null);
       this.errorState.set(null);
       return;
     }
-    this.request.next(url.trim());
+    if (!this.isPreviewableUrl(trimmed)) {
+      this.previewState.set(null);
+      this.errorState.set(null);
+      this.loadingState.set(false);
+      return;
+    }
+    this.previewState.set(this.fallbackPreview(trimmed, 'pending'));
+    this.request.next(trimmed);
   }
 
   reset(): void {
     this.previewState.set(null);
     this.loadingState.set(false);
     this.errorState.set(null);
+  }
+
+  private isPreviewableUrl(url: string): boolean {
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
+  private fallbackPreview(url: string, parseStatus: LinkPreview['parseStatus']): LinkPreview {
+    const host = this.previewHost(url);
+    return {
+      url,
+      title: url,
+      description: null,
+      imageUrl: null,
+      siteName: host,
+      readingTimeMin: null,
+      parseStatus,
+    };
+  }
+
+  private previewHost(url: string): string | null {
+    try {
+      return new URL(url).hostname.replace(/^www\./i, '');
+    } catch {
+      return null;
+    }
   }
 }

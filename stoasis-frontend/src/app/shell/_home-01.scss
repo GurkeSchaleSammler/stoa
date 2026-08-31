@@ -78,14 +78,16 @@
   margin-bottom: 20px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-panel);
-  background: var(--surface-contrast);
-  box-shadow: var(--shadow-sm);
+  background: #16120d;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--surface-raised) 72%, transparent),
+    var(--shadow-sm);
   overflow: hidden;
 }
 .home-mark img,
 .demo-brand img {
-  width: 78%;
-  height: 78%;
+  width: 72%;
+  height: 72%;
   object-fit: contain;
 }
 .eyebrow {

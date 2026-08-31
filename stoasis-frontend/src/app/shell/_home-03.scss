@@ -39,8 +39,9 @@
   padding: 6px;
   margin-bottom: 18px;
   border-radius: var(--radius-panel);
-  background: var(--surface-contrast);
+  background: #16120d;
   object-fit: contain;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--surface-raised) 72%, transparent);
 }
 .closing-cta > p:not(.eyebrow) {
   margin: 0 auto;

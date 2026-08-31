@@ -4,4 +4,5 @@ export interface MemberSummary {
   userId: string;
   role: Role;
   name: string;
+  avatarUrl: string | null;
 }

@@ -105,13 +105,33 @@
   font-size: 0.7rem;
   text-overflow: ellipsis;
 }
+.role-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+}
+.role-select::after {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-right: 1.7px solid currentColor;
+  border-bottom: 1.7px solid currentColor;
+  transform: translateY(-65%) rotate(45deg);
+  content: '';
+  pointer-events: none;
+}
 .role-select select {
+  min-width: 116px;
   min-height: 36px;
-  padding: 0 9px;
+  padding: 0 36px 0 12px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface-sunken);
   color: var(--text);
+  appearance: none;
 }
 .remove-button {
   width: 32px;
@@ -145,6 +165,10 @@
   color: var(--sage);
 }
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   min-height: 39px;
   padding: 0 14px;
   border: 1px solid transparent;
@@ -152,6 +176,7 @@
   font: inherit;
   font-size: 0.78rem;
   font-weight: 750;
+  white-space: nowrap;
   cursor: pointer;
 }
 .button:disabled {

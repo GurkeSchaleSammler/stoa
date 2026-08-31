@@ -6,6 +6,7 @@ export interface PinBase {
   collectionId: string;
   createdBy: string;
   createdByName: string;
+  createdByAvatarUrl: string | null;
   sortOrder: number;
   tags: string[];
   comments: PinComment[];

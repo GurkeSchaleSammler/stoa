@@ -50,13 +50,14 @@
 }
 .pin-type-picker {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 9px;
   margin: 22px 0;
 }
 .pin-type-picker button {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 9px;
   min-height: 54px;
   padding: 9px;
@@ -64,6 +65,7 @@
   border-radius: 10px;
   background: var(--surface-raised);
   color: var(--text);
+  white-space: nowrap;
   cursor: pointer;
 }
 .pin-type-picker button.active {
@@ -72,6 +74,8 @@
   color: var(--accent-strong);
 }
 .pin-type-picker span {
+  display: grid;
+  place-items: center;
   font-size: 1.15rem;
 }
 .dialog-field {
@@ -111,7 +115,7 @@
   border-radius: 10px;
   background: var(--surface-sunken);
 }
-.link-preview > span {
+.link-preview-icon {
   display: grid;
   place-items: center;
   width: 38px;
@@ -195,6 +199,35 @@
   gap: 6px;
   color: var(--muted);
   font-size: 0.7rem;
+}
+.upload-preview {
+  display: grid;
+  grid-template-rows: minmax(0, 180px) auto;
+  gap: 8px;
+  margin: 12px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-sunken);
+}
+.upload-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.upload-preview > ui-app-icon {
+  place-self: center;
+  color: var(--muted);
+  font-size: 2rem;
+}
+.upload-preview figcaption {
+  margin: 0;
+  padding: 0 12px 12px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .progress {
   height: 5px;
