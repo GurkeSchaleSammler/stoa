@@ -22,6 +22,7 @@ stoasis:
     allowed-origins: ${STOASIS_CORS_ALLOWED_ORIGINS:https://stoasis.gurkeschale.dev}
   auth:
     frontend-base-url: ${STOASIS_FRONTEND_URL:https://stoasis.gurkeschale.dev}
+    mail-provider: ${STOASIS_MAIL_PROVIDER:resend}
 
 server:
   forward-headers-strategy: framework

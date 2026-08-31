@@ -9,7 +9,7 @@ Kotlin/Spring-Backend für das Angular-Frontend in `../stoasis-frontend`.
 - Spring Boot 4.1.0 / Spring MVC / Spring Security
 - Spring Data JPA
 - Flyway
-- Spring Mail mit SMTP
+- Spring Mail mit SMTP und Resend HTTP API
 - Jsoup 1.22.2 für statisches HTML-Metadaten-Parsing
 - H2 In-Memory im Profil `dev`
 - PostgreSQL im Profil `prod`
@@ -148,6 +148,23 @@ Das Backend lädt ausschliesslich öffentliche HTTP(S)-Ziele auf Port 80/443. DN
 
 Es wird niemals JavaScript einer Zielseite ausgeführt. Jsoup liest nur statische Open-Graph-/Twitter-Metadaten. Ein gefundenes PNG/JPEG wird vollständig dekodiert, auf feste Abmessungen begrenzt und als neues JPEG gespeichert. SVG, HTML, Skripte, Animationen und unbekannte Bildformate werden nicht an den Browser weitergereicht. Fehlt ein geeignetes Bild, erzeugt Stoasis aus den Metadaten einen statischen Snapshot.
 
-## SMTP in Produktion
+## E-Mail in Produktion
 
-Der produktive Versand nutzt dieselbe Spring-Mail-Integration. Folgende Umgebungsvariablen konfigurieren den SMTP-Anbieter: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS`, `STOASIS_MAIL_FROM`, `STOASIS_FRONTEND_URL` und `STOASIS_PUBLIC_API_URL`. Magic-Link-Tokens werden nur gehasht gespeichert, laufen nach 15 Minuten ab, sind auch bei parallelen Aufrufen atomar einmalig und werden pro E-Mail/IP gedrosselt.
+Der lokale Versand nutzt standardmäßig SMTP mit Mailpit. In Produktion nutzt Stoasis im Profil `prod` standardmäßig Resend über HTTPS, damit Deployments auf Hosts mit eingeschränkten SMTP-Ports funktionieren.
+
+Für Railway mit Resend werden im Backend-Service diese Variablen gesetzt:
+
+```text
+STOASIS_MAIL_PROVIDER=resend
+RESEND_API_KEY=re_xxxxxxxxx
+STOASIS_MAIL_FROM=Stoasis <no-reply@deine-domain.ch>
+STOASIS_FRONTEND_URL=https://deine-frontend-domain
+STOASIS_PUBLIC_API_URL=https://deine-backend-domain
+STOASIS_CORS_ALLOWED_ORIGINS=https://deine-frontend-domain
+```
+
+Optional kann `RESEND_API_URL` gesetzt werden. Ohne Wert wird `https://api.resend.com/emails` verwendet.
+
+SMTP bleibt weiterhin unterstützt. Dafür `STOASIS_MAIL_PROVIDER=smtp` setzen und diese Variablen konfigurieren: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS`, `STOASIS_MAIL_FROM`, `STOASIS_FRONTEND_URL` und `STOASIS_PUBLIC_API_URL`.
+
+Magic-Link-Tokens werden nur gehasht gespeichert, laufen nach 15 Minuten ab, sind auch bei parallelen Aufrufen atomar einmalig und werden pro E-Mail/IP gedrosselt.

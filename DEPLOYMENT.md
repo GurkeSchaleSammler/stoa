@@ -75,9 +75,14 @@ PGPASSWORD=${{Postgres.PGPASSWORD}}
 STOASIS_FRONTEND_URL=https://stoasis.gurkeschale.dev
 STOASIS_PUBLIC_API_URL=https://stoasis.gurkeschale.dev
 STOASIS_CORS_ALLOWED_ORIGINS=https://stoasis.gurkeschale.dev
+STOASIS_MAIL_PROVIDER=resend
+RESEND_API_KEY=re_xxxxxxxxx
+STOASIS_MAIL_FROM=Stoasis <no-reply@stoasis.gurkeschale.dev>
 ```
 
-`Postgres` muss dabei exakt dem Railway-Service-Namen der Datenbank entsprechen. Für produktive E-Mails kommen zusätzlich `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS` und `STOASIS_MAIL_FROM` hinzu.
+`Postgres` muss dabei exakt dem Railway-Service-Namen der Datenbank entsprechen. Für `RESEND_API_KEY` wird in Resend ein API-Key erstellt. Die Domain aus `STOASIS_MAIL_FROM` muss in Resend verifiziert sein, bevor Magic-Link-Mails zuverlässig zugestellt werden. `RESEND_API_URL` ist optional und wird ohne Angabe auf `https://api.resend.com/emails` gesetzt.
+
+Falls ein anderer Host mit SMTP genutzt wird, kann der Versand weiterhin auf SMTP umgestellt werden. Dafür `STOASIS_MAIL_PROVIDER=smtp` setzen und zusätzlich `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS` und `STOASIS_MAIL_FROM` konfigurieren.
 
 ### MCP-Variablen
 
