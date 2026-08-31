@@ -31,18 +31,24 @@
 
 .detail-image-action {
   position: absolute;
-  right: 12px;
-  bottom: 12px;
+  right: 10px;
+  bottom: 10px;
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   place-items: center;
+  box-sizing: border-box;
   border: 1px solid color-mix(in srgb, var(--border) 64%, transparent);
-  border-radius: 10px;
+  border-radius: 8px;
   background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
   box-shadow: var(--shadow-sm);
   pointer-events: none;
   backdrop-filter: blur(8px);
+}
+
+.detail-image-action ui-app-icon {
+  width: 19px;
+  height: 19px;
 }
 
 .detail-image-preview:hover .detail-image-action,

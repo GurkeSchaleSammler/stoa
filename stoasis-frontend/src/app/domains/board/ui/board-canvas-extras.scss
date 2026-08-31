@@ -1,7 +1,7 @@
 .board-zoom-controls {
   position: fixed;
   z-index: 38;
-  top: calc(env(safe-area-inset-top) + 88px);
+  top: calc(env(safe-area-inset-top) + 132px);
   right: calc(env(safe-area-inset-right) + 24px);
   display: flex;
   justify-content: flex-end;
@@ -102,4 +102,11 @@
   font-size: 0.72rem;
   font-weight: 750;
   cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .board-zoom-controls {
+    top: calc(env(safe-area-inset-top) + 104px);
+    right: calc(env(safe-area-inset-right) + 13px);
+  }
 }
