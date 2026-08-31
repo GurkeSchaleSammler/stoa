@@ -1,3 +1,5 @@
+-- Flyway executes this migration transactionally. IDs follow the application's
+-- existing string-ID convention and are deterministic for safe re-runs.
 INSERT INTO collections (
     id, name, emoji, owner_id, visibility, invite_token,
     created_at, updated_at, board_kind, is_system
