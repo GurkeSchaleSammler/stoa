@@ -1,7 +1,14 @@
 export const BOARD_COLOR_PRESETS = ['accent', 'sage', 'clay', 'ink', 'amber'] as const;
+export const NOTE_BACKGROUND_PRESETS = ['black', 'white'] as const;
 
-export type BoardColorPreset = (typeof BOARD_COLOR_PRESETS)[number];
+export type BoardColorPreset =
+  (typeof BOARD_COLOR_PRESETS)[number] | (typeof NOTE_BACKGROUND_PRESETS)[number];
 export type BoardColor = BoardColorPreset | string;
+
+const COLOR_PRESETS: readonly BoardColorPreset[] = [
+  ...BOARD_COLOR_PRESETS,
+  ...NOTE_BACKGROUND_PRESETS,
+];
 
 const PRESET_CSS_COLORS: Record<BoardColorPreset, string> = {
   accent: 'var(--accent)',
@@ -9,6 +16,8 @@ const PRESET_CSS_COLORS: Record<BoardColorPreset, string> = {
   clay: 'color-mix(in srgb, var(--amber) 72%, var(--danger))',
   ink: 'var(--text)',
   amber: 'var(--amber)',
+  black: '#111111',
+  white: '#ffffff',
 };
 
 const PRESET_NATIVE_COLORS: Record<BoardColorPreset, string> = {
@@ -17,6 +26,8 @@ const PRESET_NATIVE_COLORS: Record<BoardColorPreset, string> = {
   clay: '#be7d4b',
   ink: '#2f342d',
   amber: '#d19a31',
+  black: '#111111',
+  white: '#ffffff',
 };
 
 const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
@@ -32,7 +43,7 @@ export function normalizeBoardColor(value: string | null | undefined): string | 
 }
 
 export function isBoardColorPreset(value: string | null | undefined): value is BoardColorPreset {
-  return BOARD_COLOR_PRESETS.includes(value as BoardColorPreset);
+  return COLOR_PRESETS.includes(value as BoardColorPreset);
 }
 
 export function isHexBoardColor(value: string | null | undefined): boolean {

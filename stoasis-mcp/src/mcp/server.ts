@@ -12,6 +12,9 @@ const id = z.string().trim().min(1).max(128);
 const pinType = z.enum(["link", "note", "photo", "skill"]);
 const visibility = z.enum(["private", "link", "public"]);
 const color = z.enum(["accent", "sage", "clay", "ink", "amber"]);
+const customColor = z.string().regex(/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
+const pinColor = z.union([color, customColor]);
+const noteBackgroundColor = z.union([z.enum(["black", "white"]), customColor]);
 const motif = z.enum([
   "circle",
   "triangle",
@@ -45,7 +48,7 @@ const pinData = z.union([
   }),
   z.object({
     content: z.string().trim().min(1).max(50_000),
-    color: z.enum(["yellow", "blue", "green"]).default("yellow"),
+    color: noteBackgroundColor.default("white"),
   }),
   z.object({
     fileKey: z.string().trim().min(1).max(500),
@@ -280,26 +283,28 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     {
       title: "Stoasis pin create",
       description:
-        "Create a pin on a board. For link pins call preview_link first and pass its metadata. Data fields: link {url,title,description?,imageUrl?,siteName?,readingTimeMin?,parseStatus?}; note {content,color}; photo {fileKey,caption?,width,height,imageUrl?}; skill {skillName,level,yearsExperience?}.",
+        "Create a pin on a board. For link pins call preview_link first and pass its metadata. Data fields: link {url,title,description?,imageUrl?,siteName?,readingTimeMin?,parseStatus?}; note {content,color}; photo {fileKey,caption?,width,height,imageUrl?}; skill {skillName,level,yearsExperience?}. Note backgrounds are black or white; custom hex colours require Pro.",
       inputSchema: {
         collectionId: id,
         type: pinType,
         data: pinData,
+        color: pinColor.nullable().optional(),
         tags,
       },
       annotations: write,
     },
-    async ({ collectionId, type, data, tags: pinTags }, extra) =>
+    async ({ collectionId, type, data, color: selectedPinColor, tags: pinTags }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         const pin = await client.createPin(collectionId, {
           type,
           data,
+          color: selectedPinColor,
           tags: pinTags,
         });
         return result(
           { pin },
           `${kindName(type)}-Pin wurde bei (${pin.grid.x}, ${pin.grid.y}) erstellt.`,
-        );
+        );      
       }),
   );
 
@@ -313,6 +318,7 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
         collectionId: id,
         pinId: id,
         data: z.record(z.string(), z.unknown()).optional(),
+        color: pinColor.nullable().optional(),
         tags: z.array(z.string().trim().min(1).max(80)).max(50).optional(),
         sortOrder: z.number().int().min(0).optional(),
       },

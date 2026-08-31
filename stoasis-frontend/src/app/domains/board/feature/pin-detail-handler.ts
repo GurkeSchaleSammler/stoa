@@ -13,6 +13,7 @@ import { ConfirmationDialogService } from '../../../shared/application/confirmat
 import { PinEditValue } from '../data/models/pin-edit-value';
 import { Pin } from '../../../shared/models/pin';
 import { UpdatePinRequest } from '../data/models/update-pin-request';
+import { SessionContextStore } from '../../../shared/application/session-context.store';
 
 @Component({
   selector: 'feature-pin-detail-handler',
@@ -24,6 +25,7 @@ import { UpdatePinRequest } from '../data/models/update-pin-request';
       [canEdit]="pins.canEdit()"
       [editMode]="editMode()"
       [editValue]="editValue()"
+      [allowCustomColors]="allowCustomColors()"
       (onEdit)="editMode.set(true)"
       (onDraftChange)="changeDraft($event)"
       (onSave)="save()"
@@ -38,10 +40,12 @@ import { UpdatePinRequest } from '../data/models/update-pin-request';
 export class PinDetailHandlerComponent {
   protected readonly pins = inject(PinService);
   private readonly confirmation = inject(ConfirmationDialogService);
+  private readonly session = inject(SessionContextStore);
   readonly collectionId = input.required<string>();
   readonly pin = input.required<Pin>();
   readonly onClose = output<void>();
   readonly editMode = signal(false);
+  readonly allowCustomColors = computed(() => this.session.user()?.plan === 'premium');
   private readonly draft = signal<Partial<PinEditValue>>({});
   readonly editValue = computed<PinEditValue>(() => {
     const pin = this.pin();
@@ -51,7 +55,7 @@ export class PinDetailHandlerComponent {
       title: current.title ?? (pin.type === 'link' ? pin.data.title : ''),
       description: current.description ?? (pin.type === 'link' ? (pin.data.description ?? '') : ''),
       content: current.content ?? (pin.type === 'note' ? pin.data.content : ''),
-      color: current.color ?? (pin.type === 'note' ? pin.data.color : 'yellow'),
+      color: current.color ?? (pin.type === 'note' ? pin.data.color : 'white'),
       pinColor: hasPinColorDraft ? (current.pinColor ?? null) : (pin.color ?? null),
       caption: current.caption ?? (pin.type === 'photo' ? (pin.data.caption ?? '') : ''),
       tags: current.tags ?? pin.tags.join(', '),

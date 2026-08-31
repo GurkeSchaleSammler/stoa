@@ -37,7 +37,9 @@
       "sage": "Salbei",
       "clay": "Ton",
       "ink": "Tinte",
-      "amber": "Bernstein"
+      "amber": "Bernstein",
+      "black": "Schwarz",
+      "white": "Weiss"
     },
     "sticker": {
       "circle": "Kreis",
@@ -118,6 +120,7 @@
     "imageFullView": "Bild-Vollansicht",
     "openFullView": "Bild in Vollansicht öffnen",
     "pinColor": "Pinfarbe",
+    "backgroundColor": "Hintergrundfarbe",
     "customColorPicker": "Eigene Farbe auswählen",
     "customColorCode": "#86a873",
     "readingTime": "{{minutes}} Min.",

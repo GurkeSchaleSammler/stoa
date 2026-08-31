@@ -1,5 +1,6 @@
 package com.stoasis.backend
 
+import com.stoasis.backend.domains.auth.data.UserRepository
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.nullValue
@@ -20,6 +21,9 @@ import org.springframework.test.web.servlet.delete
 class StoasisBackendApplicationTests {
     @Autowired
     private lateinit var mvc: MockMvc
+
+    @Autowired
+    private lateinit var users: UserRepository
 
     @Test
     fun `protected API rejects requests without a session`() {
@@ -73,21 +77,22 @@ class StoasisBackendApplicationTests {
         val pinResponse = mvc.post("/api/collections/$collectionId/pins") {
             this.session = session
             contentType = MediaType.APPLICATION_JSON
-            content = """{"type":"note","data":{"content":"Backend Test","color":"green"},"color":"#86A873","tags":["kotlin"]}"""
+            content = """{"type":"note","data":{"content":"Backend Test","color":"white"},"color":"accent","tags":["kotlin"]}"""
         }.andExpect {
             status { isCreated() }
             jsonPath("$.data.content", `is`("Backend Test"))
-            jsonPath("$.color", `is`("#86a873"))
+            jsonPath("$.color", `is`("accent"))
         }.andReturn()
         val pinId = pinResponse.response.contentAsString.field("id")
 
         mvc.patch("/api/collections/$collectionId/pins/$pinId") {
             this.session = session
             contentType = MediaType.APPLICATION_JSON
-            content = """{"data":{"content":"Aktualisiert","color":"blue"},"color":"amber"}"""
+            content = """{"data":{"content":"Aktualisiert","color":"black"},"color":"amber"}"""
         }.andExpect {
             status { isOk() }
             jsonPath("$.data.content", `is`("Aktualisiert"))
+            jsonPath("$.data.color", `is`("black"))
             jsonPath("$.color", `is`("amber"))
         }
         mvc.patch("/api/collections/$collectionId/pins/$pinId") {
@@ -110,6 +115,51 @@ class StoasisBackendApplicationTests {
             .andExpect { status { isNoContent() } }
         mvc.delete("/api/collections/$collectionId") { this.session = session }
             .andExpect { status { isNoContent() } }
+    }
+
+    @Test
+    fun `custom pin and background colors require pro`() {
+        val session = loginSession()
+        mvc.post("/api/collections/coll-dev/pins") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"type":"note","data":{"content":"Free custom background","color":"#F0E1D2"}}"""
+        }.andExpect {
+            status { isForbidden() }
+            jsonPath("$.message", `is`("Eigene Farben sind nur mit Pro verfügbar."))
+        }
+        mvc.post("/api/collections/coll-dev/pins") {
+            this.session = session
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"type":"note","data":{"content":"Free custom pin","color":"white"},"color":"#86A873"}"""
+        }.andExpect {
+            status { isForbidden() }
+            jsonPath("$.message", `is`("Eigene Farben sind nur mit Pro verfügbar."))
+        }
+
+        val user = users.findByEmailIgnoreCase("du@stoa.test")!!
+        user.plan = "premium"
+        users.saveAndFlush(user)
+        var pinId: String? = null
+        try {
+            val response = mvc.post("/api/collections/coll-dev/pins") {
+                this.session = session
+                contentType = MediaType.APPLICATION_JSON
+                content = """{"type":"note","data":{"content":"Pro custom colour","color":"#F0E1D2"},"color":"#86A873"}"""
+            }.andExpect {
+                status { isCreated() }
+                jsonPath("$.data.color", `is`("#f0e1d2"))
+                jsonPath("$.color", `is`("#86a873"))
+            }.andReturn()
+            pinId = response.response.contentAsString.field("id")
+        } finally {
+            pinId?.let {
+                mvc.delete("/api/collections/coll-dev/pins/$it") { this.session = session }
+                    .andExpect { status { isNoContent() } }
+            }
+            user.plan = "free"
+            users.saveAndFlush(user)
+        }
     }
 
     @Test
@@ -384,7 +434,7 @@ class StoasisBackendApplicationTests {
         mvc.post("/api/collections/$collectionId/pins") {
             this.session = session
             contentType = MediaType.APPLICATION_JSON
-            content = """{"type":"note","data":{"content":"$contentValue","color":"yellow"}}"""
+            content = """{"type":"note","data":{"content":"$contentValue","color":"white"}}"""
         }.andExpect {
             status { isCreated() }
         }.andReturn().response.contentAsString.field("id")

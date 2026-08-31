@@ -28,6 +28,7 @@ import com.stoasis.backend.domains.pin.utils.pinOverlapAllowed
 import com.stoasis.backend.domains.skill.data.SkillDataEntity
 import com.stoasis.backend.domains.skill.data.SkillDataRepository
 import com.stoasis.backend.domains.skill.model.SkillLevel
+import com.stoasis.backend.shared.utils.normalizeNoteBackgroundColor
 import com.stoasis.backend.shared.utils.normalizeUiColor
 import com.stoasis.backend.shared.web.ApiException
 import java.time.Instant
@@ -80,10 +81,10 @@ class PinService(
             type = request.type,
             createdBy = users.getReferenceById(userId),
             sortOrder = pins.countByCollectionId(collectionId).toInt() + 1,
-            color = cleanPinColor(request.color),
+            color = cleanPinColor(request.color, userId),
             tags = request.tags.map { it.trim().lowercase() }.filter { it.isNotBlank() }.toMutableSet(),
         )
-        if (request.type != PinType.skill) applyData(pin, request.data)
+        if (request.type != PinType.skill) applyData(pin, request.data, userId)
         val existing = pins.findAllByCollectionIdOrderBySortOrder(collectionId)
         pin.heightClips = estimatedPinHeight(pin)
         val position = findFreePinPosition(pin.heightClips, occupiedRects(collectionId, existing))
@@ -102,9 +103,9 @@ class PinService(
         collections.requireEdit(collection, userId)
         val pin = get(collectionId, pinId)
         request.data?.let {
-            if (pin.type == PinType.skill) applySkillData(pin.id, it) else applyData(pin, it)
+            if (pin.type == PinType.skill) applySkillData(pin.id, it) else applyData(pin, it, userId)
         }
-        request.color?.let { pin.color = cleanPinColor(it) }
+        request.color?.let { pin.color = cleanPinColor(it, userId, pin.color) }
         request.tags?.let {
             pin.tags.clear()
             pin.tags.addAll(it.map(String::trim).map(String::lowercase).filter(String::isNotBlank))
@@ -162,7 +163,7 @@ class PinService(
                 readingTimeMin = pin.readingTimeMin,
                 parseStatus = pin.parseStatus ?: "ok",
             )
-            PinType.note -> NotePinData(pin.content.orEmpty(), pin.noteColor ?: "yellow")
+            PinType.note -> NotePinData(pin.content.orEmpty(), pin.noteColor ?: "white")
             PinType.photo -> PhotoPinData(
                 fileKey = pin.fileKey.orEmpty(),
                 caption = pin.caption,
@@ -263,7 +264,7 @@ class PinService(
             allStacks.map { PinGridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
     }
 
-    private fun applyData(pin: PinEntity, data: JsonNode) {
+    private fun applyData(pin: PinEntity, data: JsonNode, userId: String) {
         fun text(name: String): String? = data.get(name)?.takeUnless { it.isNull }?.asString()
         fun number(name: String): Int? = data.get(name)?.takeUnless { it.isNull }?.asInt()
         when (pin.type) {
@@ -280,7 +281,7 @@ class PinService(
             }
             PinType.note -> {
                 text("content")?.let { pin.content = it }
-                text("color")?.let { pin.noteColor = it }
+                text("color")?.let { pin.noteColor = cleanNoteBackgroundColor(it, userId, pin.noteColor) }
                 if (pin.content.isNullOrBlank()) throw ApiException(HttpStatus.BAD_REQUEST, "Notiz ist erforderlich.")
             }
             PinType.photo -> {
@@ -295,11 +296,28 @@ class PinService(
         }
     }
 
-    private fun cleanPinColor(value: String?): String? {
+    private fun cleanPinColor(value: String?, userId: String, currentColor: String? = null): String? {
         val trimmed = value?.trim()
         if (trimmed.isNullOrBlank()) return null
-        return normalizeUiColor(trimmed)
+        val normalized = normalizeUiColor(trimmed)
             ?: throw ApiException(HttpStatus.BAD_REQUEST, "Ungültiger Farbcode.")
+        requireCustomColorAccess(normalized, currentColor, userId)
+        return normalized
+    }
+
+    private fun cleanNoteBackgroundColor(value: String, userId: String, currentColor: String?): String {
+        val normalized = normalizeNoteBackgroundColor(value)
+            ?: throw ApiException(HttpStatus.BAD_REQUEST, "Ungültige Hintergrundfarbe.")
+        requireCustomColorAccess(normalized, currentColor, userId)
+        return normalized
+    }
+
+    private fun requireCustomColorAccess(color: String, currentColor: String?, userId: String) {
+        if (!color.startsWith("#") || color.equals(currentColor, ignoreCase = true)) return
+        val plan = users.getReferenceById(userId).plan.lowercase()
+        if (plan != "premium") {
+            throw ApiException(HttpStatus.FORBIDDEN, "Eigene Farben sind nur mit Pro verfügbar.")
+        }
     }
 
     private fun applySkillData(pinId: String, data: JsonNode) {

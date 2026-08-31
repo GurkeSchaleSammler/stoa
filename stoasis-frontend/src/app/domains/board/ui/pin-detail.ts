@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
 import { Pin } from '../../../shared/models/pin';
+import { NOTE_BACKGROUND_PRESETS } from '../data/models/board-color';
 import { PinEditValue } from '../data/models/pin-edit-value';
 import { BoardColorPickerComponent } from './board-color-picker';
 import { ImageFullViewComponent } from './image-full-view';
@@ -84,10 +85,20 @@ import { ImageFullView } from './models/image-full-view';
                   /></label>
                 }
               }
+              @if (item.type === 'note') {
+                <ui-board-color-picker
+                  labelKey="pin.backgroundColor"
+                  [value]="editValue().color"
+                  [presetColors]="backgroundColors"
+                  [allowCustom]="allowCustomColors()"
+                  (valueChange)="onDraftChange.emit({ color: $event })"
+                />
+              }
               <ui-board-color-picker
                 labelKey="pin.pinColor"
                 [value]="editValue().pinColor"
                 [allowClear]="true"
+                [allowCustom]="allowCustomColors()"
                 (valueChange)="onDraftChange.emit({ pinColor: $event })"
                 (clear)="onDraftChange.emit({ pinColor: null })"
               />
@@ -241,6 +252,7 @@ export class PinDetailComponent {
   readonly canEdit = input(false);
   readonly editMode = input(false);
   readonly editValue = input.required<PinEditValue>();
+  readonly allowCustomColors = input(false);
   readonly onEdit = output<void>();
   readonly onDraftChange = output<Partial<PinEditValue>>();
   readonly onSave = output<void>();
@@ -248,6 +260,7 @@ export class PinDetailComponent {
   readonly onDelete = output<void>();
   readonly onCommentSubmit = output<string>();
   readonly onClose = output<void>();
+  readonly backgroundColors = NOTE_BACKGROUND_PRESETS;
   readonly imageFullView = signal<ImageFullView | null>(null);
   commentDraft = '';
 

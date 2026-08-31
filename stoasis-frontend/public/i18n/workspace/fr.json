@@ -37,7 +37,9 @@
       "sage": "Sauge",
       "clay": "Argile",
       "ink": "Encre",
-      "amber": "Ambre"
+      "amber": "Ambre",
+      "black": "Noir",
+      "white": "Blanc"
     },
     "sticker": {
       "circle": "Cercle",
@@ -118,6 +120,7 @@
     "imageFullView": "Vue complète de l’image",
     "openFullView": "Ouvrir l’image en vue complète",
     "pinColor": "Couleur du pin",
+    "backgroundColor": "Couleur de fond",
     "customColorPicker": "Choisir une couleur personnalisée",
     "customColorCode": "#86a873",
     "readingTime": "{{minutes}} min",

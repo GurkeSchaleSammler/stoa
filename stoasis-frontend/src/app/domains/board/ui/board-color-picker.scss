@@ -33,7 +33,12 @@
   cursor: pointer;
 }
 
-.board-color-swatch.active {
+.board-color-swatch.light-swatch {
+  border-color: color-mix(in srgb, var(--border) 82%, transparent);
+}
+
+.board-color-swatch.active,
+.native-color.active {
   border-color: var(--text);
   box-shadow: 0 0 0 2px var(--surface-raised) inset;
 }
