@@ -1,8 +1,4 @@
-import {
-  boardColorCssValue,
-  boardColorNativeValue,
-  normalizeBoardColor,
-} from './board-color';
+import { boardColorCssValue, boardColorNativeValue, normalizeBoardColor } from './board-color';
 
 describe('board colors', () => {
   it('keeps preset colors as semantic values', () => {

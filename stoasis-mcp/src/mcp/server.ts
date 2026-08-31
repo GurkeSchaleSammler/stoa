@@ -61,9 +61,21 @@ const pinData = z.union([
   }),
 ]);
 
-const readOnly = { readOnlyHint: true, destructiveHint: false, openWorldHint: false } as const;
-const write = { readOnlyHint: false, destructiveHint: false, openWorldHint: false } as const;
-const destructive = { readOnlyHint: false, destructiveHint: true, openWorldHint: false } as const;
+const readOnly = {
+  readOnlyHint: true,
+  destructiveHint: false,
+  openWorldHint: false,
+} as const;
+const write = {
+  readOnlyHint: false,
+  destructiveHint: false,
+  openWorldHint: false,
+} as const;
+const destructive = {
+  readOnlyHint: false,
+  destructiveHint: true,
+  openWorldHint: false,
+} as const;
 
 type ToolExtra = { authInfo?: AuthInfo };
 
@@ -79,7 +91,10 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
   server.registerResource(
     "stoasis-board-ui",
     BOARD_UI_URI,
-    { description: "Visual, spatial Stoasis board", mimeType: "text/html;profile=mcp-app" },
+    {
+      description: "Visual, spatial Stoasis board",
+      mimeType: "text/html;profile=mcp-app",
+    },
     async () => ({
       contents: [
         {
@@ -96,8 +111,11 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "list_boards",
     {
       title: "Stoasis boards list",
-      description: "List the Stoasis boards/collections the signed-in user can access, including role and pin count.",
-      inputSchema: { filter: z.enum(["all", "owned", "shared"]).default("all") },
+      description:
+        "List the Stoasis boards/collections the signed-in user can access, including role and pin count.",
+      inputSchema: {
+        filter: z.enum(["all", "owned", "shared"]).default("all"),
+      },
       annotations: readOnly,
     },
     async ({ filter }, extra) =>
@@ -143,7 +161,10 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     async ({ collectionId }, extra) =>
       withApi(config, extra, READ_SCOPE, async (client) => {
         const snapshot = await loadBoardSnapshot(client, config, collectionId);
-        return result({ snapshot }, `Das räumliche Board „${snapshot.board.name}“ wird angezeigt.`);
+        return result(
+          { snapshot },
+          `Das räumliche Board „${snapshot.board.name}“ wird angezeigt.`,
+        );
       }),
   );
 
@@ -151,7 +172,8 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "search_pins",
     {
       title: "Stoasis pins search",
-      description: "Search accessible Stoasis pins across boards by text, optional pin type and optional tag.",
+      description:
+        "Search accessible Stoasis pins across boards by text, optional pin type and optional tag.",
       inputSchema: {
         query: z.string().max(500).default(""),
         type: pinType.optional(),
@@ -190,13 +212,21 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
       inputSchema: {
         name: z.string().trim().min(1).max(120),
         emoji: z.string().trim().min(1).max(16).default("📌"),
-        allowedTypes: z.array(pinType).min(1).max(4).default(["link", "note", "photo"]),
+        allowedTypes: z
+          .array(pinType)
+          .min(1)
+          .max(4)
+          .default(["link", "note", "photo"]),
       },
       annotations: write,
     },
     async ({ name, emoji, allowedTypes }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const board = await client.createCollection({ name, emoji, allowedTypes });
+        const board = await client.createCollection({
+          name,
+          emoji,
+          allowedTypes,
+        });
         return result({ board }, `Board „${name}“ wurde erstellt.`);
       }),
   );
@@ -205,7 +235,8 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "update_board",
     {
       title: "Stoasis board update",
-      description: "Update a board's name, emoji, visibility or allowed pin types.",
+      description:
+        "Update a board's name, emoji, visibility or allowed pin types.",
       inputSchema: {
         collectionId: id,
         name: z.string().trim().min(1).max(120).optional(),
@@ -217,7 +248,10 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, ...changes }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const board = await client.updateCollection(collectionId, defined(changes));
+        const board = await client.updateCollection(
+          collectionId,
+          defined(changes),
+        );
         return result({ board }, "Board-Einstellungen wurden aktualisiert.");
       }),
   );
@@ -226,14 +260,18 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "delete_board",
     {
       title: "Stoasis board delete",
-      description: "Permanently delete a Stoasis board. Only use after explicit user confirmation.",
+      description:
+        "Permanently delete a Stoasis board. Only use after explicit user confirmation.",
       inputSchema: { collectionId: id },
       annotations: destructive,
     },
     async ({ collectionId }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         await client.deleteCollection(collectionId);
-        return result({ deleted: true, collectionId }, "Board wurde endgültig gelöscht.");
+        return result(
+          { deleted: true, collectionId },
+          "Board wurde endgültig gelöscht.",
+        );
       }),
   );
 
@@ -253,8 +291,15 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, type, data, tags: pinTags }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const pin = await client.createPin(collectionId, { type, data, tags: pinTags });
-        return result({ pin }, `${kindName(type)}-Pin wurde bei (${pin.grid.x}, ${pin.grid.y}) erstellt.`);
+        const pin = await client.createPin(collectionId, {
+          type,
+          data,
+          tags: pinTags,
+        });
+        return result(
+          { pin },
+          `${kindName(type)}-Pin wurde bei (${pin.grid.x}, ${pin.grid.y}) erstellt.`,
+        );
       }),
   );
 
@@ -275,7 +320,11 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, pinId, ...changes }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const pin = await client.updatePin(collectionId, pinId, defined(changes));
+        const pin = await client.updatePin(
+          collectionId,
+          pinId,
+          defined(changes),
+        );
         return result({ pin }, "Pin wurde aktualisiert.");
       }),
   );
@@ -286,13 +335,23 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
       title: "Stoasis pin move",
       description:
         "Move/resize a solo pin on the 160×240 clip board and set its layer. Read get_board first. Stacked pins must be released or their stack moved instead.",
-      inputSchema: { collectionId: id, pinId: id, x: pinX, y, heightClips: height, layer },
+      inputSchema: {
+        collectionId: id,
+        pinId: id,
+        x: pinX,
+        y,
+        heightClips: height,
+        layer,
+      },
       annotations: write,
     },
     async ({ collectionId, pinId, ...grid }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         const pin = await client.updatePin(collectionId, pinId, { grid });
-        return result({ pin }, `Pin wurde nach (${grid.x}, ${grid.y}) verschoben.`);
+        return result(
+          { pin },
+          `Pin wurde nach (${grid.x}, ${grid.y}) verschoben.`,
+        );
       }),
   );
 
@@ -300,14 +359,18 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "delete_pin",
     {
       title: "Stoasis pin delete",
-      description: "Permanently delete a pin and update any containing stack. Only use after user confirmation.",
+      description:
+        "Permanently delete a pin and update any containing stack. Only use after user confirmation.",
       inputSchema: { collectionId: id, pinId: id },
       annotations: destructive,
     },
     async ({ collectionId, pinId }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         await client.deletePin(collectionId, pinId);
-        return result({ deleted: true, pinId }, "Pin wurde endgültig gelöscht.");
+        return result(
+          { deleted: true, pinId },
+          "Pin wurde endgültig gelöscht.",
+        );
       }),
   );
 
@@ -316,7 +379,11 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     {
       title: "Stoasis pin comment",
       description: "Add a comment to a Stoasis pin as the signed-in user.",
-      inputSchema: { collectionId: id, pinId: id, body: z.string().trim().min(1).max(5_000) },
+      inputSchema: {
+        collectionId: id,
+        pinId: id,
+        body: z.string().trim().min(1).max(5_000),
+      },
       annotations: write,
     },
     async ({ collectionId, pinId, body }, extra) =>
@@ -330,14 +397,22 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "create_stack",
     {
       title: "Stoasis stack create",
-      description: "Create a spatial stack from two currently unstacked pins. The stack appears at the target pin position.",
+      description:
+        "Create a spatial stack from two currently unstacked pins. The stack appears at the target pin position.",
       inputSchema: { collectionId: id, sourcePinId: id, targetPinId: id },
       annotations: write,
     },
     async ({ collectionId, sourcePinId, targetPinId }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const stack = await client.createStack(collectionId, sourcePinId, targetPinId);
-        return result({ stack }, `Stack mit ${stack.children.length} Pins wurde erstellt.`);
+        const stack = await client.createStack(
+          collectionId,
+          sourcePinId,
+          targetPinId,
+        );
+        return result(
+          { stack },
+          `Stack mit ${stack.children.length} Pins wurde erstellt.`,
+        );
       }),
   );
 
@@ -352,7 +427,10 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     async ({ collectionId, stackId, pinId }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         const stack = await client.addPinToStack(collectionId, stackId, pinId);
-        return result({ stack }, `Pin wurde zum Stack hinzugefügt; der Stack enthält jetzt ${stack.children.length} Pins.`);
+        return result(
+          { stack },
+          `Pin wurde zum Stack hinzugefügt; der Stack enthält jetzt ${stack.children.length} Pins.`,
+        );
       }),
   );
 
@@ -360,7 +438,8 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "update_stack",
     {
       title: "Stoasis stack update",
-      description: "Move a stack, change its layer, or expand/collapse it. Read get_board first.",
+      description:
+        "Move a stack, change its layer, or expand/collapse it. Read get_board first.",
       inputSchema: {
         collectionId: id,
         stackId: id,
@@ -373,7 +452,11 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, stackId, ...changes }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const stack = await client.updateStack(collectionId, stackId, defined(changes));
+        const stack = await client.updateStack(
+          collectionId,
+          stackId,
+          defined(changes),
+        );
         return result({ stack }, "Stack wurde aktualisiert.");
       }),
   );
@@ -382,19 +465,44 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "release_pin_from_stack",
     {
       title: "Stoasis stack release pin",
-      description: "Release one pin from a stack and place it at explicit board coordinates and layer.",
-      inputSchema: { collectionId: id, stackId: id, pinId: id, x: pinX, y, layer },
+      description:
+        "Release one pin from a stack and place it at explicit board coordinates and layer.",
+      inputSchema: {
+        collectionId: id,
+        stackId: id,
+        pinId: id,
+        x: pinX,
+        y,
+        layer,
+      },
       annotations: write,
     },
-    async ({ collectionId, stackId, pinId, x: targetX, y: targetY, layer: targetLayer }, extra) =>
+    async (
+      {
+        collectionId,
+        stackId,
+        pinId,
+        x: targetX,
+        y: targetY,
+        layer: targetLayer,
+      },
+      extra,
+    ) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const elements = await client.releasePinFromStack(collectionId, stackId, {
-          pinId,
-          x: targetX,
-          y: targetY,
-          layer: targetLayer,
-        });
-        return result({ elements }, `Pin wurde bei (${targetX}, ${targetY}) aus dem Stack gelöst.`);
+        const elements = await client.releasePinFromStack(
+          collectionId,
+          stackId,
+          {
+            pinId,
+            x: targetX,
+            y: targetY,
+            layer: targetLayer,
+          },
+        );
+        return result(
+          { elements },
+          `Pin wurde bei (${targetX}, ${targetY}) aus dem Stack gelöst.`,
+        );
       }),
   );
 
@@ -402,14 +510,18 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "dissolve_stack",
     {
       title: "Stoasis stack dissolve",
-      description: "Dissolve a stack and restore its pins to their former positions. Pins are not deleted.",
+      description:
+        "Dissolve a stack and restore its pins to their former positions. Pins are not deleted.",
       inputSchema: { collectionId: id, stackId: id },
       annotations: destructive,
     },
     async ({ collectionId, stackId }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         const elements = await client.dissolveStack(collectionId, stackId);
-        return result({ elements }, "Stack wurde aufgelöst; die Pins bleiben erhalten.");
+        return result(
+          { elements },
+          "Stack wurde aufgelöst; die Pins bleiben erhalten.",
+        );
       }),
   );
 
@@ -417,14 +529,27 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "create_connector",
     {
       title: "Stoasis connector create",
-      description: "Create a visual relationship line between two different pins.",
-      inputSchema: { collectionId: id, sourcePinId: id, targetPinId: id, colorVariant: color.default("accent") },
+      description:
+        "Create a visual relationship line between two different pins.",
+      inputSchema: {
+        collectionId: id,
+        sourcePinId: id,
+        targetPinId: id,
+        colorVariant: color.default("accent"),
+      },
       annotations: write,
     },
     async ({ collectionId, sourcePinId, targetPinId, colorVariant }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const connector = await client.createConnector(collectionId, { sourcePinId, targetPinId, colorVariant });
-        return result({ connector }, "Verbindung zwischen den Pins wurde erstellt.");
+        const connector = await client.createConnector(collectionId, {
+          sourcePinId,
+          targetPinId,
+          colorVariant,
+        });
+        return result(
+          { connector },
+          "Verbindung zwischen den Pins wurde erstellt.",
+        );
       }),
   );
 
@@ -432,14 +557,18 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "delete_connector",
     {
       title: "Stoasis connector delete",
-      description: "Delete one visual connector. The connected pins remain unchanged.",
+      description:
+        "Delete one visual connector. The connected pins remain unchanged.",
       inputSchema: { collectionId: id, connectorId: id },
       annotations: destructive,
     },
     async ({ collectionId, connectorId }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         await client.deleteConnector(collectionId, connectorId);
-        return result({ deleted: true, connectorId }, "Verbindung wurde entfernt.");
+        return result(
+          { deleted: true, connectorId },
+          "Verbindung wurde entfernt.",
+        );
       }),
   );
 
@@ -447,7 +576,8 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "create_zone",
     {
       title: "Stoasis zone create",
-      description: "Create a colored rectangular zone behind board content to group a spatial area.",
+      description:
+        "Create a colored rectangular zone behind board content to group a spatial area.",
       inputSchema: {
         collectionId: id,
         x,
@@ -461,7 +591,11 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, ...zone }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const created = await client.createDecoration(collectionId, "zones", defined(zone));
+        const created = await client.createDecoration(
+          collectionId,
+          "zones",
+          defined(zone),
+        );
         return result({ zone: created }, "Board-Zone wurde erstellt.");
       }),
   );
@@ -485,7 +619,12 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, zoneId, ...changes }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const zone = await client.updateDecoration(collectionId, "zones", zoneId, defined(changes));
+        const zone = await client.updateDecoration(
+          collectionId,
+          "zones",
+          zoneId,
+          defined(changes),
+        );
         return result({ zone }, "Board-Zone wurde aktualisiert.");
       }),
   );
@@ -494,7 +633,8 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "delete_zone",
     {
       title: "Stoasis zone delete",
-      description: "Delete a board zone. Pins within the area remain unchanged.",
+      description:
+        "Delete a board zone. Pins within the area remain unchanged.",
       inputSchema: { collectionId: id, zoneId: id },
       annotations: destructive,
     },
@@ -522,7 +662,11 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, ...label }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const created = await client.createDecoration(collectionId, "labels", label);
+        const created = await client.createDecoration(
+          collectionId,
+          "labels",
+          label,
+        );
         return result({ label: created }, "Freies Board-Label wurde erstellt.");
       }),
   );
@@ -545,7 +689,12 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, labelId, ...changes }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const label = await client.updateDecoration(collectionId, "labels", labelId, defined(changes));
+        const label = await client.updateDecoration(
+          collectionId,
+          "labels",
+          labelId,
+          defined(changes),
+        );
         return result({ label }, "Board-Label wurde aktualisiert.");
       }),
   );
@@ -561,7 +710,10 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     async ({ collectionId, labelId }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         await client.deleteDecoration(collectionId, "labels", labelId);
-        return result({ deleted: true, labelId }, "Board-Label wurde entfernt.");
+        return result(
+          { deleted: true, labelId },
+          "Board-Label wurde entfernt.",
+        );
       }),
   );
 
@@ -585,7 +737,11 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, ...sticker }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const created = await client.createDecoration(collectionId, "stickers", sticker);
+        const created = await client.createDecoration(
+          collectionId,
+          "stickers",
+          sticker,
+        );
         return result({ sticker: created }, "Board-Sticker wurde erstellt.");
       }),
   );
@@ -594,7 +750,8 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     "update_sticker",
     {
       title: "Stoasis sticker update",
-      description: "Move, resize, rotate, recolor, relayer or change a board sticker motif.",
+      description:
+        "Move, resize, rotate, recolor, relayer or change a board sticker motif.",
       inputSchema: {
         collectionId: id,
         stickerId: id,
@@ -611,7 +768,12 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     },
     async ({ collectionId, stickerId, ...changes }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
-        const sticker = await client.updateDecoration(collectionId, "stickers", stickerId, defined(changes));
+        const sticker = await client.updateDecoration(
+          collectionId,
+          "stickers",
+          stickerId,
+          defined(changes),
+        );
         return result({ sticker }, "Board-Sticker wurde aktualisiert.");
       }),
   );
@@ -627,7 +789,10 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
     async ({ collectionId, stickerId }, extra) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         await client.deleteDecoration(collectionId, "stickers", stickerId);
-        return result({ deleted: true, stickerId }, "Board-Sticker wurde entfernt.");
+        return result(
+          { deleted: true, stickerId },
+          "Board-Sticker wurde entfernt.",
+        );
       }),
   );
 
@@ -642,13 +807,16 @@ async function withApi(
 ): Promise<CallToolResult> {
   try {
     const auth = extra.authInfo;
-    if (!auth) throw new ToolAccessError("Keine gültige MCP-Anmeldung vorhanden.");
+    if (!auth)
+      throw new ToolAccessError("Keine gültige MCP-Anmeldung vorhanden.");
     if (!auth.scopes.includes(requiredScope)) {
       throw new ToolAccessError(`Die Berechtigung ${requiredScope} fehlt.`);
     }
     const session = auth.extra?.stoasisSession;
     if (typeof session !== "string" || !session) {
-      throw new ToolAccessError("Die Stoasis-Sitzung fehlt. Bitte verbinde den MCP erneut.");
+      throw new ToolAccessError(
+        "Die Stoasis-Sitzung fehlt. Bitte verbinde den MCP erneut.",
+      );
     }
     return await operation(new StoasisApiClient(config, session));
   } catch (error) {
@@ -657,17 +825,23 @@ async function withApi(
   }
 }
 
-function result(structuredContent: Record<string, unknown>, text: string): CallToolResult {
+function result(
+  structuredContent: Record<string, unknown>,
+  text: string,
+): CallToolResult {
   return { structuredContent, content: [{ type: "text", text }] };
 }
 
 function defined(value: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(value).filter(([, entry]) => entry !== undefined));
+  return Object.fromEntries(
+    Object.entries(value).filter(([, entry]) => entry !== undefined),
+  );
 }
 
 function toolErrorMessage(error: unknown): string {
   if (error instanceof StoasisApiError) {
-    if (error.status === 401) return "Die Stoasis-Anmeldung ist abgelaufen. Bitte verbinde den MCP in ChatGPT erneut.";
+    if (error.status === 401)
+      return "Die Stoasis-Anmeldung ist abgelaufen. Bitte verbinde den MCP in ChatGPT erneut.";
     return error.message;
   }
   if (error instanceof ToolAccessError) return error.message;
@@ -675,7 +849,14 @@ function toolErrorMessage(error: unknown): string {
 }
 
 function kindName(type: string): string {
-  return ({ link: "Link", note: "Notiz", photo: "Foto", skill: "Skill" } as Record<string, string>)[type] ?? "";
+  return (
+    (
+      { link: "Link", note: "Notiz", photo: "Foto", skill: "Skill" } as Record<
+        string,
+        string
+      >
+    )[type] ?? ""
+  );
 }
 
 class ToolAccessError extends Error {}

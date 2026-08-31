@@ -1,4 +1,9 @@
-import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import {
+  createCipheriv,
+  createDecipheriv,
+  createHash,
+  randomBytes,
+} from "node:crypto";
 
 export function randomToken(bytes = 32): string {
   return randomBytes(bytes).toString("base64url");
@@ -16,9 +21,14 @@ export class SecretBox {
   encrypt(plaintext: string): string {
     const iv = randomBytes(12);
     const cipher = createCipheriv("aes-256-gcm", this.key, iv);
-    const ciphertext = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
+    const ciphertext = Buffer.concat([
+      cipher.update(plaintext, "utf8"),
+      cipher.final(),
+    ]);
     const tag = cipher.getAuthTag();
-    return [iv, tag, ciphertext].map((part) => part.toString("base64url")).join(".");
+    return [iv, tag, ciphertext]
+      .map((part) => part.toString("base64url"))
+      .join(".");
   }
 
   decrypt(payload: string): string {

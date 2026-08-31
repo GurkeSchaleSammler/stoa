@@ -48,8 +48,13 @@ export class StoasisApiClient {
     });
     const auth = await parseResponse<AuthResponse>(response);
     const sessionCookie = this.extractSessionCookie(response.headers);
-    if (!sessionCookie) throw new StoasisApiError(502, "Stoasis hat keine Sitzung ausgestellt.");
-    return { sessionCookie, user: auth.user, expiresAt: new Date(auth.expiresAt) };
+    if (!sessionCookie)
+      throw new StoasisApiError(502, "Stoasis hat keine Sitzung ausgestellt.");
+    return {
+      sessionCookie,
+      user: auth.user,
+      expiresAt: new Date(auth.expiresAt),
+    };
   }
 
   async me(): Promise<User> {
@@ -57,40 +62,67 @@ export class StoasisApiClient {
   }
 
   async listCollections(filter = "all"): Promise<CollectionSummary[]> {
-    return this.request<CollectionSummary[]>(`/api/collections?filter=${encodeURIComponent(filter)}`);
+    return this.request<CollectionSummary[]>(
+      `/api/collections?filter=${encodeURIComponent(filter)}`,
+    );
   }
 
   async getCollection(collectionId: string): Promise<CollectionDetail> {
-    return this.request<CollectionDetail>(`/api/collections/${encodeURIComponent(collectionId)}`);
+    return this.request<CollectionDetail>(
+      `/api/collections/${encodeURIComponent(collectionId)}`,
+    );
   }
 
   async createCollection(body: Record<string, unknown>): Promise<unknown> {
-    return this.request("/api/collections", { method: "POST", body: json(body) });
-  }
-
-  async updateCollection(collectionId: string, body: Record<string, unknown>): Promise<unknown> {
-    return this.request(`/api/collections/${encodeURIComponent(collectionId)}`, {
-      method: "PATCH",
-      body: json(body),
-    });
-  }
-
-  async deleteCollection(collectionId: string): Promise<void> {
-    await this.request(`/api/collections/${encodeURIComponent(collectionId)}`, { method: "DELETE" });
-  }
-
-  async listPins(collectionId: string): Promise<Pin[]> {
-    return this.request<Pin[]>(`/api/collections/${encodeURIComponent(collectionId)}/pins`);
-  }
-
-  async createPin(collectionId: string, body: Record<string, unknown>): Promise<Pin> {
-    return this.request<Pin>(`/api/collections/${encodeURIComponent(collectionId)}/pins`, {
+    return this.request("/api/collections", {
       method: "POST",
       body: json(body),
     });
   }
 
-  async updatePin(collectionId: string, pinId: string, body: Record<string, unknown>): Promise<Pin> {
+  async updateCollection(
+    collectionId: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    return this.request(
+      `/api/collections/${encodeURIComponent(collectionId)}`,
+      {
+        method: "PATCH",
+        body: json(body),
+      },
+    );
+  }
+
+  async deleteCollection(collectionId: string): Promise<void> {
+    await this.request(`/api/collections/${encodeURIComponent(collectionId)}`, {
+      method: "DELETE",
+    });
+  }
+
+  async listPins(collectionId: string): Promise<Pin[]> {
+    return this.request<Pin[]>(
+      `/api/collections/${encodeURIComponent(collectionId)}/pins`,
+    );
+  }
+
+  async createPin(
+    collectionId: string,
+    body: Record<string, unknown>,
+  ): Promise<Pin> {
+    return this.request<Pin>(
+      `/api/collections/${encodeURIComponent(collectionId)}/pins`,
+      {
+        method: "POST",
+        body: json(body),
+      },
+    );
+  }
+
+  async updatePin(
+    collectionId: string,
+    pinId: string,
+    body: Record<string, unknown>,
+  ): Promise<Pin> {
     return this.request<Pin>(
       `/api/collections/${encodeURIComponent(collectionId)}/pins/${encodeURIComponent(pinId)}`,
       { method: "PATCH", body: json(body) },
@@ -104,7 +136,11 @@ export class StoasisApiClient {
     );
   }
 
-  async addComment(collectionId: string, pinId: string, body: string): Promise<unknown> {
+  async addComment(
+    collectionId: string,
+    pinId: string,
+    body: string,
+  ): Promise<unknown> {
     return this.request(
       `/api/collections/${encodeURIComponent(collectionId)}/pins/${encodeURIComponent(pinId)}/comments`,
       { method: "POST", body: json({ body }) },
@@ -117,21 +153,33 @@ export class StoasisApiClient {
     );
   }
 
-  async createStack(collectionId: string, sourcePinId: string, targetPinId: string): Promise<StackBlock> {
+  async createStack(
+    collectionId: string,
+    sourcePinId: string,
+    targetPinId: string,
+  ): Promise<StackBlock> {
     return this.request<StackBlock>(
       `/api/collections/${encodeURIComponent(collectionId)}/board-elements/stacks`,
       { method: "POST", body: json({ sourcePinId, targetPinId }) },
     );
   }
 
-  async addPinToStack(collectionId: string, stackId: string, pinId: string): Promise<StackBlock> {
+  async addPinToStack(
+    collectionId: string,
+    stackId: string,
+    pinId: string,
+  ): Promise<StackBlock> {
     return this.request<StackBlock>(
       `/api/collections/${encodeURIComponent(collectionId)}/board-elements/stacks/${encodeURIComponent(stackId)}/children/${encodeURIComponent(pinId)}`,
       { method: "POST" },
     );
   }
 
-  async updateStack(collectionId: string, stackId: string, body: Record<string, unknown>): Promise<StackBlock> {
+  async updateStack(
+    collectionId: string,
+    stackId: string,
+    body: Record<string, unknown>,
+  ): Promise<StackBlock> {
     return this.request<StackBlock>(
       `/api/collections/${encodeURIComponent(collectionId)}/board-elements/stacks/${encodeURIComponent(stackId)}`,
       { method: "PATCH", body: json(body) },
@@ -149,21 +197,30 @@ export class StoasisApiClient {
     );
   }
 
-  async dissolveStack(collectionId: string, stackId: string): Promise<BoardElements> {
+  async dissolveStack(
+    collectionId: string,
+    stackId: string,
+  ): Promise<BoardElements> {
     return this.request<BoardElements>(
       `/api/collections/${encodeURIComponent(collectionId)}/board-elements/stacks/${encodeURIComponent(stackId)}`,
       { method: "DELETE" },
     );
   }
 
-  async createConnector(collectionId: string, body: Record<string, unknown>): Promise<Connector> {
+  async createConnector(
+    collectionId: string,
+    body: Record<string, unknown>,
+  ): Promise<Connector> {
     return this.request<Connector>(
       `/api/collections/${encodeURIComponent(collectionId)}/board-elements/connectors`,
       { method: "POST", body: json(body) },
     );
   }
 
-  async deleteConnector(collectionId: string, connectorId: string): Promise<void> {
+  async deleteConnector(
+    collectionId: string,
+    connectorId: string,
+  ): Promise<void> {
     await this.request(
       `/api/collections/${encodeURIComponent(collectionId)}/board-elements/connectors/${encodeURIComponent(connectorId)}`,
       { method: "DELETE" },
@@ -204,7 +261,11 @@ export class StoasisApiClient {
     );
   }
 
-  async search(query: string, type?: string, tag?: string): Promise<SearchResult[]> {
+  async search(
+    query: string,
+    type?: string,
+    tag?: string,
+  ): Promise<SearchResult[]> {
     const params = new URLSearchParams({ q: query });
     if (type) params.set("type", type);
     if (tag) params.set("tag", tag);
@@ -212,15 +273,22 @@ export class StoasisApiClient {
   }
 
   async previewLink(url: string): Promise<Record<string, unknown>> {
-    return this.request<Record<string, unknown>>(`/api/links/preview?url=${encodeURIComponent(url)}`);
+    return this.request<Record<string, unknown>>(
+      `/api/links/preview?url=${encodeURIComponent(url)}`,
+    );
   }
 
-  private async request<T = unknown>(path: string, init: RequestInit = {}): Promise<T> {
-    if (!this.sessionCookie) throw new StoasisApiError(401, "Stoasis-Sitzung fehlt.");
+  private async request<T = unknown>(
+    path: string,
+    init: RequestInit = {},
+  ): Promise<T> {
+    if (!this.sessionCookie)
+      throw new StoasisApiError(401, "Stoasis-Sitzung fehlt.");
     const headers = new Headers(init.headers);
     headers.set("Accept", "application/json");
     headers.set("Cookie", this.sessionCookie);
-    if (init.body && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
+    if (init.body && !headers.has("Content-Type"))
+      headers.set("Content-Type", "application/json");
     const response = await this.fetch(path, { ...init, headers });
     return parseResponse<T>(response);
   }
@@ -244,7 +312,9 @@ export class StoasisApiClient {
 
   private extractSessionCookie(headers: Headers): string | undefined {
     const extended = headers as Headers & { getSetCookie?: () => string[] };
-    const values = extended.getSetCookie?.() ?? (headers.get("set-cookie") ? [headers.get("set-cookie") as string] : []);
+    const values =
+      extended.getSetCookie?.() ??
+      (headers.get("set-cookie") ? [headers.get("set-cookie") as string] : []);
     const prefix = `${this.config.stoasisSessionCookie}=`;
     const cookie = values.find((value) => value.trim().startsWith(prefix));
     return cookie?.split(";", 1)[0]?.trim();
@@ -262,8 +332,13 @@ async function parseResponse<T>(response: Response): Promise<T> {
     ? ((await response.json()) as Record<string, unknown>)
     : { message: await response.text() };
   if (!response.ok) {
-    const message = typeof body.message === "string" ? body.message : `Stoasis API error (${response.status}).`;
-    const fieldErrors = isStringRecord(body.fieldErrors) ? body.fieldErrors : undefined;
+    const message =
+      typeof body.message === "string"
+        ? body.message
+        : `Stoasis API error (${response.status}).`;
+    const fieldErrors = isStringRecord(body.fieldErrors)
+      ? body.fieldErrors
+      : undefined;
     throw new StoasisApiError(response.status, message, fieldErrors);
   }
   return body as T;

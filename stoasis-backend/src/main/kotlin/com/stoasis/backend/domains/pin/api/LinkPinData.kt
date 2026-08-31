@@ -1,6 +1,5 @@
 package com.stoasis.backend.domains.pin.api
 
-
 data class LinkPinData(
     val url: String,
     val title: String,

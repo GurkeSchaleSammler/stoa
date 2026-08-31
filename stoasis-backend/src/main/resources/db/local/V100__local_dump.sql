@@ -1,5 +1,3 @@
--- Lokaler reproduzierbarer DB-Dump. Passwort aller Testnutzer: test1234.
--- {noop} ist ausschliesslich für das local-Profil; neu registrierte Passwörter werden BCrypt-gehasht.
 INSERT INTO users (id, email, name, avatar_url, plan, password_hash, created_at) VALUES
 ('user-du', 'du@stoa.test', 'Du', NULL, 'free', '{noop}test1234', TIMESTAMP WITH TIME ZONE '2026-01-15 09:00:00+00'),
 ('user-anna', 'anna@stoa.test', 'Anna Lehmann', NULL, 'free', '{noop}test1234', TIMESTAMP WITH TIME ZONE '2026-02-03 14:20:00+00'),

@@ -1,635 +1,871 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stoa – Wireframe Mockup</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.6.0/tabler-icons.min.css">
-<style>
-  :root {
-    --bg-page: #f5f4f0;
-    --surface-0: #eeeee9;
-    --surface-1: #f5f4f0;
-    --surface-2: #ffffff;
-    --text-primary: #1a1a1a;
-    --text-secondary: #6b6b6b;
-    --text-muted: #9c9c9c;
-    --border: #ddd;
-    --border-strong: #bbb;
-    --radius: 8px;
-    --accent-bg: #e8f0fe;
-    --accent-text: #1a56db;
-    --accent-fill: #1a56db;
-    --success-bg: #e6f5ec;
-    --success-text: #15803d;
-    --warning-bg: #fef9e7;
-    --warning-text: #92750c;
-    --danger-bg: #fde8e8;
-    --danger-text: #b91c1c;
-    --pro-bg: #f0ebfe;
-    --pro-text: #6d28d9;
-    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stoa – Wireframe Mockup</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.6.0/tabler-icons.min.css"
+    />
+    <style>
+      :root {
+        --bg-page: #f5f4f0;
+        --surface-0: #eeeee9;
+        --surface-1: #f5f4f0;
+        --surface-2: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #6b6b6b;
+        --text-muted: #9c9c9c;
+        --border: #ddd;
+        --border-strong: #bbb;
+        --radius: 8px;
+        --accent-bg: #e8f0fe;
+        --accent-text: #1a56db;
+        --accent-fill: #1a56db;
+        --success-bg: #e6f5ec;
+        --success-text: #15803d;
+        --warning-bg: #fef9e7;
+        --warning-text: #92750c;
+        --danger-bg: #fde8e8;
+        --danger-text: #b91c1c;
+        --pro-bg: #f0ebfe;
+        --pro-text: #6d28d9;
+        --font-sans:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+      }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg-page: #1a1a1a;
-      --surface-0: #222222;
-      --surface-1: #1a1a1a;
-      --surface-2: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #a0a0a0;
-      --text-muted: #6b6b6b;
-      --border: #3a3a3a;
-      --border-strong: #555;
-      --accent-bg: #1e2d4a;
-      --accent-text: #7bb3f7;
-      --accent-fill: #5a9cf5;
-      --success-bg: #1a2e22;
-      --success-text: #6ee7a0;
-      --warning-bg: #2e2a1a;
-      --warning-text: #e8d88e;
-      --danger-bg: #2e1a1a;
-      --danger-text: #f7a0a0;
-      --pro-bg: #251e3a;
-      --pro-text: #b49efa;
-    }
-  }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg-page: #1a1a1a;
+          --surface-0: #222222;
+          --surface-1: #1a1a1a;
+          --surface-2: #2a2a2a;
+          --text-primary: #e8e8e8;
+          --text-secondary: #a0a0a0;
+          --text-muted: #6b6b6b;
+          --border: #3a3a3a;
+          --border-strong: #555;
+          --accent-bg: #1e2d4a;
+          --accent-text: #7bb3f7;
+          --accent-fill: #5a9cf5;
+          --success-bg: #1a2e22;
+          --success-text: #6ee7a0;
+          --warning-bg: #2e2a1a;
+          --warning-text: #e8d88e;
+          --danger-bg: #2e1a1a;
+          --danger-text: #f7a0a0;
+          --pro-bg: #251e3a;
+          --pro-text: #b49efa;
+        }
+      }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: var(--font-sans);
-    background: var(--bg-page);
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 24px;
-  }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font-sans);
+        background: var(--bg-page);
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 24px;
+      }
 
-  .stoa {
-    background: var(--surface-1);
-    border-radius: 12px;
-    border: 0.5px solid var(--border);
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: 260px minmax(0, 1fr);
-    height: 680px;
-    width: 100%;
-    max-width: 1100px;
-    box-shadow: 0 8px 32px rgba(0,0,0,.08);
-  }
+      .stoa {
+        background: var(--surface-1);
+        border-radius: 12px;
+        border: 0.5px solid var(--border);
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 260px minmax(0, 1fr);
+        height: 680px;
+        width: 100%;
+        max-width: 1100px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      }
 
-  /* ─── Sidebar ─── */
-  .side {
-    border-right: 0.5px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: var(--surface-2);
-  }
-  .side-head {
-    padding: 16px 16px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .side-head h2 {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-  }
-  .side-head button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: var(--text-secondary);
-    padding: 4px;
-  }
-  .side-tabs {
-    display: flex;
-    padding: 12px 16px 0;
-    gap: 4px;
-  }
-  .side-tab {
-    padding: 6px 11px;
-    font-size: 12px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    transition: background .15s;
-    border: none;
-    background: none;
-  }
-  .side-tab:hover { background: var(--surface-0); }
-  .side-tab.active {
-    background: var(--accent-bg);
-    color: var(--accent-text);
-    font-weight: 500;
-  }
-  .side-search {
-    padding: 10px 16px;
-  }
-  .search-wrap {
-    position: relative;
-  }
-  .search-wrap i {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    color: var(--text-muted);
-  }
-  .search-box {
-    width: 100%;
-    padding: 8px 10px 8px 32px;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 12px;
-    background: var(--surface-1);
-    color: var(--text-primary);
-    outline: none;
-  }
-  .search-box:focus { border-color: var(--accent-fill); }
-  .search-box::placeholder { color: var(--text-muted); }
-  .side-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 4px 8px;
-  }
-  .coll-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 10px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: background .12s;
-  }
-  .coll-item:hover { background: var(--surface-0); }
-  .coll-item.active { background: var(--accent-bg); }
-  .coll-emoji { font-size: 20px; width: 30px; text-align: center; flex-shrink: 0; }
-  .coll-info { flex: 1; min-width: 0; }
-  .coll-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .coll-meta {
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .coll-badge {
-    font-size: 9px;
-    padding: 1px 6px;
-    border-radius: 8px;
-    font-weight: 500;
-  }
-  .coll-badge.shared { background: var(--accent-bg); color: var(--accent-text); }
-  .coll-badge.personal { background: var(--surface-0); color: var(--text-secondary); border: 0.5px solid var(--border); }
-  .coll-avatars {
-    display: flex;
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-  .coll-avatars span {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8px;
-    font-weight: 600;
-    margin-left: -5px;
-    border: 2px solid var(--surface-2);
-  }
-  .side-new {
-    margin: 8px 12px;
-    padding: 10px;
-    border: 1.5px dashed var(--border);
-    border-radius: var(--radius);
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: border-color .15s, color .15s;
-  }
-  .side-new:hover {
-    border-color: var(--accent-fill);
-    color: var(--accent-text);
-  }
+      .side {
+        border-right: 0.5px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: var(--surface-2);
+      }
+      .side-head {
+        padding: 16px 16px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .side-head h2 {
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.3px;
+      }
+      .side-head button {
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--text-secondary);
+        padding: 4px;
+      }
+      .side-tabs {
+        display: flex;
+        padding: 12px 16px 0;
+        gap: 4px;
+      }
+      .side-tab {
+        padding: 6px 11px;
+        font-size: 12px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        transition: background 0.15s;
+        border: none;
+        background: none;
+      }
+      .side-tab:hover {
+        background: var(--surface-0);
+      }
+      .side-tab.active {
+        background: var(--accent-bg);
+        color: var(--accent-text);
+        font-weight: 500;
+      }
+      .side-search {
+        padding: 10px 16px;
+      }
+      .search-wrap {
+        position: relative;
+      }
+      .search-wrap i {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+      .search-box {
+        width: 100%;
+        padding: 8px 10px 8px 32px;
+        border: 0.5px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 12px;
+        background: var(--surface-1);
+        color: var(--text-primary);
+        outline: none;
+      }
+      .search-box:focus {
+        border-color: var(--accent-fill);
+      }
+      .search-box::placeholder {
+        color: var(--text-muted);
+      }
+      .side-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 4px 8px;
+      }
+      .coll-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: background 0.12s;
+      }
+      .coll-item:hover {
+        background: var(--surface-0);
+      }
+      .coll-item.active {
+        background: var(--accent-bg);
+      }
+      .coll-emoji {
+        font-size: 20px;
+        width: 30px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .coll-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .coll-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .coll-meta {
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .coll-badge {
+        font-size: 9px;
+        padding: 1px 6px;
+        border-radius: 8px;
+        font-weight: 500;
+      }
+      .coll-badge.shared {
+        background: var(--accent-bg);
+        color: var(--accent-text);
+      }
+      .coll-badge.personal {
+        background: var(--surface-0);
+        color: var(--text-secondary);
+        border: 0.5px solid var(--border);
+      }
+      .coll-avatars {
+        display: flex;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+      .coll-avatars span {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        font-weight: 600;
+        margin-left: -5px;
+        border: 2px solid var(--surface-2);
+      }
+      .side-new {
+        margin: 8px 12px;
+        padding: 10px;
+        border: 1.5px dashed var(--border);
+        border-radius: var(--radius);
+        text-align: center;
+        font-size: 12px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+      }
+      .side-new:hover {
+        border-color: var(--accent-fill);
+        color: var(--accent-text);
+      }
 
-  /* ─── Main ─── */
-  .main {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .main-bar {
-    padding: 12px 20px;
-    border-bottom: 0.5px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--surface-2);
-  }
-  .main-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    min-width: 0;
-  }
-  .main-title h3 { font-size: 16px; font-weight: 500; }
-  .main-members {
-    display: flex;
-    align-items: center;
-    margin-left: 8px;
-  }
-  .main-members span {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 600;
-    margin-left: -6px;
-    border: 2px solid var(--surface-2);
-  }
-  .main-actions {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-  }
-  .main-actions button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: var(--text-secondary);
-    padding: 6px;
-    border-radius: var(--radius);
-    transition: background .12s;
-  }
-  .main-actions button:hover { background: var(--surface-0); }
-  .view-toggle {
-    display: flex;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .view-btn {
-    padding: 5px 9px;
-    cursor: pointer;
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    font-size: 15px;
-    transition: background .12s;
-  }
-  .view-btn.active { background: var(--accent-bg); color: var(--accent-text); }
-  .settings-hint {
-    font-size: 11px;
-    color: var(--text-muted);
-    padding: 6px 20px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border-bottom: 0.5px solid var(--border);
-    background: var(--surface-2);
-  }
+      .main {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .main-bar {
+        padding: 12px 20px;
+        border-bottom: 0.5px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--surface-2);
+      }
+      .main-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+      }
+      .main-title h3 {
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .main-members {
+        display: flex;
+        align-items: center;
+        margin-left: 8px;
+      }
+      .main-members span {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 600;
+        margin-left: -6px;
+        border: 2px solid var(--surface-2);
+      }
+      .main-actions {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+      .main-actions button {
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--text-secondary);
+        padding: 6px;
+        border-radius: var(--radius);
+        transition: background 0.12s;
+      }
+      .main-actions button:hover {
+        background: var(--surface-0);
+      }
+      .view-toggle {
+        display: flex;
+        border: 0.5px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .view-btn {
+        padding: 5px 9px;
+        cursor: pointer;
+        color: var(--text-muted);
+        background: none;
+        border: none;
+        font-size: 15px;
+        transition: background 0.12s;
+      }
+      .view-btn.active {
+        background: var(--accent-bg);
+        color: var(--accent-text);
+      }
+      .settings-hint {
+        font-size: 11px;
+        color: var(--text-muted);
+        padding: 6px 20px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border-bottom: 0.5px solid var(--border);
+        background: var(--surface-2);
+      }
 
-  /* ─── Board (whiteboard canvas) ─── */
-  .board {
-    flex: 1;
-    overflow: auto;
-    padding: 20px;
-    background: var(--surface-0);
-    background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
-  .pins {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-    align-content: start;
-  }
+      .board {
+        flex: 1;
+        overflow: auto;
+        padding: 20px;
+        background: var(--surface-0);
+        background-image: radial-gradient(
+          circle,
+          var(--border) 1px,
+          transparent 1px
+        );
+        background-size: 24px 24px;
+      }
+      .pins {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+        align-content: start;
+      }
 
-  /* ─── Pin cards ─── */
-  .pin {
-    background: var(--surface-2);
-    border: 0.5px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform .15s, box-shadow .15s;
-    position: relative;
-  }
-  .pin:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,.08);
-  }
-  .pin-type {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    z-index: 1;
-  }
-  .pin-type.link { background: var(--accent-bg); color: var(--accent-text); }
-  .pin-type.note { background: var(--warning-bg); color: var(--warning-text); }
-  .pin-type.photo { background: var(--success-bg); color: var(--success-text); }
-  .pin-img {
-    width: 100%;
-    height: 110px;
-    background: var(--surface-0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .pin-img i { font-size: 36px; color: var(--text-muted); }
-  .pin-img.photo-bg {
-    background: linear-gradient(135deg, var(--surface-0) 0%, var(--border) 100%);
-  }
-  .pin-body { padding: 12px 14px; }
-  .pin-body h4 {
-    font-size: 13px;
-    font-weight: 500;
-    margin: 0 0 4px;
-    color: var(--text-primary);
-    line-height: 1.35;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .pin-body p {
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin: 0;
-    line-height: 1.35;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .pin-foot {
-    padding: 8px 14px;
-    border-top: 0.5px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .pin-foot span { font-size: 10px; color: var(--text-muted); }
-  .pin-foot .pin-by { display: flex; align-items: center; gap: 4px; }
+      .pin {
+        background: var(--surface-2);
+        border: 0.5px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+        position: relative;
+      }
+      .pin:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      }
+      .pin-type {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        z-index: 1;
+      }
+      .pin-type.link {
+        background: var(--accent-bg);
+        color: var(--accent-text);
+      }
+      .pin-type.note {
+        background: var(--warning-bg);
+        color: var(--warning-text);
+      }
+      .pin-type.photo {
+        background: var(--success-bg);
+        color: var(--success-text);
+      }
+      .pin-img {
+        width: 100%;
+        height: 110px;
+        background: var(--surface-0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pin-img i {
+        font-size: 36px;
+        color: var(--text-muted);
+      }
+      .pin-img.photo-bg {
+        background: linear-gradient(
+          135deg,
+          var(--surface-0) 0%,
+          var(--border) 100%
+        );
+      }
+      .pin-body {
+        padding: 12px 14px;
+      }
+      .pin-body h4 {
+        font-size: 13px;
+        font-weight: 500;
+        margin: 0 0 4px;
+        color: var(--text-primary);
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .pin-body p {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin: 0;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .pin-foot {
+        padding: 8px 14px;
+        border-top: 0.5px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .pin-foot span {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+      .pin-foot .pin-by {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
 
-  /* ─── Note-style pins ─── */
-  .pin-note {
-    padding: 16px;
-    min-height: 90px;
-  }
-  .pin-note.yellow { background: #fef9e7; border-color: #e6d589; }
-  .pin-note.yellow h4, .pin-note.yellow p { color: #6b5d1e; }
-  .pin-note.blue { background: #e8f4fd; border-color: #91c4e4; }
-  .pin-note.blue h4, .pin-note.blue p { color: #1a4a6b; }
+      .pin-note {
+        padding: 16px;
+        min-height: 90px;
+      }
+      .pin-note.yellow {
+        background: #fef9e7;
+        border-color: #e6d589;
+      }
+      .pin-note.yellow h4,
+      .pin-note.yellow p {
+        color: #6b5d1e;
+      }
+      .pin-note.blue {
+        background: #e8f4fd;
+        border-color: #91c4e4;
+      }
+      .pin-note.blue h4,
+      .pin-note.blue p {
+        color: #1a4a6b;
+      }
 
-  @media (prefers-color-scheme: dark) {
-    .pin-note.yellow { background: #3a3520; border-color: #5c5228; }
-    .pin-note.yellow h4, .pin-note.yellow p { color: #e8d88e; }
-    .pin-note.blue { background: #1a2e3d; border-color: #2a4a62; }
-    .pin-note.blue h4, .pin-note.blue p { color: #8ec3e8; }
-  }
+      @media (prefers-color-scheme: dark) {
+        .pin-note.yellow {
+          background: #3a3520;
+          border-color: #5c5228;
+        }
+        .pin-note.yellow h4,
+        .pin-note.yellow p {
+          color: #e8d88e;
+        }
+        .pin-note.blue {
+          background: #1a2e3d;
+          border-color: #2a4a62;
+        }
+        .pin-note.blue h4,
+        .pin-note.blue p {
+          color: #8ec3e8;
+        }
+      }
 
-  /* ─── Add pin ─── */
-  .add-pin {
-    border: 1.5px dashed var(--border);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 140px;
-    cursor: pointer;
-    transition: border-color .15s, color .15s;
-    gap: 8px;
-    color: var(--text-muted);
-  }
-  .add-pin:hover {
-    border-color: var(--accent-fill);
-    color: var(--accent-text);
-  }
-  .add-pin i { font-size: 28px; }
-  .add-pin span { font-size: 12px; }
-</style>
-</head>
-<body>
-
-<div class="stoa">
-  <div class="side">
-    <div class="side-head">
-      <h2>Stoa</h2>
-      <button aria-label="Suchen"><i class="ti ti-search" style="font-size:18px"></i></button>
-    </div>
-    <div class="side-tabs">
-      <button class="side-tab active">Alle</button>
-      <button class="side-tab">Persönlich</button>
-      <button class="side-tab">Geteilt</button>
-    </div>
-    <div class="side-search">
-      <div class="search-wrap">
-        <i class="ti ti-search"></i>
-        <input class="search-box" type="text" placeholder="Sammlungen durchsuchen …">
-      </div>
-    </div>
-    <div class="side-list">
-      <div class="coll-item active">
-        <div class="coll-emoji">🗺️</div>
-        <div class="coll-info">
-          <div class="coll-name">Japan-Trip 2027</div>
-          <div class="coll-meta"><span class="coll-badge shared">geteilt</span> 12 pins</div>
+      .add-pin {
+        border: 1.5px dashed var(--border);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 140px;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+        gap: 8px;
+        color: var(--text-muted);
+      }
+      .add-pin:hover {
+        border-color: var(--accent-fill);
+        color: var(--accent-text);
+      }
+      .add-pin i {
+        font-size: 28px;
+      }
+      .add-pin span {
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stoa">
+      <div class="side">
+        <div class="side-head">
+          <h2>Stoa</h2>
+          <button aria-label="Suchen">
+            <i class="ti ti-search" style="font-size: 18px"></i>
+          </button>
         </div>
-        <div class="coll-avatars">
-          <span style="background:var(--accent-bg);color:var(--accent-text)">Du</span>
-          <span style="background:var(--success-bg);color:var(--success-text)">AL</span>
-          <span style="background:var(--warning-bg);color:var(--warning-text)">MK</span>
+        <div class="side-tabs">
+          <button class="side-tab active">Alle</button>
+          <button class="side-tab">Persönlich</button>
+          <button class="side-tab">Geteilt</button>
         </div>
-      </div>
-      <div class="coll-item">
-        <div class="coll-emoji">💻</div>
-        <div class="coll-info">
-          <div class="coll-name">Stoa Dev-Ressourcen</div>
-          <div class="coll-meta"><span class="coll-badge personal">persönlich</span> 24 pins</div>
-        </div>
-      </div>
-      <div class="coll-item">
-        <div class="coll-emoji">🍳</div>
-        <div class="coll-info">
-          <div class="coll-name">Rezepte mit Sara</div>
-          <div class="coll-meta"><span class="coll-badge shared">geteilt</span> 8 pins</div>
-        </div>
-        <div class="coll-avatars">
-          <span style="background:var(--accent-bg);color:var(--accent-text)">Du</span>
-          <span style="background:var(--danger-bg);color:var(--danger-text)">SR</span>
-        </div>
-      </div>
-      <div class="coll-item">
-        <div class="coll-emoji">📐</div>
-        <div class="coll-info">
-          <div class="coll-name">UI/UX Inspiration</div>
-          <div class="coll-meta"><span class="coll-badge personal">persönlich</span> 31 pins</div>
-        </div>
-      </div>
-      <div class="coll-item">
-        <div class="coll-emoji">📚</div>
-        <div class="coll-info">
-          <div class="coll-name">Lesekreis Bücher</div>
-          <div class="coll-meta"><span class="coll-badge shared">geteilt</span> 6 pins</div>
-        </div>
-        <div class="coll-avatars">
-          <span style="background:var(--accent-bg);color:var(--accent-text)">Du</span>
-          <span style="background:var(--success-bg);color:var(--success-text)">AL</span>
-          <span style="background:var(--pro-bg);color:var(--pro-text)">JR</span>
-          <span style="background:var(--surface-0);color:var(--text-muted)">+2</span>
-        </div>
-      </div>
-      <div class="coll-item">
-        <div class="coll-emoji">🏠</div>
-        <div class="coll-info">
-          <div class="coll-name">Wohnungssuche Zürich</div>
-          <div class="coll-meta"><span class="coll-badge shared">geteilt</span> 17 pins</div>
-        </div>
-        <div class="coll-avatars">
-          <span style="background:var(--accent-bg);color:var(--accent-text)">Du</span>
-          <span style="background:var(--warning-bg);color:var(--warning-text)">MK</span>
-        </div>
-      </div>
-    </div>
-    <div class="side-new"><i class="ti ti-plus" style="font-size:14px;vertical-align:-2px"></i> Neue Sammlung</div>
-  </div>
-
-  <div class="main">
-    <div class="main-bar">
-      <div class="main-title">
-        <span style="font-size:22px">🗺️</span>
-        <h3>Japan-Trip 2027</h3>
-        <div class="main-members">
-          <span style="background:var(--accent-bg);color:var(--accent-text)">Du</span>
-          <span style="background:var(--success-bg);color:var(--success-text)">AL</span>
-          <span style="background:var(--warning-bg);color:var(--warning-text)">MK</span>
-        </div>
-      </div>
-      <div class="main-actions">
-        <div class="view-toggle">
-          <button class="view-btn active" aria-label="Board-Ansicht"><i class="ti ti-layout-grid"></i></button>
-          <button class="view-btn" aria-label="Listen-Ansicht"><i class="ti ti-list"></i></button>
-        </div>
-        <button aria-label="Filtern"><i class="ti ti-filter" style="font-size:17px"></i></button>
-        <button aria-label="Einladen"><i class="ti ti-user-plus" style="font-size:17px"></i></button>
-        <button aria-label="Einstellungen"><i class="ti ti-settings" style="font-size:17px"></i></button>
-      </div>
-    </div>
-    <div class="settings-hint">
-      <i class="ti ti-info-circle" style="font-size:13px"></i>
-      Erlaubte Typen: Links, Notizen, Fotos · Anna: read-write · Marco: read
-    </div>
-
-    <div class="board">
-      <div class="pins">
-
-        <div class="pin">
-          <div class="pin-type link"><i class="ti ti-link"></i></div>
-          <div class="pin-img"><i class="ti ti-plane"></i></div>
-          <div class="pin-body">
-            <h4>Tokyo → Kyoto Shinkansen guide</h4>
-            <p>Everything about the bullet train pass, reservations and scenic route tips.</p>
+        <div class="side-search">
+          <div class="search-wrap">
+            <i class="ti ti-search"></i>
+            <input
+              class="search-box"
+              type="text"
+              placeholder="Sammlungen durchsuchen …"
+            />
           </div>
-          <div class="pin-foot"><span class="pin-by"><i class="ti ti-user" style="font-size:10px"></i> Du</span><span>vor 2 h</span></div>
         </div>
-
-        <div class="pin">
-          <div class="pin-type photo"><i class="ti ti-photo"></i></div>
-          <div class="pin-img photo-bg" style="height:140px"><i class="ti ti-mountain" style="font-size:40px"></i></div>
-          <div class="pin-body">
-            <h4>Fuji Aussichtspunkt</h4>
-            <p>Bester Spot laut Reddit: Chureito Pagoda, morgens um 6</p>
+        <div class="side-list">
+          <div class="coll-item active">
+            <div class="coll-emoji">🗺️</div>
+            <div class="coll-info">
+              <div class="coll-name">Japan-Trip 2027</div>
+              <div class="coll-meta">
+                <span class="coll-badge shared">geteilt</span> 12 pins
+              </div>
+            </div>
+            <div class="coll-avatars">
+              <span
+                style="background: var(--accent-bg); color: var(--accent-text)"
+                >Du</span
+              >
+              <span
+                style="
+                  background: var(--success-bg);
+                  color: var(--success-text);
+                "
+                >AL</span
+              >
+              <span
+                style="
+                  background: var(--warning-bg);
+                  color: var(--warning-text);
+                "
+                >MK</span
+              >
+            </div>
           </div>
-          <div class="pin-foot"><span class="pin-by"><i class="ti ti-user" style="font-size:10px"></i> Anna</span><span>gestern</span></div>
-        </div>
-
-        <div class="pin">
-          <div class="pin-type note"><i class="ti ti-note"></i></div>
-          <div class="pin-note yellow">
-            <h4>Packliste</h4>
-            <p>JR Pass bestellen (21 Tage vorher!)<br>Adapter Typ A/B<br>Suica-Karte am Flughafen<br>Pocket WiFi reservieren<br>Reisepass: läuft 03/2028 ✓</p>
+          <div class="coll-item">
+            <div class="coll-emoji">💻</div>
+            <div class="coll-info">
+              <div class="coll-name">Stoa Dev-Ressourcen</div>
+              <div class="coll-meta">
+                <span class="coll-badge personal">persönlich</span> 24 pins
+              </div>
+            </div>
           </div>
-          <div class="pin-foot"><span class="pin-by"><i class="ti ti-user" style="font-size:10px"></i> Du</span><span>vor 3 T.</span></div>
-        </div>
-
-        <div class="pin">
-          <div class="pin-type link"><i class="ti ti-link"></i></div>
-          <div class="pin-img"><i class="ti ti-bowl"></i></div>
-          <div class="pin-body">
-            <h4>Best ramen in Tokyo 2026</h4>
-            <p>Updated list from a local food blogger with neighborhood maps.</p>
+          <div class="coll-item">
+            <div class="coll-emoji">🍳</div>
+            <div class="coll-info">
+              <div class="coll-name">Rezepte mit Sara</div>
+              <div class="coll-meta">
+                <span class="coll-badge shared">geteilt</span> 8 pins
+              </div>
+            </div>
+            <div class="coll-avatars">
+              <span
+                style="background: var(--accent-bg); color: var(--accent-text)"
+                >Du</span
+              >
+              <span
+                style="background: var(--danger-bg); color: var(--danger-text)"
+                >SR</span
+              >
+            </div>
           </div>
-          <div class="pin-foot"><span class="pin-by"><i class="ti ti-user" style="font-size:10px"></i> Marco</span><span>vor 1 W.</span></div>
-        </div>
-
-        <div class="pin">
-          <div class="pin-type note"><i class="ti ti-note"></i></div>
-          <div class="pin-note blue">
-            <h4>Budget pro Person</h4>
-            <p>Flug: ~600 €<br>Hotels: ~1200 € (14 Nächte)<br>JR Pass: ~280 €<br>Essen/Tag: ~40 €<br>Gesamt: ~2640 €</p>
+          <div class="coll-item">
+            <div class="coll-emoji">📐</div>
+            <div class="coll-info">
+              <div class="coll-name">UI/UX Inspiration</div>
+              <div class="coll-meta">
+                <span class="coll-badge personal">persönlich</span> 31 pins
+              </div>
+            </div>
           </div>
-          <div class="pin-foot"><span class="pin-by"><i class="ti ti-user" style="font-size:10px"></i> Anna</span><span>vor 5 T.</span></div>
-        </div>
-
-        <div class="pin">
-          <div class="pin-type link"><i class="ti ti-link"></i></div>
-          <div class="pin-img"><i class="ti ti-building-skyscraper"></i></div>
-          <div class="pin-body">
-            <h4>Airbnb Shibuya loft</h4>
-            <p>2-Zimmer, 3 Min zur Station, 89 €/Nacht, Superhost</p>
+          <div class="coll-item">
+            <div class="coll-emoji">📚</div>
+            <div class="coll-info">
+              <div class="coll-name">Lesekreis Bücher</div>
+              <div class="coll-meta">
+                <span class="coll-badge shared">geteilt</span> 6 pins
+              </div>
+            </div>
+            <div class="coll-avatars">
+              <span
+                style="background: var(--accent-bg); color: var(--accent-text)"
+                >Du</span
+              >
+              <span
+                style="
+                  background: var(--success-bg);
+                  color: var(--success-text);
+                "
+                >AL</span
+              >
+              <span style="background: var(--pro-bg); color: var(--pro-text)"
+                >JR</span
+              >
+              <span
+                style="background: var(--surface-0); color: var(--text-muted)"
+                >+2</span
+              >
+            </div>
           </div>
-          <div class="pin-foot"><span class="pin-by"><i class="ti ti-user" style="font-size:10px"></i> Du</span><span>vor 1 W.</span></div>
-        </div>
-
-        <div class="pin">
-          <div class="pin-type photo"><i class="ti ti-photo"></i></div>
-          <div class="pin-img photo-bg" style="height:120px"><i class="ti ti-torii" style="font-size:38px"></i></div>
-          <div class="pin-body">
-            <h4>Fushimi Inari Schrein</h4>
+          <div class="coll-item">
+            <div class="coll-emoji">🏠</div>
+            <div class="coll-info">
+              <div class="coll-name">Wohnungssuche Zürich</div>
+              <div class="coll-meta">
+                <span class="coll-badge shared">geteilt</span> 17 pins
+              </div>
+            </div>
+            <div class="coll-avatars">
+              <span
+                style="background: var(--accent-bg); color: var(--accent-text)"
+                >Du</span
+              >
+              <span
+                style="
+                  background: var(--warning-bg);
+                  color: var(--warning-text);
+                "
+                >MK</span
+              >
+            </div>
           </div>
-          <div class="pin-foot"><span class="pin-by"><i class="ti ti-user" style="font-size:10px"></i> Marco</span><span>vor 2 W.</span></div>
+        </div>
+        <div class="side-new">
+          <i
+            class="ti ti-plus"
+            style="font-size: 14px; vertical-align: -2px"
+          ></i>
+          Neue Sammlung
+        </div>
+      </div>
+
+      <div class="main">
+        <div class="main-bar">
+          <div class="main-title">
+            <span style="font-size: 22px">🗺️</span>
+            <h3>Japan-Trip 2027</h3>
+            <div class="main-members">
+              <span
+                style="background: var(--accent-bg); color: var(--accent-text)"
+                >Du</span
+              >
+              <span
+                style="
+                  background: var(--success-bg);
+                  color: var(--success-text);
+                "
+                >AL</span
+              >
+              <span
+                style="
+                  background: var(--warning-bg);
+                  color: var(--warning-text);
+                "
+                >MK</span
+              >
+            </div>
+          </div>
+          <div class="main-actions">
+            <div class="view-toggle">
+              <button class="view-btn active" aria-label="Board-Ansicht">
+                <i class="ti ti-layout-grid"></i>
+              </button>
+              <button class="view-btn" aria-label="Listen-Ansicht">
+                <i class="ti ti-list"></i>
+              </button>
+            </div>
+            <button aria-label="Filtern">
+              <i class="ti ti-filter" style="font-size: 17px"></i>
+            </button>
+            <button aria-label="Einladen">
+              <i class="ti ti-user-plus" style="font-size: 17px"></i>
+            </button>
+            <button aria-label="Einstellungen">
+              <i class="ti ti-settings" style="font-size: 17px"></i>
+            </button>
+          </div>
+        </div>
+        <div class="settings-hint">
+          <i class="ti ti-info-circle" style="font-size: 13px"></i>
+          Erlaubte Typen: Links, Notizen, Fotos · Anna: read-write · Marco: read
         </div>
 
-        <div class="add-pin">
-          <i class="ti ti-pin"></i>
-          <span>Pin hinzufügen</span>
-        </div>
+        <div class="board">
+          <div class="pins">
+            <div class="pin">
+              <div class="pin-type link"><i class="ti ti-link"></i></div>
+              <div class="pin-img"><i class="ti ti-plane"></i></div>
+              <div class="pin-body">
+                <h4>Tokyo → Kyoto Shinkansen guide</h4>
+                <p>
+                  Everything about the bullet train pass, reservations and
+                  scenic route tips.
+                </p>
+              </div>
+              <div class="pin-foot">
+                <span class="pin-by"
+                  ><i class="ti ti-user" style="font-size: 10px"></i> Du</span
+                ><span>vor 2 h</span>
+              </div>
+            </div>
 
+            <div class="pin">
+              <div class="pin-type photo"><i class="ti ti-photo"></i></div>
+              <div class="pin-img photo-bg" style="height: 140px">
+                <i class="ti ti-mountain" style="font-size: 40px"></i>
+              </div>
+              <div class="pin-body">
+                <h4>Fuji Aussichtspunkt</h4>
+                <p>Bester Spot laut Reddit: Chureito Pagoda, morgens um 6</p>
+              </div>
+              <div class="pin-foot">
+                <span class="pin-by"
+                  ><i class="ti ti-user" style="font-size: 10px"></i> Anna</span
+                ><span>gestern</span>
+              </div>
+            </div>
+
+            <div class="pin">
+              <div class="pin-type note"><i class="ti ti-note"></i></div>
+              <div class="pin-note yellow">
+                <h4>Packliste</h4>
+                <p>
+                  JR Pass bestellen (21 Tage vorher!)<br />Adapter Typ A/B<br />Suica-Karte
+                  am Flughafen<br />Pocket WiFi reservieren<br />Reisepass:
+                  läuft 03/2028 ✓
+                </p>
+              </div>
+              <div class="pin-foot">
+                <span class="pin-by"
+                  ><i class="ti ti-user" style="font-size: 10px"></i> Du</span
+                ><span>vor 3 T.</span>
+              </div>
+            </div>
+
+            <div class="pin">
+              <div class="pin-type link"><i class="ti ti-link"></i></div>
+              <div class="pin-img"><i class="ti ti-bowl"></i></div>
+              <div class="pin-body">
+                <h4>Best ramen in Tokyo 2026</h4>
+                <p>
+                  Updated list from a local food blogger with neighborhood maps.
+                </p>
+              </div>
+              <div class="pin-foot">
+                <span class="pin-by"
+                  ><i class="ti ti-user" style="font-size: 10px"></i>
+                  Marco</span
+                ><span>vor 1 W.</span>
+              </div>
+            </div>
+
+            <div class="pin">
+              <div class="pin-type note"><i class="ti ti-note"></i></div>
+              <div class="pin-note blue">
+                <h4>Budget pro Person</h4>
+                <p>
+                  Flug: ~600 €<br />Hotels: ~1200 € (14 Nächte)<br />JR Pass:
+                  ~280 €<br />Essen/Tag: ~40 €<br />Gesamt: ~2640 €
+                </p>
+              </div>
+              <div class="pin-foot">
+                <span class="pin-by"
+                  ><i class="ti ti-user" style="font-size: 10px"></i> Anna</span
+                ><span>vor 5 T.</span>
+              </div>
+            </div>
+
+            <div class="pin">
+              <div class="pin-type link"><i class="ti ti-link"></i></div>
+              <div class="pin-img">
+                <i class="ti ti-building-skyscraper"></i>
+              </div>
+              <div class="pin-body">
+                <h4>Airbnb Shibuya loft</h4>
+                <p>2-Zimmer, 3 Min zur Station, 89 €/Nacht, Superhost</p>
+              </div>
+              <div class="pin-foot">
+                <span class="pin-by"
+                  ><i class="ti ti-user" style="font-size: 10px"></i> Du</span
+                ><span>vor 1 W.</span>
+              </div>
+            </div>
+
+            <div class="pin">
+              <div class="pin-type photo"><i class="ti ti-photo"></i></div>
+              <div class="pin-img photo-bg" style="height: 120px">
+                <i class="ti ti-torii" style="font-size: 38px"></i>
+              </div>
+              <div class="pin-body">
+                <h4>Fushimi Inari Schrein</h4>
+              </div>
+              <div class="pin-foot">
+                <span class="pin-by"
+                  ><i class="ti ti-user" style="font-size: 10px"></i>
+                  Marco</span
+                ><span>vor 2 W.</span>
+              </div>
+            </div>
+
+            <div class="add-pin">
+              <i class="ti ti-pin"></i>
+              <span>Pin hinzufügen</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
-</body>
+  </body>
 </html>

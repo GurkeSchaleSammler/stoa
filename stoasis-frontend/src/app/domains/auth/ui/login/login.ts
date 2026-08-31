@@ -6,13 +6,6 @@ import { AppIconComponent } from '../../../../shared/ui/app-icon';
 import { LoginMode } from '../../data/models/login-mode';
 import { LoginFormValue } from '../../data/models/login-form-value';
 
-// ─── Login UI Component ───────────────────────────────────────────
-// KEINE Logik. Keine injects. Keine Service-Aufrufe.
-// Bekommt alles per input(), feuert alles per output().
-// OnPush by default (Angular 20+).
-//
-// Selector-Konvention: ui-*
-
 @Component({
   selector: 'ui-login',
   standalone: true,
@@ -22,7 +15,6 @@ import { LoginFormValue } from '../../data/models/login-form-value';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  // ── Inputs (Signals vom Feature) ────────────────────────────
   readonly mode = input.required<LoginMode>();
   readonly isLoading = input(false);
   readonly error = input<string | null>(null);
@@ -31,17 +23,13 @@ export class LoginComponent {
   readonly submitLabel = input('');
   readonly notice = input<string | null>(null);
 
-  // ── Outputs (Events an Feature) ─────────────────────────────
   readonly onSubmit = output<LoginFormValue>();
   readonly onModeSwitch = output<LoginMode>();
   readonly onTogglePassword = output<void>();
   readonly onClearError = output<void>();
 
-  // ── Template-lokaler State (nur Form-Binding) ───────────────
   email = '';
   password = '';
-
-  // ── Template-Methoden (nur Delegation, keine Logik) ─────────
 
   submit(): void {
     this.onSubmit.emit({ email: this.email, password: this.password });

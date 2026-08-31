@@ -9,24 +9,36 @@ describe("Stoasis MCP contract", () => {
     const config = loadConfig({ NODE_ENV: "test" });
     const server = createStoasisMcpServer(config);
     const client = new Client({ name: "test-client", version: "1.0.0" });
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    const [clientTransport, serverTransport] =
+      InMemoryTransport.createLinkedPair();
+    await Promise.all([
+      server.connect(serverTransport),
+      client.connect(clientTransport),
+    ]);
 
     const tools = await client.listTools();
     const names = tools.tools.map((tool) => tool.name);
     expect(names).toHaveLength(29);
-    expect(names).toEqual(expect.arrayContaining([
-      "get_board",
-      "render_board",
-      "move_pin",
-      "create_stack",
-      "create_connector",
-      "create_zone",
-      "create_label",
-      "create_sticker",
-    ]));
-    expect(tools.tools.find((tool) => tool.name === "delete_board")?.annotations?.destructiveHint).toBe(true);
-    expect(tools.tools.find((tool) => tool.name === "get_board")?.annotations?.readOnlyHint).toBe(true);
+    expect(names).toEqual(
+      expect.arrayContaining([
+        "get_board",
+        "render_board",
+        "move_pin",
+        "create_stack",
+        "create_connector",
+        "create_zone",
+        "create_label",
+        "create_sticker",
+      ]),
+    );
+    expect(
+      tools.tools.find((tool) => tool.name === "delete_board")?.annotations
+        ?.destructiveHint,
+    ).toBe(true);
+    expect(
+      tools.tools.find((tool) => tool.name === "get_board")?.annotations
+        ?.readOnlyHint,
+    ).toBe(true);
     const destructiveNames = tools.tools
       .filter((tool) => tool.annotations?.destructiveHint)
       .map((tool) => tool.name)
@@ -42,7 +54,11 @@ describe("Stoasis MCP contract", () => {
     ]);
 
     const resources = await client.listResources();
-    expect(resources.resources.some((resource) => resource.uri === "ui://stoasis/board.html")).toBe(true);
+    expect(
+      resources.resources.some(
+        (resource) => resource.uri === "ui://stoasis/board.html",
+      ),
+    ).toBe(true);
 
     await client.close();
     await server.close();

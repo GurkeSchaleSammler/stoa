@@ -15,10 +15,6 @@ import { RegisterRequest } from '../models/register-request';
 import { MagicLinkRequest } from '../models/magic-link-request';
 import { VerifyTokenRequest } from '../models/verify-token-request';
 
-// ─── Auth Application Service ─────────────────────────────────────
-// Orchestriert Auth-Flows. Hält den globalen Auth-State als Signals.
-// Wird vom Feature konsumiert, nie direkt von UI-Components.
-
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = inject(AuthApi);
@@ -28,10 +24,8 @@ export class AuthService {
   private readonly snackbars = inject(SnackbarService);
   private sessionChecked = false;
 
-  // ── State (privat beschreibbar, öffentlich readonly) ──────────
   private readonly state = signal<AuthState>(initialAuthState);
 
-  // ── Öffentliche Signals (readonly, für Features/Guards) ───────
   readonly user = computed<User | null>(() => this.state().user);
   readonly status = computed<AuthStatus>(() => this.state().status);
   readonly error = computed<string | null>(() => this.state().error);
@@ -39,8 +33,6 @@ export class AuthService {
     () => this.state().status === 'authenticated' && this.session.isAuthenticated(),
   );
   readonly isLoading = computed(() => this.state().status === 'loading');
-
-  // ── Commands ──────────────────────────────────────────────────
 
   login(request: LoginRequest): void {
     this.setLoading();
@@ -106,7 +98,6 @@ export class AuthService {
       .subscribe();
   }
 
-  /** Beim App-Start aufrufen – prüft ob eine gültige Session existiert */
   checkSession(): void {
     this.ensureSession().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
@@ -143,7 +134,6 @@ export class AuthService {
           this.router.navigateByUrl('/auth/login');
         }),
         catchError(() => {
-          // Auch bei Fehler lokal ausloggen
           this.snackbars.error('errors.logout');
           this.state.set(initialAuthState);
           this.session.setUser(null);
@@ -158,8 +148,6 @@ export class AuthService {
   clearError(): void {
     this.state.update((s) => ({ ...s, error: null }));
   }
-
-  // ── Private Helpers ───────────────────────────────────────────
 
   private setLoading(): void {
     this.state.update((s) => ({ ...s, status: 'loading', error: null }));

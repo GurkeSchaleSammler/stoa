@@ -5,12 +5,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { RegisterFieldErrors } from '../../data/models/register-field-errors';
 import { RegisterFormValue } from '../../data/models/register-form-value';
 
-// ─── Register UI Component ────────────────────────────────────────
-// KEINE Logik. Keine injects. Keine Validierung.
-// Bekommt Fehler bereits fertig berechnet vom Feature.
-//
-// Selector-Konvention: ui-*
-
 @Component({
   selector: 'ui-register',
   standalone: true,
@@ -20,13 +14,11 @@ import { RegisterFormValue } from '../../data/models/register-form-value';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-  // ── Inputs (Signals vom Feature) ────────────────────────────
   readonly isLoading = input(false);
   readonly error = input<string | null>(null);
   readonly fieldErrors = input.required<RegisterFieldErrors>();
   readonly canSubmit = input(true);
 
-  // ── Outputs (Events an Feature) ─────────────────────────────
   readonly onSubmit = output<RegisterFormValue>();
   readonly onFieldChange = output<{
     field: keyof RegisterFieldErrors;
@@ -35,13 +27,10 @@ export class RegisterComponent {
   }>();
   readonly onClearError = output<void>();
 
-  // ── Template-lokaler State (nur Form-Binding) ───────────────
   name = '';
   email = '';
   password = '';
   passwordConfirm = '';
-
-  // ── Template-Methoden (nur Delegation, keine Logik) ─────────
 
   submit(): void {
     this.onSubmit.emit(this.currentForm());

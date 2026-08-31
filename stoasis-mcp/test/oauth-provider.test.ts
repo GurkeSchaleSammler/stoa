@@ -12,10 +12,23 @@ class MockResponse {
   redirectUrl = "";
   headers: Record<string, string> = {};
 
-  status(code: number) { this.statusCode = code; return this; }
-  set(headers: Record<string, string>) { Object.assign(this.headers, headers); return this; }
-  send(body: string) { this.body = body; return this; }
-  redirect(status: number, url: string) { this.statusCode = status; this.redirectUrl = url; return this; }
+  status(code: number) {
+    this.statusCode = code;
+    return this;
+  }
+  set(headers: Record<string, string>) {
+    Object.assign(this.headers, headers);
+    return this;
+  }
+  send(body: string) {
+    this.body = body;
+    return this;
+  }
+  redirect(status: number, url: string) {
+    this.statusCode = status;
+    this.redirectUrl = url;
+    return this;
+  }
 }
 
 const client: OAuthClientInformationFull = {
@@ -39,7 +52,11 @@ describe("StoasisOAuthProvider", () => {
     const storage = new MemoryOAuthStorage();
     await storage.initialize();
     await storage.saveClient(client);
-    const provider = new StoasisOAuthProvider(config, storage, new SecretBox(config.sessionEncryptionKey));
+    const provider = new StoasisOAuthProvider(
+      config,
+      storage,
+      new SecretBox(config.sessionEncryptionKey),
+    );
 
     const fetchMock = vi.fn(async (input: URL | RequestInfo) => {
       const url = String(input);
@@ -51,15 +68,25 @@ describe("StoasisOAuthProvider", () => {
           }),
           {
             status: 200,
-            headers: { "content-type": "application/json", "set-cookie": "stoasis_session=session-secret; HttpOnly; Path=/" },
+            headers: {
+              "content-type": "application/json",
+              "set-cookie": "stoasis_session=session-secret; HttpOnly; Path=/",
+            },
           },
         );
       }
       if (url.endsWith("/api/auth/me")) {
-        return new Response(JSON.stringify({ id: "user-1", email: "sam@example.com", name: "Sam" }), {
-          status: 200,
-          headers: { "content-type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({
+            id: "user-1",
+            email: "sam@example.com",
+            name: "Sam",
+          }),
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          },
+        );
       }
       throw new Error(`Unexpected URL ${url}`);
     });
@@ -85,13 +112,20 @@ describe("StoasisOAuthProvider", () => {
 
     const loginResponse = new MockResponse();
     await provider.completeAuthorization(
-      { transactionId, csrfToken, email: "sam@example.com", password: "correct horse" },
+      {
+        transactionId,
+        csrfToken,
+        email: "sam@example.com",
+        password: "correct horse",
+      },
       loginResponse as unknown as ExpressResponse,
     );
     const callback = new URL(loginResponse.redirectUrl);
     const code = callback.searchParams.get("code") as string;
     expect(callback.searchParams.get("state")).toBe("state-1");
-    expect(await provider.challengeForAuthorizationCode(client, code)).toBe("challenge-1");
+    expect(await provider.challengeForAuthorizationCode(client, code)).toBe(
+      "challenge-1",
+    );
 
     const tokens = await provider.exchangeAuthorizationCode(
       client,
@@ -102,7 +136,11 @@ describe("StoasisOAuthProvider", () => {
     );
     const auth = await provider.verifyAccessToken(tokens.access_token);
     expect(auth.extra?.stoasisSession).toBe("stoasis_session=session-secret");
-    expect(auth.extra?.stoasisUser).toEqual({ id: "user-1", email: "sam@example.com", name: "Sam" });
+    expect(auth.extra?.stoasisUser).toEqual({
+      id: "user-1",
+      email: "sam@example.com",
+      name: "Sam",
+    });
 
     const refreshed = await provider.exchangeRefreshToken(
       client,
@@ -112,7 +150,12 @@ describe("StoasisOAuthProvider", () => {
     );
     expect(refreshed.access_token).not.toBe(tokens.access_token);
     await expect(
-      provider.exchangeRefreshToken(client, tokens.refresh_token as string, undefined, config.resourceUrl),
+      provider.exchangeRefreshToken(
+        client,
+        tokens.refresh_token as string,
+        undefined,
+        config.resourceUrl,
+      ),
     ).rejects.toThrow(/invalid or expired/i);
   });
 });

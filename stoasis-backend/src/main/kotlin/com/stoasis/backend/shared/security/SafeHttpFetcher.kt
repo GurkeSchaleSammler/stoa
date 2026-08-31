@@ -17,11 +17,6 @@ import javax.net.ssl.SSLSocketFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
-/**
- * Fetches public HTTP resources without delegating DNS resolution to a second connection layer.
- * The validated public IP is the exact address used by the socket, which closes the common
- * DNS-rebinding gap between validation and connection. Redirect targets are validated separately.
- */
 @Component
 class SafeHttpFetcher {
     fun get(rawUrl: String, accept: String, maxBytes: Int): SafeHttpResponse =

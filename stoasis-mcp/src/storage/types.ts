@@ -52,16 +52,31 @@ export interface OAuthStorage {
   saveClient(client: OAuthClientInformationFull): Promise<void>;
 
   savePendingAuthorization(value: PendingAuthorization): Promise<void>;
-  getPendingAuthorization(id: string, csrfHash: string): Promise<PendingAuthorization | undefined>;
-  consumePendingAuthorization(id: string, csrfHash: string): Promise<PendingAuthorization | undefined>;
+  getPendingAuthorization(
+    id: string,
+    csrfHash: string,
+  ): Promise<PendingAuthorization | undefined>;
+  consumePendingAuthorization(
+    id: string,
+    csrfHash: string,
+  ): Promise<PendingAuthorization | undefined>;
 
   saveAuthorizationCode(value: AuthorizationCode): Promise<void>;
-  getAuthorizationCode(codeHash: string, clientId: string): Promise<AuthorizationCode | undefined>;
-  consumeAuthorizationCode(codeHash: string, clientId: string): Promise<AuthorizationCode | undefined>;
+  getAuthorizationCode(
+    codeHash: string,
+    clientId: string,
+  ): Promise<AuthorizationCode | undefined>;
+  consumeAuthorizationCode(
+    codeHash: string,
+    clientId: string,
+  ): Promise<AuthorizationCode | undefined>;
 
   saveToken(value: StoredToken): Promise<void>;
   getAccessToken(tokenHash: string): Promise<StoredToken | undefined>;
-  consumeRefreshToken(tokenHash: string, clientId: string): Promise<StoredToken | undefined>;
+  consumeRefreshToken(
+    tokenHash: string,
+    clientId: string,
+  ): Promise<StoredToken | undefined>;
   revokeToken(tokenHash: string, clientId: string): Promise<void>;
   cleanup(): Promise<void>;
 }

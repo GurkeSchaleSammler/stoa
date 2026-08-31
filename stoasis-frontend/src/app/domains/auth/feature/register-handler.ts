@@ -6,11 +6,6 @@ import { RegisterFieldErrors } from '../data/models/register-field-errors';
 import { noRegisterFieldErrors } from '../data/models/no-register-field-errors';
 import { RegisterFormValue } from '../data/models/register-form-value';
 
-// ─── Register Feature Handler ─────────────────────────────────────
-// Enthält ALLE Logik inkl. Validierung. UI bekommt nur Signals.
-//
-// Selector-Konvention: feature-*
-
 @Component({
   selector: 'feature-register-handler',
   standalone: true,
@@ -31,7 +26,6 @@ import { RegisterFormValue } from '../data/models/register-form-value';
 export class RegisterHandlerComponent {
   protected readonly auth = inject(AuthService);
 
-  // ── Feature-lokaler State ───────────────────────────────────
   readonly fieldErrors = signal<RegisterFieldErrors>(noRegisterFieldErrors);
   private readonly model = signal<RegisterFormValue>({
     name: '',
@@ -49,13 +43,10 @@ export class RegisterHandlerComponent {
     required(path.passwordConfirm);
   });
 
-  // ── Derived Signals ──────────────────────────────────────────
   readonly canSubmit = computed(() => {
     const value = this.model();
     return this.registerForm().valid() && value.passwordConfirm === value.password;
   });
-
-  // ── Event Handlers ────────────────────────────────────────────
 
   handleSubmit(form: RegisterFormValue): void {
     this.model.set(form);
@@ -77,8 +68,6 @@ export class RegisterHandlerComponent {
     const errors = this.validateAll(form);
     this.fieldErrors.update((prev) => ({ ...prev, [field]: errors[field] }));
   }
-
-  // ── Validierungsregeln (reine Domain-Logik) ───────────────────
 
   private validateAll(form: RegisterFormValue): RegisterFieldErrors {
     return {

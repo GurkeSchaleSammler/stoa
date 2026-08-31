@@ -15,7 +15,9 @@ export class MemoryOAuthStorage implements OAuthStorage {
   async initialize(): Promise<void> {}
   async close(): Promise<void> {}
 
-  async getClient(clientId: string): Promise<OAuthClientInformationFull | undefined> {
+  async getClient(
+    clientId: string,
+  ): Promise<OAuthClientInformationFull | undefined> {
     return this.clients.get(clientId);
   }
 
@@ -42,7 +44,8 @@ export class MemoryOAuthStorage implements OAuthStorage {
     csrfHash: string,
   ): Promise<PendingAuthorization | undefined> {
     const value = this.pending.get(id);
-    if (!value || value.csrfHash !== csrfHash || value.expiresAt <= new Date()) return undefined;
+    if (!value || value.csrfHash !== csrfHash || value.expiresAt <= new Date())
+      return undefined;
     return structuredClone(value);
   }
 
@@ -50,9 +53,13 @@ export class MemoryOAuthStorage implements OAuthStorage {
     this.codes.set(value.codeHash, structuredClone(value));
   }
 
-  async getAuthorizationCode(codeHash: string, clientId: string): Promise<AuthorizationCode | undefined> {
+  async getAuthorizationCode(
+    codeHash: string,
+    clientId: string,
+  ): Promise<AuthorizationCode | undefined> {
     const value = this.codes.get(codeHash);
-    if (!value || value.clientId !== clientId || value.expiresAt <= new Date()) return undefined;
+    if (!value || value.clientId !== clientId || value.expiresAt <= new Date())
+      return undefined;
     return structuredClone(value);
   }
 
@@ -83,7 +90,10 @@ export class MemoryOAuthStorage implements OAuthStorage {
     return structuredClone(value);
   }
 
-  async consumeRefreshToken(tokenHash: string, clientId: string): Promise<StoredToken | undefined> {
+  async consumeRefreshToken(
+    tokenHash: string,
+    clientId: string,
+  ): Promise<StoredToken | undefined> {
     const value = this.tokens.get(tokenHash);
     if (
       !value ||
@@ -105,10 +115,13 @@ export class MemoryOAuthStorage implements OAuthStorage {
 
   async cleanup(): Promise<void> {
     const now = new Date();
-    for (const [id, value] of this.pending) if (value.expiresAt <= now) this.pending.delete(id);
-    for (const [id, value] of this.codes) if (value.expiresAt <= now) this.codes.delete(id);
+    for (const [id, value] of this.pending)
+      if (value.expiresAt <= now) this.pending.delete(id);
+    for (const [id, value] of this.codes)
+      if (value.expiresAt <= now) this.codes.delete(id);
     for (const [id, value] of this.tokens) {
-      if (value.expiresAt <= now || value.revokedAt !== undefined) this.tokens.delete(id);
+      if (value.expiresAt <= now || value.revokedAt !== undefined)
+        this.tokens.delete(id);
     }
   }
 }

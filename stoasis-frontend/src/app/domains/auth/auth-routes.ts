@@ -1,9 +1,6 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from './data/application/auth-guard';
 
-// ─── Auth Routes ──────────────────────────────────────────────────
-// Lazy-loaded als eigenes Chunk. GuestGuard verhindert,
-// dass eingeloggte User Login/Register sehen.
 export const AUTH_ROUTES: Routes = [
   {
     path: 'login',

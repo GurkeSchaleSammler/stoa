@@ -1,36 +1,122 @@
-<h2 class="sr-only">Stoa document database model showing embedded and referenced collections</h2>
+<h2 class="sr-only">
+  Stoa document database model showing embedded and referenced collections
+</h2>
 <style>
-.doc-model{display:flex;flex-direction:column;gap:20px;padding:1rem 0}
-.doc-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;overflow:hidden}
-.doc-header{padding:10px 16px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:8px}
-.doc-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px}
-.doc-header h3{font-size:14px;font-weight:500;color:var(--text-primary);margin:0}
-.doc-header span{font-size:11px;color:var(--text-muted);margin-left:auto}
-pre.doc{margin:0;padding:14px 16px;font-family:var(--font-mono);font-size:12px;line-height:1.6;color:var(--text-primary);overflow-x:auto;background:transparent}
-.k{color:var(--text-accent)}
-.v{color:var(--text-secondary)}
-.c{color:var(--text-muted);font-style:italic}
-.embed{border-left:2px solid var(--border-accent);margin:2px 0 2px 16px;padding-left:12px}
-.ref{border-left:2px dashed var(--border-strong);margin:2px 0 2px 16px;padding-left:12px}
-.legend{display:flex;gap:20px;padding:0 4px;font-size:11px;color:var(--text-secondary)}
-.legend-item{display:flex;align-items:center;gap:6px}
-.legend-line{width:20px;height:0;border-top:2px solid var(--border-accent)}
-.legend-line.ref{border-top-style:dashed;border-color:var(--border-strong)}
+  .doc-model {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 1rem 0;
+  }
+  .doc-card {
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .doc-header {
+    padding: 10px 16px;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .doc-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .doc-header h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .doc-header span {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+  pre.doc {
+    margin: 0;
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    overflow-x: auto;
+    background: transparent;
+  }
+  .k {
+    color: var(--text-accent);
+  }
+  .v {
+    color: var(--text-secondary);
+  }
+  .c {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .embed {
+    border-left: 2px solid var(--border-accent);
+    margin: 2px 0 2px 16px;
+    padding-left: 12px;
+  }
+  .ref {
+    border-left: 2px dashed var(--border-strong);
+    margin: 2px 0 2px 16px;
+    padding-left: 12px;
+  }
+  .legend {
+    display: flex;
+    gap: 20px;
+    padding: 0 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-line {
+    width: 20px;
+    height: 0;
+    border-top: 2px solid var(--border-accent);
+  }
+  .legend-line.ref {
+    border-top-style: dashed;
+    border-color: var(--border-strong);
+  }
 </style>
 <div class="doc-model">
-
-<div class="legend">
-  <div class="legend-item"><div class="legend-line"></div> eingebettet (embedded)</div>
-  <div class="legend-item"><div class="legend-line ref"></div> referenziert (by ID)</div>
-</div>
-
-<div class="doc-card">
-  <div class="doc-header">
-    <div class="doc-icon" style="background:var(--bg-accent);color:var(--text-accent)"><i class="ti ti-user" aria-hidden="true"></i></div>
-    <h3>users</h3>
-    <span>1 Dokument pro Nutzer</span>
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-line"></div>
+      eingebettet (embedded)
+    </div>
+    <div class="legend-item">
+      <div class="legend-line ref"></div>
+      referenziert (by ID)
+    </div>
   </div>
-<pre class="doc">{
+
+  <div class="doc-card">
+    <div class="doc-header">
+      <div
+        class="doc-icon"
+        style="background: var(--bg-accent); color: var(--text-accent)"
+      >
+        <i class="ti ti-user" aria-hidden="true"></i>
+      </div>
+      <h3>users</h3>
+      <span>1 Dokument pro Nutzer</span>
+    </div>
+    <pre class="doc">{
   <span class="k">"_id"</span>:         <span class="v">ObjectId</span>,
   <span class="k">"email"</span>:       <span class="v">"anna@mail.ch"</span>,
   <span class="k">"name"</span>:        <span class="v">"Anna Lehmann"</span>,
@@ -42,15 +128,20 @@ pre.doc{margin:0;padding:14px 16px;font-family:var(--font-mono);font-size:12px;l
 </div>  ],
   <span class="k">"created_at"</span>: <span class="v">ISODate</span>
 }</pre>
-</div>
-
-<div class="doc-card">
-  <div class="doc-header">
-    <div class="doc-icon" style="background:var(--bg-success);color:var(--text-success)"><i class="ti ti-folders" aria-hidden="true"></i></div>
-    <h3>collections</h3>
-    <span>1 Dokument pro Sammlung</span>
   </div>
-<pre class="doc">{
+
+  <div class="doc-card">
+    <div class="doc-header">
+      <div
+        class="doc-icon"
+        style="background: var(--bg-success); color: var(--text-success)"
+      >
+        <i class="ti ti-folders" aria-hidden="true"></i>
+      </div>
+      <h3>collections</h3>
+      <span>1 Dokument pro Sammlung</span>
+    </div>
+    <pre class="doc">{
   <span class="k">"_id"</span>:            <span class="v">ObjectId</span>,
   <span class="k">"name"</span>:           <span class="v">"Japan-Trip 2027"</span>,
   <span class="k">"emoji"</span>:          <span class="v">"&#x1f5fa;&#xfe0f;"</span>,
@@ -117,15 +208,27 @@ pre.doc{margin:0;padding:14px 16px;font-family:var(--font-mono);font-size:12px;l
   <span class="k">"created_at"</span>:  <span class="v">ISODate</span>,
   <span class="k">"updated_at"</span>:  <span class="v">ISODate</span>
 }</pre>
-</div>
-
-<div class="doc-card">
-  <div class="doc-header">
-    <div class="doc-icon" style="background:var(--bg-warning);color:var(--text-warning)"><i class="ti ti-file-text" aria-hidden="true"></i></div>
-    <h3>pin_content <span style="font-weight:400;color:var(--text-muted)">(separate Collection)</span></h3>
-    <span>nur f&#xfc;r Lesemodus-Text</span>
   </div>
-<pre class="doc">{                          <span class="c">// ausgelagert wegen Gr&#xf6;sse</span>
+
+  <div class="doc-card">
+    <div class="doc-header">
+      <div
+        class="doc-icon"
+        style="background: var(--bg-warning); color: var(--text-warning)"
+      >
+        <i class="ti ti-file-text" aria-hidden="true"></i>
+      </div>
+      <h3>
+        pin_content
+        <span style="font-weight: 400; color: var(--text-muted)"
+          >(separate Collection)</span
+        >
+      </h3>
+      <span>nur f&#xfc;r Lesemodus-Text</span>
+    </div>
+    <pre
+      class="doc"
+    >{                          <span class="c">// ausgelagert wegen Gr&#xf6;sse</span>
   <span class="k">"_id"</span>:             <span class="v">ObjectId</span>,
 <div class="ref">  <span class="k">"collection_id"</span>:  <span class="v">ObjectId</span>,  <span class="c">// ref &#x2192; collections</span>
   <span class="k">"pin_id"</span>:          <span class="v">"p1"</span>,       <span class="c">// ref &#x2192; pins[].id</span>
@@ -133,6 +236,5 @@ pre.doc{margin:0;padding:14px 16px;font-family:var(--font-mono);font-size:12px;l
   <span class="k">"extracted_text"</span>: <span class="v">"How the tiny..."</span>,
   <span class="k">"word_count"</span>:     <span class="v">2340</span>
 }</pre>
-</div>
-
+  </div>
 </div>

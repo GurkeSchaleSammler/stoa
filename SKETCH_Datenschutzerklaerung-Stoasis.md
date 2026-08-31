@@ -24,22 +24,26 @@ Da Stoasis international genutzt werden kann, gilt diese Erklärung unabhängig 
 ## 3. Welche Daten wir verarbeiten
 
 ### 3.1 Registrierungs- und Kontodaten
+
 - E-Mail-Adresse
 - Nutzername / Anzeigename
 - Passwort (verschlüsselt/gehasht gespeichert)
 - Zeitpunkt der Registrierung
 
 ### 3.2 Nutzerinhalte
+
 - Links, Notizen und Fotos, die du in deinen Boards speicherst
 - Angaben zu geteilten Boards (z.B. wer eingeladen wurde)
 
 ### 3.3 Nutzungs- und Protokolldaten
+
 - IP-Adresse (i.d.R. gekürzt/anonymisiert gespeichert, sofern technisch möglich)
 - Zeitpunkt und Art der Zugriffe (Server-Logs)
 - Geräte- und Browserinformationen (User-Agent)
 - Fehlerprotokolle zur Fehleranalyse
 
 ### 3.4 Cookies und ähnliche Technologien
+
 Wir setzen technisch notwendige Cookies ein (z.B. zur Anmeldung/Session-Verwaltung).
 
 [Platzhalter – abhängig von eurer Entscheidung: Falls ihr euch für ein Analytics-Tool entscheidet, hier ergänzen, z.B.:
@@ -79,6 +83,7 @@ Wir geben deine Daten nicht an Dritte weiter, ausser:
 **Nach Schweizer DSG:** Die Verarbeitung erfolgt im Rahmen der Erfüllung des Nutzungsvertrags sowie aufgrund berechtigter Interessen (z.B. Sicherheit, Weiterentwicklung des Dienstes).
 
 **Nach DSGVO (für Nutzer aus der EU/EWR):**
+
 - Art. 6 Abs. 1 lit. b DSGVO – Vertragserfüllung (Bereitstellung des Dienstes)
 - Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse (z.B. IT-Sicherheit, Missbrauchsprävention)
 - Art. 6 Abs. 1 lit. a DSGVO – Einwilligung (z.B. bei optionalen Cookies/Analytics)
@@ -108,6 +113,7 @@ Du hast – abhängig vom anwendbaren Recht – folgende Rechte bezüglich deine
 Zur Ausübung dieser Rechte kontaktiere uns unter: [E-Mail-Adresse]
 
 **Zuständige Aufsichtsbehörden:**
+
 - Schweiz: Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter (EDÖB), [www.edoeb.admin.ch](https://www.edoeb.admin.ch)
 - EU: Die Datenschutzbehörde deines Wohnsitzlandes (falls du in der EU/im EWR wohnst)
 

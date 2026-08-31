@@ -37,10 +37,10 @@ flowchart LR
 
 ### Umgebungen
 
-| Modus | Frontend | Backend | MCP | Infrastruktur |
-|---|---|---|---|---|
-| Dev | unoptimiertes Bundle mit Source Maps | Profil `dev`, H2 und lokale Seeds | lokaler, flüchtiger OAuth-Speicher | Mailpit, lokale Ports |
-| Prod | optimiertes und gehashtes Bundle | Profil `prod`, PostgreSQL, sichere Cookies | HTTPS, OAuth 2.1 und PostgreSQL | externer SMTP-Dienst, internes Servicenetz |
+| Modus | Frontend                             | Backend                                    | MCP                                | Infrastruktur                              |
+| ----- | ------------------------------------ | ------------------------------------------ | ---------------------------------- | ------------------------------------------ |
+| Dev   | unoptimiertes Bundle mit Source Maps | Profil `dev`, H2 und lokale Seeds          | lokaler, flüchtiger OAuth-Speicher | Mailpit, lokale Ports                      |
+| Prod  | optimiertes und gehashtes Bundle     | Profil `prod`, PostgreSQL, sichere Cookies | HTTPS, OAuth 2.1 und PostgreSQL    | externer SMTP-Dienst, internes Servicenetz |
 
 Die konkreten Befehle und Variablen stehen in den jeweiligen Projekt-READMEs:
 

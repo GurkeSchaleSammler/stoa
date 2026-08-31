@@ -4,11 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../../shared/ui/app-icon';
 import { VerifyStatus } from '../../data/models/verify-status';
 
-// ─── Verify UI Component ──────────────────────────────────────────
-// KEINE Logik. Zeigt nur den vom Feature berechneten Status an.
-//
-// Selector-Konvention: ui-*
-
 @Component({
   selector: 'ui-verify',
   standalone: true,
@@ -18,14 +13,10 @@ import { VerifyStatus } from '../../data/models/verify-status';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifyComponent {
-  // ── Inputs (Signals vom Feature) ────────────────────────────
   readonly status = input.required<VerifyStatus>();
   readonly error = input<string | null>(null);
 
-  // ── Outputs (Events an Feature) ─────────────────────────────
   readonly onRetry = output<void>();
-
-  // ── Template-Methoden (nur Delegation) ──────────────────────
 
   retry(): void {
     this.onRetry.emit();

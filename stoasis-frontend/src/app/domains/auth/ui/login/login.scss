@@ -1,7 +1,3 @@
-// ─── Login UI Styles ──────────────────────────────────────────────
-// Scoped zum LoginComponent. Nutzt CSS Custom Properties
-// für Theme-Kompatibilität (Light/Dark).
-
 :host {
   display: block;
   min-height: 100vh;
@@ -24,8 +20,6 @@
   border-radius: 16px;
   padding: 40px 32px 32px;
 }
-
-// ── Header ────────────────────────────────────────────────────
 
 .login-header {
   text-align: center;
@@ -63,8 +57,6 @@
     margin: 0;
   }
 }
-
-// ── Error / Success Banner ────────────────────────────────────
 
 .login-error {
   display: flex;
@@ -124,8 +116,6 @@
     }
   }
 }
-
-// ── Form ──────────────────────────────────────────────────────
 
 .login-form {
   display: flex;
@@ -194,8 +184,6 @@
   }
 }
 
-// ── Submit Button ─────────────────────────────────────────────
-
 .login-submit {
   width: 100%;
   padding: 11px 16px;
@@ -241,8 +229,6 @@
   }
 }
 
-// ── Mode Switch ───────────────────────────────────────────────
-
 .login-switch {
   text-align: center;
   margin-bottom: 16px;
@@ -260,8 +246,6 @@
     }
   }
 }
-
-// ── Footer ────────────────────────────────────────────────────
 
 .login-footer {
   text-align: center;

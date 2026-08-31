@@ -6,12 +6,6 @@ import { TranslationService } from '../../../shared/application/translation-serv
 import { LoginFormValue } from '../data/models/login-form-value';
 import { LoginMode } from '../data/models/login-mode';
 
-// ─── Login Feature Handler ────────────────────────────────────────
-// Enthält ALLE Logik. UI-Component bekommt nur Signals als Input
-// und feuert Events nach oben. Kein einziger inject() in der UI.
-//
-// Selector-Konvention: feature-*
-
 @Component({
   selector: 'feature-login-handler',
   standalone: true,
@@ -43,12 +37,10 @@ export class LoginHandlerComponent {
       : null,
   );
 
-  // ── Feature-lokaler State ───────────────────────────────────
   readonly mode = signal<LoginMode>('credentials');
   readonly magicLinkSent = signal(false);
   readonly passwordVisible = signal(false);
 
-  // ── Derived Signals (computed) ──────────────────────────────
   readonly submitLabel = computed(() => {
     if (this.auth.isLoading()) return this.i18n.translate('common.loading');
     return this.mode() === 'credentials'
@@ -56,7 +48,6 @@ export class LoginHandlerComponent {
       : this.i18n.translate('auth.sendMagicLink');
   });
 
-  // ── Event Handlers (von UI nach oben gefeuert) ──────────────
   handleSubmit(form: LoginFormValue): void {
     if (this.mode() === 'credentials') {
       this.auth.login({ email: form.email, password: form.password });

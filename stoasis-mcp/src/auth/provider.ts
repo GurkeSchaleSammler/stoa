@@ -7,7 +7,10 @@ import {
   InvalidTargetError,
   InvalidTokenError,
 } from "@modelcontextprotocol/sdk/server/auth/errors.js";
-import type { AuthorizationParams, OAuthServerProvider } from "@modelcontextprotocol/sdk/server/auth/provider.js";
+import type {
+  AuthorizationParams,
+  OAuthServerProvider,
+} from "@modelcontextprotocol/sdk/server/auth/provider.js";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import type {
   OAuthClientInformationFull,
@@ -16,7 +19,11 @@ import type {
 } from "@modelcontextprotocol/sdk/shared/auth.js";
 import type { AppConfig } from "../config.js";
 import { hashSecret, randomToken, SecretBox } from "../crypto.js";
-import type { OAuthStorage, PendingAuthorization, StoredToken } from "../storage/types.js";
+import type {
+  OAuthStorage,
+  PendingAuthorization,
+  StoredToken,
+} from "../storage/types.js";
 import { StoasisApiClient, StoasisApiError } from "../stoasis/client.js";
 
 export const READ_SCOPE = "stoasis:read";
@@ -71,7 +78,9 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
       clientId: client.client_id,
       clientName: client.client_name || "ChatGPT",
       params: storedParams,
-      expiresAt: new Date(Date.now() + this.config.loginTransactionTtlSeconds * 1_000),
+      expiresAt: new Date(
+        Date.now() + this.config.loginTransactionTtlSeconds * 1_000,
+      ),
     };
     await this.storage.savePendingAuthorization(pending);
     this.sendLoginPage(res, pending, csrfToken);
@@ -79,7 +88,10 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
 
   async completeAuthorization(input: LoginInput, res: Response): Promise<void> {
     const csrfHash = hashSecret(input.csrfToken);
-    const pending = await this.storage.getPendingAuthorization(input.transactionId, csrfHash);
+    const pending = await this.storage.getPendingAuthorization(
+      input.transactionId,
+      csrfHash,
+    );
     if (!pending) {
       this.sendExpiredPage(res);
       return;
@@ -88,7 +100,10 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
     try {
       const loginClient = new StoasisApiClient(this.config);
       const login = await loginClient.login(input.email.trim(), input.password);
-      const consumed = await this.storage.consumePendingAuthorization(input.transactionId, csrfHash);
+      const consumed = await this.storage.consumePendingAuthorization(
+        input.transactionId,
+        csrfHash,
+      );
       if (!consumed) {
         this.sendExpiredPage(res);
         return;
@@ -100,17 +115,30 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
         clientId: consumed.clientId,
         params: consumed.params,
         encryptedSession: this.secretBox.encrypt(login.sessionCookie),
-        user: { id: login.user.id, email: login.user.email, name: login.user.name },
-        expiresAt: new Date(Date.now() + this.config.authCodeTtlSeconds * 1_000),
+        user: {
+          id: login.user.id,
+          email: login.user.email,
+          name: login.user.name,
+        },
+        expiresAt: new Date(
+          Date.now() + this.config.authCodeTtlSeconds * 1_000,
+        ),
       });
 
       const redirect = new URL(consumed.params.redirectUri);
       redirect.searchParams.set("code", code);
-      if (consumed.params.state !== undefined) redirect.searchParams.set("state", consumed.params.state);
+      if (consumed.params.state !== undefined)
+        redirect.searchParams.set("state", consumed.params.state);
       res.redirect(302, redirect.href);
     } catch (error) {
       if (error instanceof StoasisApiError && error.status === 401) {
-        this.sendLoginPage(res, pending, input.csrfToken, "E-Mail oder Passwort ist nicht korrekt.", input.email);
+        this.sendLoginPage(
+          res,
+          pending,
+          input.csrfToken,
+          "E-Mail oder Passwort ist nicht korrekt.",
+          input.email,
+        );
         return;
       }
       this.sendLoginPage(
@@ -127,8 +155,12 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
     client: OAuthClientInformationFull,
     authorizationCode: string,
   ): Promise<string> {
-    const code = await this.storage.getAuthorizationCode(hashSecret(authorizationCode), client.client_id);
-    if (!code) throw new InvalidGrantError("Authorization code is invalid or expired.");
+    const code = await this.storage.getAuthorizationCode(
+      hashSecret(authorizationCode),
+      client.client_id,
+    );
+    if (!code)
+      throw new InvalidGrantError("Authorization code is invalid or expired.");
     return code.params.codeChallenge;
   }
 
@@ -139,10 +171,16 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
     redirectUri?: string,
     resource?: URL,
   ): Promise<OAuthTokens> {
-    const code = await this.storage.consumeAuthorizationCode(hashSecret(authorizationCode), client.client_id);
-    if (!code) throw new InvalidGrantError("Authorization code is invalid or expired.");
+    const code = await this.storage.consumeAuthorizationCode(
+      hashSecret(authorizationCode),
+      client.client_id,
+    );
+    if (!code)
+      throw new InvalidGrantError("Authorization code is invalid or expired.");
     if (redirectUri && redirectUri !== code.params.redirectUri) {
-      throw new InvalidGrantError("redirect_uri does not match the authorization request.");
+      throw new InvalidGrantError(
+        "redirect_uri does not match the authorization request.",
+      );
     }
     this.assertStoredResource(code.params.resource, resource);
     return this.issueTokens({
@@ -160,20 +198,30 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
     scopes?: string[],
     resource?: URL,
   ): Promise<OAuthTokens> {
-    const stored = await this.storage.consumeRefreshToken(hashSecret(refreshToken), client.client_id);
-    if (!stored) throw new InvalidGrantError("Refresh token is invalid or expired.");
+    const stored = await this.storage.consumeRefreshToken(
+      hashSecret(refreshToken),
+      client.client_id,
+    );
+    if (!stored)
+      throw new InvalidGrantError("Refresh token is invalid or expired.");
     this.assertStoredResource(stored.resource, resource);
 
-    const requestedScopes = scopes ? this.normalizeScopes(scopes) : stored.scopes;
+    const requestedScopes = scopes
+      ? this.normalizeScopes(scopes)
+      : stored.scopes;
     if (requestedScopes.some((scope) => !stored.scopes.includes(scope))) {
-      throw new InvalidScopeError("Requested scope exceeds the original grant.");
+      throw new InvalidScopeError(
+        "Requested scope exceeds the original grant.",
+      );
     }
 
     const sessionCookie = this.secretBox.decrypt(stored.encryptedSession);
     try {
       await new StoasisApiClient(this.config, sessionCookie).me();
     } catch {
-      throw new InvalidGrantError("The Stoasis session expired. Reconnect the MCP server.");
+      throw new InvalidGrantError(
+        "The Stoasis session expired. Reconnect the MCP server.",
+      );
     }
 
     return this.issueTokens({
@@ -187,7 +235,8 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
 
   async verifyAccessToken(token: string): Promise<AuthInfo> {
     const stored = await this.storage.getAccessToken(hashSecret(token));
-    if (!stored) throw new InvalidTokenError("Access token is invalid or expired.");
+    if (!stored)
+      throw new InvalidTokenError("Access token is invalid or expired.");
     if (stored.resource !== this.config.resourceUrl.href) {
       throw new InvalidTokenError("Access token has an invalid audience.");
     }
@@ -204,13 +253,26 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
     };
   }
 
-  async revokeToken(client: OAuthClientInformationFull, request: OAuthTokenRevocationRequest): Promise<void> {
+  async revokeToken(
+    client: OAuthClientInformationFull,
+    request: OAuthTokenRevocationRequest,
+  ): Promise<void> {
     await this.storage.revokeToken(hashSecret(request.token), client.client_id);
   }
 
   private normalizeScopes(requested?: string[]): string[] {
-    const scopes = requested && requested.length > 0 ? [...new Set(requested)] : [...SUPPORTED_SCOPES];
-    if (scopes.some((scope) => !SUPPORTED_SCOPES.includes(scope as (typeof SUPPORTED_SCOPES)[number]))) {
+    const scopes =
+      requested && requested.length > 0
+        ? [...new Set(requested)]
+        : [...SUPPORTED_SCOPES];
+    if (
+      scopes.some(
+        (scope) =>
+          !SUPPORTED_SCOPES.includes(
+            scope as (typeof SUPPORTED_SCOPES)[number],
+          ),
+      )
+    ) {
       throw new InvalidScopeError("Unknown Stoasis scope.");
     }
     return scopes;
@@ -224,16 +286,25 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
     }
   }
 
-  private assertStoredResource(stored: string | undefined, requested?: URL): void {
+  private assertStoredResource(
+    stored: string | undefined,
+    requested?: URL,
+  ): void {
     if (!stored || stored !== this.config.resourceUrl.href) {
-      throw new InvalidGrantError("Authorization grant has an invalid resource.");
+      throw new InvalidGrantError(
+        "Authorization grant has an invalid resource.",
+      );
     }
     if (requested && requested.href !== stored) {
-      throw new InvalidGrantError("resource does not match the authorization request.");
+      throw new InvalidGrantError(
+        "resource does not match the authorization request.",
+      );
     }
   }
 
-  private async issueTokens(source: Omit<StoredToken, "tokenHash" | "tokenType" | "expiresAt">): Promise<OAuthTokens> {
+  private async issueTokens(
+    source: Omit<StoredToken, "tokenHash" | "tokenType" | "expiresAt">,
+  ): Promise<OAuthTokens> {
     const accessToken = randomToken();
     const refreshToken = randomToken();
     const now = Date.now();
@@ -305,12 +376,17 @@ ${error ? `<div class="error" role="alert">${escapeHtml(error)}</div>` : ""}
     sendHtml(
       res,
       400,
-      "<!doctype html><html lang=\"de\"><meta charset=\"utf-8\"><title>Verbindung abgelaufen</title><body><main><h1>Verbindung abgelaufen</h1><p>Starte die Verbindung in ChatGPT bitte erneut.</p></main></body></html>",
+      '<!doctype html><html lang="de"><meta charset="utf-8"><title>Verbindung abgelaufen</title><body><main><h1>Verbindung abgelaufen</h1><p>Starte die Verbindung in ChatGPT bitte erneut.</p></main></body></html>',
     );
   }
 }
 
-function sendHtml(res: Response, status: number, body: string, formRedirectOrigins: string[] = []): void {
+function sendHtml(
+  res: Response,
+  status: number,
+  body: string,
+  formRedirectOrigins: string[] = [],
+): void {
   const formAction = ["'self'", ...formRedirectOrigins].join(" ");
   res
     .status(status)

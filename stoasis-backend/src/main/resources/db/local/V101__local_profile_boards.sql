@@ -1,4 +1,3 @@
--- Seed users are inserted by V100 after the production backfill has run.
 INSERT INTO collections (
     id, name, emoji, owner_id, visibility, invite_token,
     created_at, updated_at, board_kind, is_system

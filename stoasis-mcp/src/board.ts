@@ -24,24 +24,36 @@ export async function loadBoardSnapshot(
     (connectorsByPinId[connector.targetPinId] ??= []).push(connector.id);
   }
 
-  const occupied = occupiedBounds(pins, elements.stacks, elements.zones, elements.labels, elements.stickers);
+  const occupied = occupiedBounds(
+    pins,
+    elements.stacks,
+    elements.zones,
+    elements.labels,
+    elements.stickers,
+  );
   const base = config.stoasisWebBaseUrl.href.endsWith("/")
     ? config.stoasisWebBaseUrl
     : new URL(`${config.stoasisWebBaseUrl.href}/`);
-  const boardUrl = new URL(`collections/${encodeURIComponent(collectionId)}`, base).href;
+  const boardUrl = new URL(
+    `collections/${encodeURIComponent(collectionId)}`,
+    base,
+  ).href;
 
   return {
     board: {
       ...board,
       url: boardUrl,
-      canEdit: board.currentUserRole === "owner" || board.currentUserRole === "editor",
+      canEdit:
+        board.currentUserRole === "owner" || board.currentUserRole === "editor",
     },
     bounds: { widthClips: 160, heightClips: 240, occupied },
     pins,
     elements,
     relationships: {
       stackByPinId,
-      unstackedPinIds: pins.map((pin) => pin.id).filter((id) => stackByPinId[id] === undefined),
+      unstackedPinIds: pins
+        .map((pin) => pin.id)
+        .filter((id) => stackByPinId[id] === undefined),
       connectorsByPinId,
     },
     counts: {
@@ -60,9 +72,19 @@ type Rect = { x: number; y: number; width: number; height: number };
 function occupiedBounds(
   pins: Pin[],
   stacks: Array<{ x: number; y: number; width: number; heightClips: number }>,
-  zones: Array<{ x: number; y: number; widthClips: number; heightClips: number }>,
+  zones: Array<{
+    x: number;
+    y: number;
+    widthClips: number;
+    heightClips: number;
+  }>,
   labels: Array<{ x: number; y: number; widthClips: number }>,
-  stickers: Array<{ x: number; y: number; widthClips: number; heightClips: number }>,
+  stickers: Array<{
+    x: number;
+    y: number;
+    widthClips: number;
+    heightClips: number;
+  }>,
 ): BoardSnapshot["bounds"]["occupied"] {
   const rects: Rect[] = [
     ...pins.map((pin) => ({
@@ -71,9 +93,24 @@ function occupiedBounds(
       width: pin.grid.width,
       height: pin.grid.heightClips,
     })),
-    ...stacks.map((stack) => ({ x: stack.x, y: stack.y, width: stack.width, height: stack.heightClips })),
-    ...zones.map((zone) => ({ x: zone.x, y: zone.y, width: zone.widthClips, height: zone.heightClips })),
-    ...labels.map((label) => ({ x: label.x, y: label.y, width: label.widthClips, height: 4 })),
+    ...stacks.map((stack) => ({
+      x: stack.x,
+      y: stack.y,
+      width: stack.width,
+      height: stack.heightClips,
+    })),
+    ...zones.map((zone) => ({
+      x: zone.x,
+      y: zone.y,
+      width: zone.widthClips,
+      height: zone.heightClips,
+    })),
+    ...labels.map((label) => ({
+      x: label.x,
+      y: label.y,
+      width: label.widthClips,
+      height: 4,
+    })),
     ...stickers.map((sticker) => ({
       x: sticker.x,
       y: sticker.y,

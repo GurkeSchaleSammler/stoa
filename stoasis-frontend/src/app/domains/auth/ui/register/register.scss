@@ -1,5 +1,3 @@
-// ─── Register UI Styles ───────────────────────────────────────────
-
 :host {
   display: block;
   min-height: 100vh;
@@ -22,8 +20,6 @@
   border-radius: 16px;
   padding: 40px 32px 32px;
 }
-
-// ── Header ────────────────────────────────────────────────────
 
 .register-header {
   text-align: center;
@@ -62,8 +58,6 @@
   }
 }
 
-// ── Error Banner ──────────────────────────────────────────────
-
 .register-error {
   display: flex;
   align-items: center;
@@ -94,8 +88,6 @@
     }
   }
 }
-
-// ── Form ──────────────────────────────────────────────────────
 
 .register-form {
   display: flex;
@@ -151,8 +143,6 @@
   color: var(--text-danger, #b91c1c);
 }
 
-// ── Submit Button ─────────────────────────────────────────────
-
 .register-submit {
   width: 100%;
   padding: 11px 16px;
@@ -198,8 +188,6 @@
     transform: rotate(360deg);
   }
 }
-
-// ── Footer ────────────────────────────────────────────────────
 
 .register-footer {
   text-align: center;

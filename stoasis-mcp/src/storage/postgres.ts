@@ -43,7 +43,11 @@ export class PostgresOAuthStorage implements OAuthStorage {
   private readonly pool: Pool;
 
   constructor(connectionString: string) {
-    this.pool = new Pool({ connectionString, max: 10, idleTimeoutMillis: 30_000 });
+    this.pool = new Pool({
+      connectionString,
+      max: 10,
+      idleTimeoutMillis: 30_000,
+    });
   }
 
   async initialize(): Promise<void> {
@@ -101,8 +105,12 @@ export class PostgresOAuthStorage implements OAuthStorage {
     await this.pool.end();
   }
 
-  async getClient(clientId: string): Promise<OAuthClientInformationFull | undefined> {
-    const result = await this.pool.query<{ client_data: OAuthClientInformationFull }>(
+  async getClient(
+    clientId: string,
+  ): Promise<OAuthClientInformationFull | undefined> {
+    const result = await this.pool.query<{
+      client_data: OAuthClientInformationFull;
+    }>(
       "SELECT client_data FROM stoasis_mcp_oauth_clients WHERE client_id = $1",
       [clientId],
     );
@@ -124,7 +132,14 @@ export class PostgresOAuthStorage implements OAuthStorage {
       `INSERT INTO stoasis_mcp_login_transactions
          (id, csrf_hash, client_id, client_name, params, expires_at)
        VALUES ($1, $2, $3, $4, $5::jsonb, $6)`,
-      [value.id, value.csrfHash, value.clientId, value.clientName, JSON.stringify(value.params), value.expiresAt],
+      [
+        value.id,
+        value.csrfHash,
+        value.clientId,
+        value.clientName,
+        JSON.stringify(value.params),
+        value.expiresAt,
+      ],
     );
   }
 
@@ -223,7 +238,10 @@ export class PostgresOAuthStorage implements OAuthStorage {
     return result.rows[0] ? tokenFromRow(result.rows[0]) : undefined;
   }
 
-  async consumeRefreshToken(tokenHash: string, clientId: string): Promise<StoredToken | undefined> {
+  async consumeRefreshToken(
+    tokenHash: string,
+    clientId: string,
+  ): Promise<StoredToken | undefined> {
     return this.withTransaction(async (client) => {
       const result = await client.query<TokenRow>(
         `UPDATE stoasis_mcp_tokens SET revoked_at = NOW()
@@ -253,7 +271,9 @@ export class PostgresOAuthStorage implements OAuthStorage {
     `);
   }
 
-  private async withTransaction<T>(operation: (client: PoolClient) => Promise<T>): Promise<T> {
+  private async withTransaction<T>(
+    operation: (client: PoolClient) => Promise<T>,
+  ): Promise<T> {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");

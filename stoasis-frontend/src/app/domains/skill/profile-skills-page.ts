@@ -171,21 +171,21 @@ interface SkillDragState {
                     }
                     <div class="pin-actions">
                       <button
-                      type="button"
-                      [attr.aria-label]="'common.edit' | translate"
-                      (pointerdown)="$event.stopPropagation()"
-                      (click)="editSkill(skill.id)"
-                    >
-                      <ui-app-icon name="edit" />
-                    </button>
-                    <button
-                      type="button"
-                      [attr.aria-label]="'common.delete' | translate"
-                      (pointerdown)="$event.stopPropagation()"
-                      (click)="deleteSkill(skill.id)"
-                    >
-                      <ui-app-icon name="trash" />
-                    </button>
+                        type="button"
+                        [attr.aria-label]="'common.edit' | translate"
+                        (pointerdown)="$event.stopPropagation()"
+                        (click)="editSkill(skill.id)"
+                      >
+                        <ui-app-icon name="edit" />
+                      </button>
+                      <button
+                        type="button"
+                        [attr.aria-label]="'common.delete' | translate"
+                        (pointerdown)="$event.stopPropagation()"
+                        (click)="deleteSkill(skill.id)"
+                      >
+                        <ui-app-icon name="trash" />
+                      </button>
                     </div>
                   </article>
                 }

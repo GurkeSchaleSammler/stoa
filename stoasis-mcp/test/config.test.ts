@@ -5,7 +5,10 @@ const key = Buffer.alloc(32, 3).toString("base64");
 
 describe("loadConfig", () => {
   it("allows a local in-memory development setup", () => {
-    const config = loadConfig({ NODE_ENV: "test", PUBLIC_BASE_URL: "http://localhost:3000" });
+    const config = loadConfig({
+      NODE_ENV: "test",
+      PUBLIC_BASE_URL: "http://localhost:3000",
+    });
     expect(config.resourceUrl.href).toBe("http://localhost:3000/mcp");
     expect(config.storage).toBe("memory");
   });

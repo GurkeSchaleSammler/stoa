@@ -81,15 +81,14 @@ object PublicUrlPolicy {
         if (first == 0x00 && second == 0x64 && bytes[2] == 0xff.toByte() && bytes[3] == 0x9b.toByte() &&
             (bytes.sliceArray(4..11).all { it == 0.toByte() } ||
                 (bytes[4] == 0.toByte() && bytes[5] == 1.toByte()))
-        ) return false // RFC 6052/8215 IPv4 translation ranges
+        ) return false
         if (first == 0x01 && second == 0x00 && bytes.sliceArray(2..7).all { it == 0.toByte() }) return false
-        if (first and 0xfe == 0xfc) return false // fc00::/7
-        if (first == 0xfe && second and 0xc0 == 0x80) return false // fe80::/10
+        if (first and 0xfe == 0xfc) return false
+        if (first == 0xfe && second and 0xc0 == 0x80) return false
         if (first == 0xff) return false
         if (first == 0x20 && second == 0x01 && bytes[2] == 0.toByte() && bytes[3] == 0.toByte()) return false
         if (first == 0x20 && second == 0x01 && bytes[2] == 0x0d.toByte() && bytes[3] == 0xb8.toByte()) return false
-        if (first == 0x20 && second == 0x02) return false // 6to4 can tunnel non-public IPv4 targets
+        if (first == 0x20 && second == 0x02) return false
         return true
     }
 }
-

@@ -11,12 +11,6 @@ import { VerifyComponent } from '../ui/verify/verify';
 import { AuthService } from '../data/application/auth-service';
 import { VerifyStatus } from '../data/models/verify-status';
 
-// ─── Verify Feature Handler ───────────────────────────────────────
-// Liest den Magic-Link-Token aus der Route und stösst die
-// Verifizierung automatisch an. UI zeigt nur den Status.
-//
-// Selector-Konvention: feature-*
-
 @Component({
   selector: 'feature-verify-handler',
   standalone: true,
@@ -28,11 +22,9 @@ export class VerifyHandlerComponent implements OnInit {
   protected readonly auth = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
 
-  // ── Feature-lokaler State ───────────────────────────────────
   private readonly localStatus = signal<VerifyStatus>('verifying');
   private token = '';
 
-  // ── Derived Signals ──────────────────────────────────────────
   readonly status = computed<VerifyStatus>(() => {
     if (this.auth.error()) return 'error';
     if (this.auth.isAuthenticated()) return 'success';
@@ -49,8 +41,6 @@ export class VerifyHandlerComponent implements OnInit {
 
     this.verify();
   }
-
-  // ── Event Handlers ────────────────────────────────────────────
 
   retry(): void {
     this.auth.clearError();
