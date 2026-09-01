@@ -1,3 +1,5 @@
+import { StringI18n } from '../../../../shared/models/string-i18n';
+
 export interface StoaQlOperation {
   statementIndex: number;
   type: string;
@@ -25,11 +27,11 @@ export interface StoaQlQueryResponse {
 
 export interface StoaQlQueryError {
   code: string;
-  message: string;
+  message: StringI18n;
   line: number;
   column: number;
   statementIndex?: number | null;
-  hint?: string | null;
+  hint?: StringI18n | null;
 }
 
 export interface StoaQlHistoryItem {

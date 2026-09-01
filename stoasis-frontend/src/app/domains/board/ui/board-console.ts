@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
+import { LanguageService } from '../../../shared/application/language-service';
+import { I18nPipe } from '../../../shared/ui/i18n.pipe';
 import { StoaQlSuggestion } from '../data/models/stoaql-completion';
 import {
   StoaQlHistoryItem,
@@ -13,7 +15,7 @@ import { BoardConsoleHistoryComponent } from './board-console-history';
 @Component({
   selector: 'ui-board-console',
   standalone: true,
-  imports: [RouterLink, AppIconComponent, TranslatePipe, BoardConsoleHistoryComponent],
+  imports: [RouterLink, AppIconComponent, TranslatePipe, I18nPipe, BoardConsoleHistoryComponent],
   template: `
     @if (isOpen()) {
       <div class="stoaql-backdrop" (click)="close.emit()">
@@ -152,9 +154,9 @@ import { BoardConsoleHistoryComponent } from './board-console-history';
                       </div>
                       <code>1:{{ currentError.column }}</code>
                     </div>
-                    <p>{{ currentError.message }}</p>
+                    <p>{{ currentError.message | i18n: currentLanguageKey() }}</p>
                     @if (currentError.hint) {
-                      <small>{{ currentError.hint }}</small>
+                      <small>{{ currentError.hint | i18n: currentLanguageKey() }}</small>
                     }
                   </section>
                 } @else if (response(); as currentResponse) {
@@ -212,6 +214,8 @@ import { BoardConsoleHistoryComponent } from './board-console-history';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardConsoleComponent {
+  private readonly languageService = inject(LanguageService);
+  readonly currentLanguageKey = this.languageService.currentLanguageKey;
   readonly isOpen = input(false);
   readonly boardName = input.required<string>();
   readonly query = input('');

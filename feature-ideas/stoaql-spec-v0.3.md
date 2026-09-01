@@ -246,7 +246,7 @@ Ein explizites `TO` überschreibt den aktuellen `USE`-Kontext.
 
 ---
 
-## 5. `ADD`
+## 5. `ADD` & `CREATE`
 
 `ADD` erzeugt immer eine normale Notiz.
 
@@ -296,6 +296,14 @@ ADD "title"
     [TO "board"]
 ```
 
+## CREATE 
+this creates a board to your account
+
+### Minimal
+
+```stoaql
+CREATE "SSH"
+```
 ---
 
 ## 6. `LINK`

@@ -94,6 +94,11 @@ class StoaQlIntegrationTests {
                 status { isBadRequest() }
                 jsonPath("$.error.code", `is`("STOAQL_UNKNOWN_ALIAS"))
                 jsonPath("$.error.statementIndex", `is`(1))
+                jsonPath("$.error.message.de", `is`("Alias 'missing' ist nicht definiert."))
+                jsonPath("$.error.message.en", `is`("Alias 'missing' is not defined."))
+                jsonPath("$.error.message.fr", `is`("L'alias 'missing' n'est pas défini."))
+                jsonPath("$.error.message.it", `is`("L'alias 'missing' non è definito."))
+                jsonPath("$.error.hint.en", `is`("Declare it first with AS missing."))
             }
             assertEquals(before, pins.countByCollectionId(collectionId))
         } finally {

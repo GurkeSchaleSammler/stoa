@@ -61,4 +61,33 @@ describe('BoardConsoleComponent', () => {
     expect(previous).toHaveBeenCalledOnce();
     expect(execute).toHaveBeenCalledOnce();
   });
+
+  it('renders query errors in the active language', () => {
+    const fixture = TestBed.createComponent(BoardConsoleComponent);
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('boardName', 'Japan-Trip 2027');
+    fixture.componentRef.setInput('error', {
+      code: 'STOAQL_UNKNOWN_ALIAS',
+      message: {
+        de: "Alias 'missing' ist nicht definiert.",
+        en: "Alias 'missing' is not defined.",
+        fr: "L'alias 'missing' n'est pas défini.",
+        it: "L'alias 'missing' non è definito.",
+      },
+      hint: {
+        de: 'Deutscher Hint',
+        en: 'English hint',
+        fr: 'Indice français',
+        it: 'Suggerimento italiano',
+      },
+      line: 1,
+      column: 1,
+    });
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(
+      "Alias 'missing' ist nicht definiert.",
+    );
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Deutscher Hint');
+  });
 });

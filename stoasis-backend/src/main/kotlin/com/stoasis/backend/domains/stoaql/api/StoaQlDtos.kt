@@ -1,5 +1,6 @@
 package com.stoasis.backend.domains.stoaql.api
 
+import com.stoasis.backend.shared.i18n.StringI18n
 import java.time.Instant
 
 data class StoaQlContext(val collectionId: String? = null)
@@ -41,11 +42,11 @@ data class StoaQlQueryResponse(
 
 data class StoaQlError(
     val code: String,
-    val message: String,
+    val message: StringI18n,
     val line: Int = 1,
     val column: Int,
     val statementIndex: Int? = null,
-    val hint: String? = null,
+    val hint: StringI18n? = null,
 )
 
 data class StoaQlErrorResponse(

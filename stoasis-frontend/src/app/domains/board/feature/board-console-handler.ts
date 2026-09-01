@@ -164,7 +164,12 @@ export class BoardConsoleHandlerComponent {
           this.error.set(
             error ?? {
               code: 'STOAQL_REQUEST_FAILED',
-              message: 'Die Query konnte nicht ausgeführt werden.',
+              message: {
+                de: 'Die Query konnte nicht ausgeführt werden.',
+                en: 'The query could not be executed.',
+                fr: "La requête n'a pas pu être exécutée.",
+                it: 'Non è stato possibile eseguire la query.',
+              },
               line: 1,
               column: 1,
             },

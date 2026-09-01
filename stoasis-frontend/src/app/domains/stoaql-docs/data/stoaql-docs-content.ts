@@ -185,10 +185,20 @@ export const stoaQlErrorExample = `{
   "success": false,
   "error": {
     "code": "STOAQL_UNKNOWN_ALIAS",
-    "message": "Alias 'ssh' ist nicht definiert.",
+    "message": {
+      "de": "Alias 'ssh' ist nicht definiert.",
+      "fr": "L'alias 'ssh' n'est pas défini.",
+      "it": "L'alias 'ssh' non è definito.",
+      "en": "Alias 'ssh' is not defined."
+    },
     "line": 1,
     "column": 9,
     "statementIndex": 0,
-    "hint": "Deklariere ihn vorher mit AS ssh."
+    "hint": {
+      "de": "Deklariere ihn vorher mit AS ssh.",
+      "fr": "Déclarez-le d'abord avec AS ssh.",
+      "it": "Dichiaralo prima con AS ssh.",
+      "en": "Declare it first with AS ssh."
+    }
   }
 }`;

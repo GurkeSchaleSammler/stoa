@@ -1,6 +1,7 @@
 package com.stoasis.backend.shared.web
 
 import com.stoasis.backend.domains.stoaql.api.StoaQlError
+import com.stoasis.backend.domains.stoaql.api.StoaQlErrorI18n
 import com.stoasis.backend.domains.stoaql.api.StoaQlErrorResponse
 import com.stoasis.backend.domains.stoaql.api.StoaQlException
 import jakarta.validation.ConstraintViolationException
@@ -18,10 +19,10 @@ class ApiExceptionHandler {
         StoaQlErrorResponse(
             error = StoaQlError(
                 code = exception.code,
-                message = exception.message,
+                message = StoaQlErrorI18n.message(exception.code, exception.message),
                 column = exception.column,
                 statementIndex = exception.statementIndex,
-                hint = exception.hint,
+                hint = exception.hint?.let(StoaQlErrorI18n::hint),
             ),
         ),
     )
