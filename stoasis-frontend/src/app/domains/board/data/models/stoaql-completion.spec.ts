@@ -4,9 +4,7 @@ import { stoaQlSuggestions } from './stoaql-completion';
 describe('stoaQlSuggestions', () => {
   it('completes commands at the beginning of a statement', () => {
     expect(stoaQlSuggestions('LI').map((item) => item.label)).toEqual(['LINK']);
-    expect(stoaQlSuggestions('ADD "A" AS a; CON').map((item) => item.label)).toEqual([
-      'CONNECT',
-    ]);
+    expect(stoaQlSuggestions('ADD "A" AS a; CON').map((item) => item.label)).toEqual(['CONNECT']);
   });
 
   it('offers aliases at connection positions', () => {
@@ -24,13 +22,11 @@ describe('stoaQlSuggestions', () => {
   });
 
   it('respects canonical option order and completes boards', () => {
+    expect(stoaQlSuggestions('ADD "A" AS a TAGS ["one"] ').map((item) => item.label)).toEqual([
+      'TO',
+    ]);
     expect(
-      stoaQlSuggestions('ADD "A" AS a TAGS ["one"] ').map((item) => item.label),
-    ).toEqual(['TO']);
-    expect(
-      stoaQlSuggestions('ADD "A" TO "Sto', ['Stoasis Dev-Ressourcen']).map(
-        (item) => item.label,
-      ),
+      stoaQlSuggestions('ADD "A" TO "Sto', ['Stoasis Dev-Ressourcen']).map((item) => item.label),
     ).toEqual(['Stoasis Dev-Ressourcen']);
   });
 });

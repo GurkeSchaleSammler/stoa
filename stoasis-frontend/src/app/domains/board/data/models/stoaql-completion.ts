@@ -20,9 +20,7 @@ const COMMANDS = [
 ] as const;
 
 export function stoaQlSuggestions(query: string, boardNames: string[] = []): StoaQlSuggestion[] {
-  const aliases = [...query.matchAll(/\bAS\s+([A-Za-z_][A-Za-z0-9_]*)/gi)].map(
-    (match) => match[1],
-  );
+  const aliases = [...query.matchAll(/\bAS\s+([A-Za-z_][A-Za-z0-9_]*)/gi)].map((match) => match[1]);
   const statementStart = query.lastIndexOf(';') + 1;
   const statement = query.slice(statementStart);
   const fragmentMatch = statement.match(/[A-Za-z_][A-Za-z0-9_]*$/);
@@ -35,14 +33,14 @@ export function stoaQlSuggestions(query: string, boardNames: string[] = []): Sto
   const boardFragment = statement.match(/\b(?:USE|TO|IN)\s+"([^"]*)$/i);
   if (boardFragment) {
     const value = boardFragment[1];
-    return [...new Set(boardNames)].filter((name) => name.toLowerCase().startsWith(value.toLowerCase())).map(
-      (name) => ({
+    return [...new Set(boardNames)]
+      .filter((name) => name.toLowerCase().startsWith(value.toLowerCase()))
+      .map((name) => ({
         label: name,
         detail: 'Board',
         insertText: `${name}"`,
         replaceFrom: query.length - value.length,
-      }),
-    );
+      }));
   }
 
   if (/^\s*$/.test(beforeFragment)) {
@@ -128,10 +126,7 @@ export function stoaQlSuggestions(query: string, boardNames: string[] = []): Sto
   return [];
 }
 
-function filterSuggestions(
-  suggestions: StoaQlSuggestion[],
-  fragment: string,
-): StoaQlSuggestion[] {
+function filterSuggestions(suggestions: StoaQlSuggestion[], fragment: string): StoaQlSuggestion[] {
   const normalized = fragment.toLowerCase();
   return suggestions.filter((suggestion) => suggestion.label.toLowerCase().startsWith(normalized));
 }

@@ -293,7 +293,10 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
       },
       annotations: write,
     },
-    async ({ collectionId, type, data, color: selectedPinColor, tags: pinTags }, extra) =>
+    async (
+      { collectionId, type, data, color: selectedPinColor, tags: pinTags },
+      extra,
+    ) =>
       withApi(config, extra, WRITE_SCOPE, async (client) => {
         const pin = await client.createPin(collectionId, {
           type,
@@ -304,7 +307,7 @@ export function createStoasisMcpServer(config: AppConfig): McpServer {
         return result(
           { pin },
           `${kindName(type)}-Pin wurde bei (${pin.grid.x}, ${pin.grid.y}) erstellt.`,
-        );      
+        );
       }),
   );
 

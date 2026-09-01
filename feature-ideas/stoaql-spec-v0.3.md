@@ -1,4 +1,5 @@
 # StoaQL Specification v0.3
+
 > Backend soll query endpunkkt haben der das checkt
 > autocompletion wird auf client gehandlet
 
@@ -296,7 +297,8 @@ ADD "title"
     [TO "board"]
 ```
 
-## CREATE 
+## CREATE
+
 this creates a board to your account
 
 ### Minimal
@@ -304,6 +306,7 @@ this creates a board to your account
 ```stoaql
 CREATE "SSH"
 ```
+
 ---
 
 ## 6. `LINK`

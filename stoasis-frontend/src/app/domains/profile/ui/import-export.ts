@@ -18,19 +18,9 @@ import { ExportFormat } from '../data/models/export-format';
         ><input type="file" accept=".csv,text/csv" disabled />{{
           (isImporting() ? 'profile.importing' : 'profile.importPocket') | translate
         }}</label
-      ><button
-        type="button"
-        class="button secondary"
-        disabled
-        (click)="onExport.emit('json')"
-      >
+      ><button type="button" class="button secondary" disabled (click)="onExport.emit('json')">
         {{ 'profile.exportJson' | translate }}</button
-      ><button
-        type="button"
-        class="button secondary"
-        disabled
-        (click)="onExport.emit('csv')"
-      >
+      ><button type="button" class="button secondary" disabled (click)="onExport.emit('csv')">
         {{ 'profile.exportCsv' | translate }}
       </button>
     </div>

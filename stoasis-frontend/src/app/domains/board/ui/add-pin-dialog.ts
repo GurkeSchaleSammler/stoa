@@ -78,7 +78,7 @@ import { BoardColorPickerComponent } from './board-color-picker';
                       loading="lazy"
                       decoding="async"
                       referrerpolicy="no-referrer"
-                  />
+                    />
                   } @else {
                     <span class="link-preview-icon"><ui-app-icon name="link" /></span>
                   }
@@ -171,7 +171,9 @@ import { BoardColorPickerComponent } from './board-color-picker';
             ><button
               type="button"
               class="button primary"
-              [disabled]="!canSubmit() || isUploading() || (selectedType() === 'link' && isParsing())"
+              [disabled]="
+                !canSubmit() || isUploading() || (selectedType() === 'link' && isParsing())
+              "
               (click)="onSubmit.emit()"
             >
               {{ 'pin.add' | translate }}

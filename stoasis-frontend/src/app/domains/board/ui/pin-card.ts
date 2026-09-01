@@ -61,8 +61,7 @@ import { PhotoPinComponent } from './photo-pin';
               {{ pin().createdByName.slice(0, 1) }}
             }
           </span>
-          <span>{{ pin().createdByName }}</span>
-        </span
+          <span>{{ pin().createdByName }}</span> </span
         ><time [attr.datetime]="pin().createdAt">{{ pin().createdAt.slice(0, 10) }}</time>
       </footer>
     </article>
