@@ -12,6 +12,9 @@ import { boardColorCssValue, normalizeBoardColor } from '../data/models/board-co
     [style.--note-background]="backgroundColor()"
     [style.--note-foreground]="foregroundColor()"
   >
+    @if (data().title) {
+      <h2>{{ data().title }}</h2>
+    }
     <p>{{ data().content }}</p>
   </div>`,
   styleUrl: './board.scss',

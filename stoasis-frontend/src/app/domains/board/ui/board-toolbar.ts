@@ -73,6 +73,15 @@ import { BoardContext } from '../data/models/board-context';
             <button
               type="button"
               class="toolbar-icon"
+              [attr.aria-label]="'board.console' | translate"
+              [attr.title]="'board.console' | translate"
+              (click)="consoleClick.emit()"
+            >
+              <ui-app-icon name="terminal" />
+            </button>
+            <button
+              type="button"
+              class="toolbar-icon"
               [attr.aria-label]="'common.settings' | translate"
               (click)="settingsClick.emit()"
             >
@@ -119,6 +128,7 @@ export class BoardToolbarComponent {
   readonly paletteOpen = input(false);
   readonly viewModeChange = output<BoardViewMode>();
   readonly membersClick = output<void>();
+  readonly consoleClick = output<void>();
   readonly settingsClick = output<void>();
   readonly paletteToggle = output<void>();
 }

@@ -15,11 +15,17 @@ import { StackDrop } from '../ui/models/stack-drop';
 import { AddPinDialogHandlerComponent } from './add-pin-dialog-handler';
 import { PinDetailHandlerComponent } from './pin-detail-handler';
 import { BoardViewMode } from '../../../shared/models/board-view-mode';
+import { BoardConsoleHandlerComponent } from './board-console-handler';
 
 @Component({
   selector: 'feature-board-canvas-handler',
   standalone: true,
-  imports: [BoardCanvasComponent, AddPinDialogHandlerComponent, PinDetailHandlerComponent],
+  imports: [
+    BoardCanvasComponent,
+    AddPinDialogHandlerComponent,
+    PinDetailHandlerComponent,
+    BoardConsoleHandlerComponent,
+  ],
   template: `
     <ui-board-canvas
       [pins]="pins.sortedPins()"
@@ -62,9 +68,17 @@ import { BoardViewMode } from '../../../shared/models/board-view-mode';
       "
       (onDeleteSticker)="pins.decorationActions.deleteSticker(collectionId(), $event)"
       (onMembersClick)="openMembers()"
+      (onConsoleClick)="consoleOpen.set(true)"
       (onSettingsClick)="openSettings()"
     />
     @if (pins.context(); as context) {
+      <feature-board-console-handler
+        [isOpen]="consoleOpen()"
+        [collectionId]="collectionId()"
+        [boardName]="context.name"
+        (close)="consoleOpen.set(false)"
+        (executed)="pins.loadPins(collectionId())"
+      />
       <feature-add-pin-dialog-handler
         [collectionId]="collectionId()"
         [allowedTypes]="context.allowedTypes"
@@ -101,12 +115,14 @@ export class BoardCanvasHandlerComponent {
     { initialValue: this.route.snapshot.queryParamMap.get('pin') },
   );
   readonly addDialogOpen = signal(false);
+  readonly consoleOpen = signal(false);
 
   constructor() {
     effect(() => {
       const id = this.collectionId();
       untracked(() => {
         this.addDialogOpen.set(false);
+        this.consoleOpen.set(false);
         if (id) this.pins.loadPins(id);
       });
     });

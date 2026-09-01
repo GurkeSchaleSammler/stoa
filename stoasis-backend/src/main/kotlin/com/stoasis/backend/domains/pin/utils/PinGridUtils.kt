@@ -13,7 +13,7 @@ private const val AUTO_LAYOUT_GAP_CLIPS = 2
 
 fun estimatedPinHeight(pin: PinEntity): Int = when (pin.type) {
     PinType.link -> 18
-    PinType.note -> (12 + (pin.content.orEmpty().length / 38)).coerceIn(12, 28)
+    PinType.note -> (12 + ((pin.title.orEmpty().length + pin.content.orEmpty().length) / 38)).coerceIn(12, 28)
     PinType.photo -> {
         val ratio = if ((pin.imageWidth ?: 0) > 0) {
             (pin.imageHeight ?: 0).toDouble() / (pin.imageWidth ?: 1)

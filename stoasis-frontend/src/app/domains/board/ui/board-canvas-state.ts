@@ -78,6 +78,7 @@ export abstract class BoardCanvasState {
   readonly onDeleteSticker = output<string>();
   readonly onViewModeChange = output<BoardViewMode>();
   readonly onMembersClick = output<void>();
+  readonly onConsoleClick = output<void>();
   readonly onSettingsClick = output<void>();
 
   readonly clipSizePx = CLIP_SIZE_PX;

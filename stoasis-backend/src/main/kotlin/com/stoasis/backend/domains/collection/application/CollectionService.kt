@@ -124,6 +124,21 @@ class CollectionService(
     fun get(id: String): CollectionEntity = collections.findDetailedById(id)
         ?: throw ApiException(HttpStatus.NOT_FOUND, "Sammlung nicht gefunden.")
 
+    @Transactional(readOnly = true)
+    fun resolve(reference: String, userId: String): CollectionEntity {
+        collections.findDetailedById(reference)?.let { collection ->
+            requireView(collection, userId)
+            return collection
+        }
+        val matches = collections.findAllForUser(userId)
+            .filter { it.name.equals(reference, ignoreCase = true) }
+        if (matches.isEmpty()) throw ApiException(HttpStatus.NOT_FOUND, "Sammlung nicht gefunden.")
+        if (matches.size > 1) {
+            throw ApiException(HttpStatus.CONFLICT, "Der Board-Name '$reference' ist nicht eindeutig.")
+        }
+        return matches.single()
+    }
+
     fun roleOf(collection: CollectionEntity, userId: String): Role? =
         collection.members.firstOrNull { it.user?.id == userId }?.role
 

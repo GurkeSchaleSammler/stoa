@@ -72,5 +72,21 @@ class BoardConnectorService(
         connectors.delete(connector)
         touchCollection(collection)
     }
-}
 
+    @Transactional
+    fun disconnectPins(collectionId: String, sourcePinId: String, targetPinId: String, userId: String): String {
+        val collection = support.editableCollection(collectionId, userId)
+        val connector = connectors.findByCollectionIdAndSourcePinIdAndTargetPinId(
+            collectionId,
+            sourcePinId,
+            targetPinId,
+        ) ?: connectors.findByCollectionIdAndSourcePinIdAndTargetPinId(
+            collectionId,
+            targetPinId,
+            sourcePinId,
+        ) ?: throw ApiException(HttpStatus.NOT_FOUND, "Verbindung nicht gefunden.")
+        connectors.delete(connector)
+        touchCollection(collection)
+        return connector.id
+    }
+}

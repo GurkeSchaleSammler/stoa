@@ -126,6 +126,10 @@ import { AppIconName } from '../models/app-icon-name';
             d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
           />
         }
+        @case ('terminal') {
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="m7 9 3 3-3 3M13 15h4" />
+        }
         @case ('trash') {
           <path d="M3 6h18M8 6V3h8v3M19 6l-1 15H6L5 6M10 11v6M14 11v6" />
         }

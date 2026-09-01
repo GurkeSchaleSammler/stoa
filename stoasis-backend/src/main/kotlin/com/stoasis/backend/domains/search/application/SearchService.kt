@@ -25,13 +25,20 @@ class SearchService(
     private val skillData: SkillDataRepository,
 ) {
     @Transactional(readOnly = true)
-    fun search(userId: String, query: String, type: PinType?, tag: String?): List<SearchResultDto> {
+    fun search(
+        userId: String,
+        query: String,
+        type: PinType?,
+        tag: String?,
+        collectionId: String? = null,
+    ): List<SearchResultDto> {
         val q = query.trim().lowercase()
         if (q.isBlank()) return emptyList()
         val visiblePins = pins.findAllVisibleTo(userId)
         val skillsByPin = skillData.findAllByPinIdIn(visiblePins.map { it.id }).associateBy { it.pinId }
         return visiblePins
             .asSequence()
+            .filter { collectionId == null || it.collection?.id == collectionId }
             .filter { type == null || it.type == type }
             .filter { tag.isNullOrBlank() || it.tags.any { value -> value.equals(tag, true) } }
             .filter { pin ->
@@ -41,6 +48,17 @@ class SearchService(
                     skillsByPin[pin.id]?.skillName?.lowercase()?.contains(q) == true ||
                     pin.tags.any { it.lowercase().contains(q) }
             }
+            .map { pinService.toDto(it).toSearchResult(it.collection?.name.orEmpty()) }
+            .toList()
+    }
+
+    @Transactional(readOnly = true)
+    fun findByTag(userId: String, tag: String): List<SearchResultDto> {
+        val normalized = tag.trim().lowercase()
+        if (normalized.isBlank()) return emptyList()
+        return pins.findAllVisibleTo(userId)
+            .asSequence()
+            .filter { pin -> pin.tags.any { it.equals(normalized, ignoreCase = true) } }
             .map { pinService.toDto(it).toSearchResult(it.collection?.name.orEmpty()) }
             .toList()
     }

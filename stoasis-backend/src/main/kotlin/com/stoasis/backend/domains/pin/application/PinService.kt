@@ -68,6 +68,13 @@ class PinService(
         return pins.findAllByCollectionIdOrderBySortOrder(collectionId).map(::toDto)
     }
 
+    @Transactional(readOnly = true)
+    fun detail(collectionId: String, pinId: String, userId: String): PinDto {
+        val collection = collections.get(collectionId)
+        collections.requireView(collection, userId)
+        return toDto(get(collectionId, pinId))
+    }
+
     @Transactional
     fun create(collectionId: String, userId: String, request: CreatePinRequest): PinDto {
         val collection = collections.get(collectionId)
@@ -163,7 +170,11 @@ class PinService(
                 readingTimeMin = pin.readingTimeMin,
                 parseStatus = pin.parseStatus ?: "ok",
             )
-            PinType.note -> NotePinData(pin.content.orEmpty(), pin.noteColor ?: "white")
+            PinType.note -> NotePinData(
+                content = pin.content.orEmpty(),
+                color = pin.noteColor ?: "white",
+                title = pin.title,
+            )
             PinType.photo -> PhotoPinData(
                 fileKey = pin.fileKey.orEmpty(),
                 caption = pin.caption,
@@ -280,9 +291,12 @@ class PinService(
                 if (pin.title.isNullOrBlank()) pin.title = pin.url
             }
             PinType.note -> {
+                if (data.has("title")) pin.title = text("title")?.trim()?.takeIf(String::isNotBlank)
                 text("content")?.let { pin.content = it }
                 text("color")?.let { pin.noteColor = cleanNoteBackgroundColor(it, userId, pin.noteColor) }
-                if (pin.content.isNullOrBlank()) throw ApiException(HttpStatus.BAD_REQUEST, "Notiz ist erforderlich.")
+                if (pin.title.isNullOrBlank() && pin.content.isNullOrBlank()) {
+                    throw ApiException(HttpStatus.BAD_REQUEST, "Notiz ist erforderlich.")
+                }
             }
             PinType.photo -> {
                 text("fileKey")?.let { pin.fileKey = it }

@@ -1,0 +1,405 @@
+<div class="docs-page">
+  <ui-stoaql-docs-header />
+
+  <div class="docs-shell">
+    <aside><ui-stoaql-docs-nav /></aside>
+
+    <main class="docs-article">
+      <section id="ueberblick" class="docs-hero" aria-labelledby="docs-title">
+        <div class="hero-meta">
+          <span>Sprache</span><span>Version 1.0</span><span class="status">Stabil</span>
+        </div>
+        <p class="eyebrow">Stoa Query Language</p>
+        <h1 id="docs-title">StoaQL</h1>
+        <p class="hero-lead">
+          StoaQL ist die kompakte, deklarative Command-Sprache von Stoasis. Mit ihr erstellst,
+          findest, verbindest und ordnest du Pins – in einer einzigen, lesbaren Zeile.
+        </p>
+        <div class="hero-actions">
+          <a href="/stoaql-docs#schnellstart">Schnell starten <ui-app-icon name="arrow-down" /></a>
+          <a class="secondary" href="/stoaql-docs#befehle">Alle Befehle</a>
+        </div>
+        <div class="hero-code">
+          <span class="terminal-sign" aria-hidden="true">›_</span>
+          <ui-stoaql-code-example [code]="quickStart" label="Board-Konsole" />
+        </div>
+      </section>
+
+      <section class="article-outline" aria-labelledby="outline-title">
+        <h2 id="outline-title">In dieser Dokumentation</h2>
+        <div>
+          <a href="/stoaql-docs#grundlagen"><span>01</span><strong>Das Sprachmodell</strong></a>
+          <a href="/stoaql-docs#befehle"><span>02</span><strong>11 Befehle</strong></a>
+          <a href="/stoaql-docs#api"><span>03</span><strong>HTTP API</strong></a>
+          <a href="/stoaql-docs#fehler"><span>04</span><strong>Fehler &amp; Limits</strong></a>
+        </div>
+      </section>
+
+      <section id="schnellstart" class="docs-section" aria-labelledby="quickstart-title">
+        <header class="section-heading">
+          <p class="eyebrow">Schnellstart</p>
+          <h2 id="quickstart-title">Die erste Query</h2>
+          <p>
+            Öffne ein Board und wähle in der Toolbar das Terminal-Symbol. Die Konsole ist
+            automatisch mit diesem Board verbunden – <code>USE</code> ist dort nicht nötig.
+          </p>
+        </header>
+
+        <div class="steps">
+          <article>
+            <span>01</span>
+            <h3>Pin erstellen</h3>
+            <p>Ein String nach <code>ADD</code> wird immer zu einer Notiz.</p>
+            <ui-stoaql-code-example code='ADD "SSH"' />
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Alias vergeben</h3>
+            <p>Mit <code>AS</code> kannst du den neuen Pin in derselben Query referenzieren.</p>
+            <ui-stoaql-code-example code='ADD "SSH" AS ssh' />
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Aktionen verbinden</h3>
+            <p>Ein Semikolon trennt mehrere atomar ausgeführte Statements.</p>
+            <ui-stoaql-code-example code='ADD "SSH" AS ssh; GET ssh' />
+          </article>
+        </div>
+
+        <aside class="board-callout">
+          <span><ui-app-icon name="terminal" /></span>
+          <div>
+            <strong>Board-Kontext inklusive</strong>
+            <p>
+              Die Board-Konsole sendet die ID des offenen Boards als
+              <code>context.collectionId</code>. Außerhalb der Konsole setzt du den Kontext mit
+              <code>USE "Board"</code>, einem expliziten <code>TO</code> oder über die API.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <section id="grundlagen" class="docs-section" aria-labelledby="basics-title">
+        <header class="section-heading">
+          <p class="eyebrow">Grundlagen</p>
+          <h2 id="basics-title">Eine Domain-Sprache, kein SQL</h2>
+          <p>
+            StoaQL beschreibt Absichten in Stoasis-Begriffen. Es kennt Pins, Boards, Verbindungen
+            und Layouts – aber keine Tabellen, Spalten oder freien Datenbankabfragen.
+          </p>
+        </header>
+
+        <div class="principle-grid">
+          <article>
+            <span><ui-app-icon name="terminal" /></span>
+            <h3>Einzeilig</h3>
+            <p>
+              Eine Query bleibt in einer Zeile. Mehrere Statements werden mit
+              <code>;</code> getrennt.
+            </p>
+          </article>
+          <article>
+            <span><ui-app-icon name="note" /></span>
+            <h3>Explizite Typen</h3>
+            <p>
+              <code>ADD</code> erzeugt eine Notiz, <code>LINK</code> einen Link. Es gibt keine Magic
+              Detection.
+            </p>
+          </article>
+          <article>
+            <span><ui-app-icon name="layers" /></span>
+            <h3>Atomar</h3>
+            <p>Schlägt ein Statement fehl, wird die gesamte Query zurückgerollt.</p>
+          </article>
+          <article>
+            <span><ui-app-icon name="sparkles" /></span>
+            <h3>Autocomplete-first</h3>
+            <p>Die lokale Completion kennt Keywords, Boardnamen und Aliases der aktuellen Query.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="syntax" class="docs-section" aria-labelledby="syntax-title">
+        <header class="section-heading compact">
+          <p class="eyebrow">Sprachsyntax</p>
+          <h2 id="syntax-title">Bausteine</h2>
+        </header>
+
+        <div class="syntax-table" role="table" aria-label="StoaQL Syntaxkonventionen">
+          <div role="row">
+            <strong role="cell">Strings</strong>
+            <code role="cell">"SSH"</code>
+            <span role="cell">Immer in doppelten Anführungszeichen</span>
+          </div>
+          <div role="row">
+            <strong role="cell">Escaping</strong>
+            <code role="cell">"Sag: \"Hallo\""</code>
+            <span role="cell"
+              ><code>\"</code>, <code>\\</code>, <code>\n</code>, <code>\r</code> und
+              <code>\t</code></span
+            >
+          </div>
+          <div role="row">
+            <strong role="cell">Aliases</strong>
+            <code role="cell">ssh_key1</code>
+            <span role="cell">Buchstabe oder <code>_</code>, danach auch Ziffern</span>
+          </div>
+          <div role="row">
+            <strong role="cell">Keywords</strong>
+            <code role="cell">ADD · add · Add</code>
+            <span role="cell">Case-insensitiv; die Doku zeigt die kanonische Großschreibung</span>
+          </div>
+          <div role="row">
+            <strong role="cell">Statements</strong>
+            <code role="cell">ADD "A"; ADD "B";</code>
+            <span role="cell">Mit <code>;</code> getrennt; das letzte Semikolon ist optional</span>
+          </div>
+          <div role="row">
+            <strong role="cell">Referenzen</strong>
+            <code role="cell">ssh · "pin-123"</code>
+            <span role="cell">Alias ohne, bestehende ID mit Anführungszeichen</span>
+          </div>
+        </div>
+
+        <div class="grammar-block">
+          <div>
+            <h3>Vereinfachte Grammatik</h3>
+            <p>
+              Optionen in eckigen Klammern sind optional. Geschweifte Klammern bezeichnen eine
+              beliebige Wiederholung und sind keine Zeichen, die du eingibst.
+            </p>
+          </div>
+          <ui-stoaql-code-example [code]="grammar" label="EBNF" />
+        </div>
+      </section>
+
+      <section id="befehle" class="docs-section command-section" aria-labelledby="commands-title">
+        <header class="section-heading">
+          <p class="eyebrow">Referenz</p>
+          <h2 id="commands-title">Befehle</h2>
+          <p>
+            StoaQL 1.0 besteht aus elf Befehlen. Optionen müssen in der dokumentierten Reihenfolge
+            stehen, damit Queries eindeutig und schnell zu lesen bleiben.
+          </p>
+        </header>
+        <div class="command-list">
+          @for (command of commands; track command.name) {
+            <ui-stoaql-command-reference [command]="command" />
+          }
+        </div>
+      </section>
+
+      <section id="rezepte" class="docs-section" aria-labelledby="recipes-title">
+        <header class="section-heading">
+          <p class="eyebrow">Rezepte</p>
+          <h2 id="recipes-title">Typische Workflows</h2>
+          <p>Queries bleiben kompakt, auch wenn mehrere Pins und Beziehungen entstehen.</p>
+        </header>
+        <div class="recipe-grid">
+          <article>
+            <h3>Eine kleine Mindmap</h3>
+            <p>Drei Pins erstellen, verbinden und um die Wurzel anordnen.</p>
+            <ui-stoaql-code-example
+              code='ADD "SSH" AS ssh; ADD "Keys" AS keys; ADD "OpenSSH" AS openssh; CONNECT ssh -> keys; CONNECT ssh -> openssh; LAYOUT MINDMAP FROM ssh'
+            />
+          </article>
+          <article>
+            <h3>Recherche erfassen</h3>
+            <p>Eine Notiz und ihre Quelle in einem Schritt ablegen.</p>
+            <ui-stoaql-code-example
+              code='ADD "SSH Hardening" AS note TAGS ["security"]; LINK "https://www.openssh.com" AS source TITLE "OpenSSH"; CONNECT note -> source'
+            />
+          </article>
+          <article>
+            <h3>Sicher ausprobieren</h3>
+            <p>
+              Aktiviere in der Konsole <strong>Nur prüfen</strong> oder sende
+              <code>dryRun: true</code>.
+            </p>
+            <ui-stoaql-code-example code='FIND TAG "security"; LAYOUT GRID' />
+          </article>
+        </div>
+      </section>
+
+      <section id="api" class="docs-section" aria-labelledby="api-title">
+        <header class="section-heading">
+          <p class="eyebrow">HTTP API</p>
+          <h2 id="api-title"><code>POST /api/v1/query</code></h2>
+          <p>
+            Der authentifizierte Endpoint akzeptiert dieselbe Sprache wie die Board-Konsole. Alle
+            Stoa-Berechtigungen werden vor und während der Ausführung geprüft.
+          </p>
+        </header>
+
+        <div class="api-grid">
+          <article>
+            <h3>Request</h3>
+            <p>
+              <code>languageVersion</code>, <code>atomic</code> und <code>return</code> haben die
+              gezeigten Standardwerte. <code>context.collectionId</code> setzt das aktuelle Board.
+            </p>
+            <ui-stoaql-code-example [code]="requestExample" label="HTTP + JSON" />
+          </article>
+          <article>
+            <h3>Response</h3>
+            <p>
+              Schreibaktionen erscheinen unter <code>operations</code>, Leseergebnisse unter
+              <code>results</code>. <code>aliases</code> enthält die aufgelösten IDs.
+            </p>
+            <ui-stoaql-code-example [code]="responseExample" label="200 OK" />
+          </article>
+        </div>
+
+        <div class="property-table" role="table" aria-label="Request-Felder">
+          <div class="property-head" role="row">
+            <strong role="columnheader">Feld</strong><strong role="columnheader">Typ</strong
+            ><strong role="columnheader">Bedeutung</strong>
+          </div>
+          <div role="row">
+            <code role="cell">query</code><span role="cell">string</span
+            ><span role="cell">Die StoaQL-Zeile; erforderlich</span>
+          </div>
+          <div role="row">
+            <code role="cell">languageVersion</code><span role="cell">"1.0"</span
+            ><span role="cell">Aktuell unterstützte Sprachversion</span>
+          </div>
+          <div role="row">
+            <code role="cell">dryRun</code><span role="cell">boolean</span
+            ><span role="cell">Validiert und führt aus, rollt Änderungen danach zurück</span>
+          </div>
+          <div role="row">
+            <code role="cell">atomic</code><span role="cell">true</span
+            ><span role="cell">Für Version 1.0 immer atomar</span>
+          </div>
+          <div role="row">
+            <code role="cell">return</code><span role="cell">"operations"</span
+            ><span role="cell">Aktuell einziger Rückgabemodus</span>
+          </div>
+          <div role="row">
+            <code role="cell">idempotencyKey</code><span role="cell">string?</span
+            ><span role="cell">1–128 Zeichen; verhindert doppelte Schreibvorgänge</span>
+          </div>
+          <div role="row">
+            <code role="cell">context.collectionId</code><span role="cell">string?</span
+            ><span role="cell">Board-ID oder auflösbarer Boardname als Startkontext</span>
+          </div>
+        </div>
+
+        <header class="section-heading api-followup">
+          <p class="eyebrow">Query-Verlauf</p>
+          <h3>Pro Person und Board</h3>
+          <p>
+            Die Board-Konsole speichert erfolgreiche, fehlgeschlagene und als Dry Run ausgeführte
+            Queries. Der Verlauf ist privat: Auch in einem geteilten Board sieht jede Person nur
+            ihre eigenen Einträge. Die neuesten 30 Queries werden in der Konsole angezeigt.
+          </p>
+        </header>
+
+        <div class="property-table" role="table" aria-label="Verlauf-Endpoints">
+          <div class="property-head" role="row">
+            <strong role="columnheader">Methode</strong><strong role="columnheader">Endpoint</strong
+            ><strong role="columnheader">Bedeutung</strong>
+          </div>
+          <div role="row">
+            <code role="cell">GET</code><code role="cell">/api/v1/query/history</code
+            ><span role="cell"
+              >Liest den eigenen Verlauf für <code>collectionId</code>; <code>limit</code> ist
+              optional (1–100).</span
+            >
+          </div>
+          <div role="row">
+            <code role="cell">DELETE</code><code role="cell">/api/v1/query/history</code
+            ><span role="cell">Löscht den eigenen Verlauf des angegebenen Boards.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="fehler" class="docs-section" aria-labelledby="errors-title">
+        <header class="section-heading">
+          <p class="eyebrow">Diagnose</p>
+          <h2 id="errors-title">Fehler &amp; Limits</h2>
+          <p>
+            Fehler zeigen Code, Spalte und optional den Statement-Index. Ein Hint beschreibt meist
+            direkt den nächsten sinnvollen Schritt.
+          </p>
+        </header>
+        <ui-stoaql-code-example [code]="errorExample" label="400 Bad Request" />
+
+        <div class="limits-grid">
+          <article><strong>100 KB</strong><span>maximale Query-Länge</span></article>
+          <article><strong>500</strong><span>Statements pro Query</span></article>
+          <article><strong>1–10</strong><span>zulässige Verbindungstiefe</span></article>
+          <article><strong>1.000</strong><span>Ergebnisse pro Suche</span></article>
+          <article><strong>5 s</strong><span>Transaktions-Timeout</span></article>
+        </div>
+
+        <div class="error-codes">
+          <h3>Häufige Codes</h3>
+          <dl>
+            <div>
+              <dt><code>STOAQL_PARSE_ERROR</code></dt>
+              <dd>Query-Form oder Länge ist ungültig.</dd>
+            </div>
+            <div>
+              <dt><code>STOAQL_UNEXPECTED_TOKEN</code></dt>
+              <dd>Ein Zeichen oder Keyword steht nicht an dieser Position.</dd>
+            </div>
+            <div>
+              <dt><code>STOAQL_UNKNOWN_ALIAS</code></dt>
+              <dd>Der Alias wurde in dieser Query noch nicht mit AS definiert.</dd>
+            </div>
+            <div>
+              <dt><code>STOAQL_BOARD_NOT_SELECTED</code></dt>
+              <dd>Es fehlt ein Board-Kontext über Konsole, API, USE oder TO.</dd>
+            </div>
+            <div>
+              <dt><code>STOAQL_REFERENCE_NOT_FOUND</code></dt>
+              <dd>Der referenzierte Pin oder das Board existiert nicht oder ist nicht sichtbar.</dd>
+            </div>
+            <div>
+              <dt><code>STOAQL_PERMISSION_DENIED</code></dt>
+              <dd>Die aktuelle Person darf die angeforderte Aktion nicht ausführen.</dd>
+            </div>
+            <div>
+              <dt><code>STOAQL_INVALID_PROPERTY</code></dt>
+              <dd>Wert, Feld, URL, Option oder Request-Eigenschaft ist ungültig.</dd>
+            </div>
+            <div>
+              <dt><code>STOAQL_IDEMPOTENCY_CONFLICT</code></dt>
+              <dd>Ein Key wurde bereits für eine andere Query verwendet.</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section
+        id="sicherheit"
+        class="docs-section security-section"
+        aria-labelledby="security-title"
+      >
+        <div class="security-icon"><ui-app-icon name="check" /></div>
+        <div>
+          <p class="eyebrow">Sicherheit</p>
+          <h2 id="security-title">Nur Stoa-Domain-Operationen</h2>
+          <p>
+            StoaQL ist kein SQL-Passthrough. Der Parser kennt keine Tabellen oder Spalten. Jede
+            Aktion läuft über die bestehenden Domain-Services, Board-Grenzen und Berechtigungen von
+            Stoasis.
+          </p>
+          <p>
+            Nicht Teil von Version 1.0 sind Foto-Uploads, verschachtelte Blöcke, freie
+            <code>WHERE</code>-Ausdrücke und das Löschen kompletter Boards.
+          </p>
+        </div>
+      </section>
+
+      <footer class="docs-footer">
+        <div>
+          <img src="/android-chrome-192x192.png" alt="" />
+          <span><strong>StoaQL 1.0</strong><small>Für ruhige, schnelle Board-Arbeit.</small></span>
+        </div>
+        <a routerLink="/">Zurück zu Stoasis <ui-app-icon name="chevron-right" /></a>
+      </footer>
+    </main>
+  </div>
+</div>

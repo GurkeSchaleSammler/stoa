@@ -27,6 +27,7 @@ export type AppIconName =
   | 'send'
   | 'settings'
   | 'sun'
+  | 'terminal'
   | 'trash'
   | 'upload'
   | 'user-plus'

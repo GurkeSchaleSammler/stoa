@@ -1,0 +1,829 @@
+.stoaql-backdrop {
+  --console-bg: #100f0d;
+  --console-surface: #151310;
+  --console-surface-soft: #12110f;
+  --console-border: #2a2723;
+  --console-border-strong: #3a352f;
+  --console-text: #d8d0c4;
+  --console-muted: #817a70;
+  --console-purple: #a68be8;
+  --console-purple-soft: #211b31;
+  --console-purple-fill: #31254f;
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 3.4vw, 58px);
+  background-color: #090a08;
+  background-image:
+    radial-gradient(circle, rgb(116 112 99 / 18%) 0 1px, transparent 1.2px),
+    linear-gradient(rgb(5 6 5 / 58%), rgb(5 6 5 / 58%));
+  background-size:
+    29px 29px,
+    100% 100%;
+  backdrop-filter: blur(5px);
+}
+
+.stoaql-console {
+  display: flex;
+  width: min(1600px, 100%);
+  height: min(1120px, calc(100dvh - clamp(40px, 6.8vw, 116px)));
+  min-height: 560px;
+  overflow: hidden;
+  flex-direction: column;
+  border: 1px solid var(--console-border);
+  border-radius: 18px;
+  background: var(--console-bg);
+  color: var(--console-text);
+  box-shadow: 0 34px 100px rgb(0 0 0 / 48%);
+}
+
+.stoaql-header,
+.stoaql-title,
+.stoaql-header-actions,
+.stoaql-board-context,
+.stoaql-options,
+.stoaql-keyboard-hints,
+.stoaql-output-nav,
+.stoaql-output-nav > div,
+.stoaql-result-heading,
+.stoaql-warning {
+  display: flex;
+  align-items: center;
+}
+
+.stoaql-header {
+  flex: 0 0 auto;
+  justify-content: space-between;
+  gap: 22px;
+  min-height: 122px;
+  padding: 22px 32px;
+  border-bottom: 1px solid #211f1c;
+  background: linear-gradient(180deg, #151210, #11100e);
+}
+
+.stoaql-title,
+.stoaql-header-actions {
+  gap: 20px;
+}
+
+.stoaql-terminal-icon {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  place-items: center;
+  border: 1px solid #3b3158;
+  border-radius: 14px;
+  background: var(--console-purple-soft);
+  color: #bca5f4;
+}
+
+.stoaql-terminal-icon ui-app-icon {
+  width: 31px;
+  height: 31px;
+}
+
+.stoaql-title p,
+.stoaql-title h2,
+.stoaql-hint,
+.stoaql-result-heading p,
+.stoaql-error > p,
+.stoaql-empty-output h3,
+.stoaql-empty-output p,
+.stoaql-warning {
+  margin: 0;
+}
+
+.stoaql-title p {
+  color: #887f75;
+  font:
+    700 0.72rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.stoaql-title h2 {
+  margin-top: 4px;
+  color: #e5ded2;
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 2.6vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.stoaql-board-context {
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #1f392a;
+  border-radius: 999px;
+  background: #11231a;
+  color: #8aaa92;
+  font-size: 0.78rem;
+}
+
+.stoaql-board-context i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #6ba67b;
+  box-shadow: 0 0 0 4px rgb(107 166 123 / 12%);
+}
+
+.stoaql-board-context strong {
+  color: #d7d0c4;
+  font-family: var(--font-display);
+  font-size: 0.94rem;
+  font-weight: 500;
+}
+
+.stoaql-close {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #897f74;
+  cursor: pointer;
+}
+
+.stoaql-close:hover {
+  color: #d8d0c4;
+}
+
+.stoaql-close ui-app-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.stoaql-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: 34px 34px 0;
+}
+
+.stoaql-hint {
+  color: #9e9589;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.27rem);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.stoaql-command-shell {
+  margin-top: 25px;
+  padding: 14px;
+  border: 1px solid var(--console-border);
+  border-radius: 13px;
+  background: #0b0b09;
+}
+
+.stoaql-command-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 15px;
+}
+
+.stoaql-prompt {
+  padding-left: 8px;
+  color: var(--console-purple);
+  font:
+    800 1.55rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.stoaql-command-row input {
+  min-width: 0;
+  min-height: 64px;
+  padding: 0 4px;
+  border: 1px solid var(--console-border);
+  border-radius: 10px;
+  outline: 0;
+  background: var(--console-surface-soft);
+  color: #e0d9cd;
+  caret-color: var(--console-purple);
+  font:
+    700 clamp(0.78rem, 1.25vw, 1rem) / 1.5 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+  text-indent: 14px;
+}
+
+.stoaql-command-row input::placeholder {
+  color: #777168;
+  opacity: 0.92;
+}
+
+.stoaql-command-row input:focus {
+  border-color: #463b61;
+  box-shadow: 0 0 0 2px rgb(166 139 232 / 9%);
+}
+
+.stoaql-run {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 136px;
+  min-height: 64px;
+  padding: 0 20px;
+  border: 1px solid #554578;
+  border-radius: 10px;
+  background: var(--console-purple-fill);
+  color: #e1d8f2;
+  font:
+    800 0.8rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.stoaql-run:hover:not(:disabled) {
+  background: #3d2e61;
+  transform: translateY(-1px);
+}
+
+.stoaql-run:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+.stoaql-run ui-app-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.stoaql-options {
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0 12px;
+  color: #8a8278;
+  font-size: 0.76rem;
+}
+
+.stoaql-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+}
+
+.stoaql-options input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.stoaql-checkbox {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border: 1px solid var(--console-border-strong);
+  border-radius: 6px;
+  background: #11100e;
+  color: transparent;
+}
+
+.stoaql-checkbox ui-app-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.stoaql-options input:checked + .stoaql-checkbox {
+  border-color: #66538d;
+  background: var(--console-purple-fill);
+  color: #d8caf6;
+}
+
+.stoaql-options input:focus-visible + .stoaql-checkbox {
+  box-shadow: 0 0 0 3px rgb(166 139 232 / 16%);
+}
+
+.stoaql-keyboard-hints {
+  gap: 14px;
+  color: #706960;
+  font:
+    0.7rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.stoaql-keyboard-hints span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.stoaql-keyboard-hints kbd {
+  padding: 5px 8px;
+  border: 1px solid var(--console-border);
+  border-radius: 6px;
+  background: #12110f;
+  color: #8c8479;
+  font: inherit;
+}
+
+.stoaql-suggestions {
+  display: flex;
+  gap: 7px;
+  flex: 0 0 auto;
+  overflow-x: auto;
+  padding: 6px 2px 17px;
+  scrollbar-color: #4b4640 transparent;
+  scrollbar-width: thin;
+}
+
+.stoaql-suggestions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  width: 112px;
+  min-height: 76px;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid var(--console-border);
+  border-radius: 12px;
+  background: #151310;
+  color: #c9c0b4;
+  text-align: center;
+  cursor: pointer;
+}
+
+.stoaql-suggestions button:first-child {
+  margin-left: auto;
+}
+
+.stoaql-suggestions button:last-child {
+  margin-right: auto;
+}
+
+.stoaql-suggestions button:hover {
+  border-color: #4a423b;
+  background: #1a1714;
+}
+
+.stoaql-suggestions strong {
+  color: #ded6ca;
+  font:
+    800 0.78rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  line-height: 1.1;
+  letter-spacing: 0.055em;
+}
+
+.stoaql-suggestions span {
+  color: #8a8177;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.stoaql-output-panel {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  margin: 0 -34px;
+  border-top: 1px solid #24211e;
+  background: #0b0b09;
+}
+
+.stoaql-output-nav {
+  flex: 0 0 auto;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 48px;
+  padding: 0 29px;
+  border-bottom: 1px solid #1b1a17;
+  background: #0e0d0b;
+}
+
+.stoaql-output-nav > div {
+  align-self: stretch;
+  gap: 4px;
+}
+
+.stoaql-output-nav button,
+.stoaql-output-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #716a61;
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.stoaql-output-nav button.active,
+.stoaql-output-nav button:hover,
+.stoaql-output-nav a:hover {
+  background: #171511;
+  color: #c9c0b4;
+}
+
+.stoaql-output-nav button span {
+  display: grid;
+  min-width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 999px;
+  background: #2a213e;
+  color: #b9a2ef;
+  font-size: 0.58rem;
+}
+
+.stoaql-output-nav a ui-app-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.stoaql-output {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+}
+
+.stoaql-empty-output {
+  display: grid;
+  min-height: 100%;
+  place-content: center;
+  justify-items: center;
+  gap: 13px;
+  padding: 36px 20px;
+  color: #746d64;
+  text-align: center;
+}
+
+.stoaql-empty-output > span {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px dashed #2a2723;
+  border-radius: 12px;
+  color: #5e574f;
+  font:
+    1.4rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.stoaql-empty-output h3 {
+  margin-top: 7px;
+  color: #cfc6b9;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 500;
+}
+
+.stoaql-empty-output p {
+  max-width: 490px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.stoaql-empty-output button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  margin-top: 4px;
+  padding: 0 11px;
+  border: 1px solid #302a3f;
+  border-radius: 7px;
+  background: #17131f;
+  color: #a991df;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.stoaql-empty-output button ui-app-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.stoaql-error,
+.stoaql-success {
+  padding: 28px 30px 40px;
+}
+
+.stoaql-result-heading {
+  gap: 13px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #24211e;
+}
+
+.result-icon {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  place-items: center;
+  border-radius: 9px;
+  background: #14251c;
+  color: #7fb28c;
+}
+
+.stoaql-error .result-icon {
+  background: #2b1918;
+  color: #c97d6d;
+}
+
+.result-icon ui-app-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.stoaql-result-heading > div {
+  display: grid;
+  gap: 3px;
+}
+
+.stoaql-result-heading p {
+  color: #8d857b;
+  font-size: 0.65rem;
+  font-weight: 750;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.stoaql-result-heading strong {
+  color: #d9d1c5;
+  font:
+    700 0.75rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.stoaql-result-heading > code {
+  margin-left: auto;
+  color: #756e65;
+  font:
+    0.68rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.stoaql-result-list {
+  margin-top: 16px;
+}
+
+.stoaql-result-line {
+  display: grid;
+  grid-template-columns: 28px minmax(170px, auto) 1fr;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid #211f1c;
+  font-size: 0.72rem;
+}
+
+.stoaql-result-line > span,
+.stoaql-result-line > small {
+  color: #716a61;
+}
+
+.stoaql-result-line > code,
+.stoaql-result-block > code {
+  color: #a891dc;
+  font:
+    700 0.7rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.stoaql-result-block {
+  margin-top: 18px;
+}
+
+.stoaql-result-block pre {
+  overflow: auto;
+  margin: 8px 0 0;
+  padding: 15px;
+  border: 1px solid #25221e;
+  border-radius: 8px;
+  background: #11100e;
+  color: #c9c3b7;
+  font:
+    0.7rem/1.6 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.stoaql-error > p {
+  margin-top: 18px;
+  color: #d19a8e;
+  font-size: 0.78rem;
+}
+
+.stoaql-error > small {
+  display: block;
+  margin-top: 8px;
+  color: #7c746a;
+  font-size: 0.7rem;
+}
+
+.stoaql-warning {
+  gap: 7px;
+  margin-top: 13px;
+  color: #b99b61;
+  font-size: 0.7rem;
+}
+
+.stoaql-warning ui-app-icon {
+  width: 15px;
+  height: 15px;
+}
+
+@media (max-width: 900px) {
+  .stoaql-backdrop {
+    padding: 16px;
+  }
+  .stoaql-console {
+    height: calc(100dvh - 32px);
+    min-height: 0;
+  }
+  .stoaql-header {
+    min-height: 96px;
+    padding: 17px 20px;
+  }
+  .stoaql-terminal-icon {
+    width: 54px;
+    height: 54px;
+  }
+  .stoaql-terminal-icon ui-app-icon {
+    width: 25px;
+    height: 25px;
+  }
+  .stoaql-body {
+    padding: 24px 22px 0;
+  }
+  .stoaql-output-panel {
+    margin-inline: -22px;
+  }
+}
+
+@media (max-width: 680px) {
+  .stoaql-backdrop {
+    padding: 0;
+  }
+  .stoaql-console {
+    width: 100%;
+    height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+  .stoaql-header {
+    min-height: 78px;
+    padding: 12px 14px;
+  }
+  .stoaql-title,
+  .stoaql-header-actions {
+    gap: 10px;
+  }
+  .stoaql-terminal-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 11px;
+  }
+  .stoaql-title h2 {
+    font-size: 1.25rem;
+  }
+  .stoaql-title p {
+    font-size: 0.58rem;
+  }
+  .stoaql-board-context {
+    display: none;
+  }
+  .stoaql-close {
+    width: 36px;
+    height: 36px;
+  }
+  .stoaql-body {
+    padding: 18px 14px 0;
+  }
+  .stoaql-hint {
+    font-size: 0.9rem;
+  }
+  .stoaql-command-shell {
+    margin-top: 16px;
+    padding: 9px;
+  }
+  .stoaql-command-row {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 7px;
+  }
+  .stoaql-command-row input {
+    min-height: 50px;
+    font-size: 0.7rem;
+  }
+  .stoaql-prompt {
+    padding-left: 3px;
+  }
+  .stoaql-run {
+    grid-column: 1 / -1;
+    min-height: 46px;
+  }
+  .stoaql-options {
+    align-items: flex-start;
+  }
+  .stoaql-keyboard-hints span:first-child {
+    display: none;
+  }
+  .stoaql-suggestions {
+    padding-bottom: 15px;
+  }
+  .stoaql-suggestions button {
+    width: 104px;
+    min-height: 72px;
+    padding: 8px;
+  }
+  .stoaql-output-panel {
+    margin-inline: -14px;
+  }
+  .stoaql-output-nav {
+    padding-inline: 10px;
+  }
+  .stoaql-output-nav a {
+    font-size: 0;
+  }
+  .stoaql-output-nav a ui-app-icon {
+    width: 16px;
+    height: 16px;
+  }
+  .stoaql-result-line {
+    grid-template-columns: 24px minmax(130px, auto) 1fr;
+  }
+}
+
+@media (max-height: 720px) and (min-width: 681px) {
+  .stoaql-header {
+    min-height: 88px;
+    padding-block: 13px;
+  }
+  .stoaql-terminal-icon {
+    width: 52px;
+    height: 52px;
+  }
+  .stoaql-body {
+    padding-top: 18px;
+  }
+  .stoaql-command-shell {
+    margin-top: 13px;
+  }
+  .stoaql-command-row input,
+  .stoaql-run {
+    min-height: 50px;
+  }
+  .stoaql-options {
+    padding-block: 10px 6px;
+  }
+  .stoaql-suggestions {
+    padding-bottom: 12px;
+  }
+  .stoaql-suggestions button {
+    min-height: 70px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stoaql-run {
+    animation: none;
+    transition: none;
+  }
+}

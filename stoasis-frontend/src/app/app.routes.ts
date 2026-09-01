@@ -25,6 +25,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'stoaql-docs',
+    loadChildren: () =>
+      import('./domains/stoaql-docs/stoaql-docs.routes').then((m) => m.STOAQL_DOCS_ROUTES),
+  },
+  {
     path: '',
     canActivate: [authGuard],
     loadComponent: () => import('./shell/workspace-shell').then((m) => m.WorkspaceShellComponent),

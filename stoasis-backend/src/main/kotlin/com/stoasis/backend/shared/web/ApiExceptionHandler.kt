@@ -1,5 +1,8 @@
 package com.stoasis.backend.shared.web
 
+import com.stoasis.backend.domains.stoaql.api.StoaQlError
+import com.stoasis.backend.domains.stoaql.api.StoaQlErrorResponse
+import com.stoasis.backend.domains.stoaql.api.StoaQlException
 import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,6 +13,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class ApiExceptionHandler {
+    @ExceptionHandler(StoaQlException::class)
+    fun stoaQlException(exception: StoaQlException) = ResponseEntity.status(exception.status).body(
+        StoaQlErrorResponse(
+            error = StoaQlError(
+                code = exception.code,
+                message = exception.message,
+                column = exception.column,
+                statementIndex = exception.statementIndex,
+                hint = exception.hint,
+            ),
+        ),
+    )
+
     @ExceptionHandler(ApiException::class)
     fun apiException(exception: ApiException) =
         ResponseEntity.status(exception.status).body(ApiError(exception.message))
