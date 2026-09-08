@@ -78,11 +78,19 @@ STOASIS_CORS_ALLOWED_ORIGINS=https://stoasis.gurkeschale.dev
 STOASIS_MAIL_PROVIDER=resend
 RESEND_API_KEY=re_xxxxxxxxx
 STOASIS_MAIL_FROM=Stoasis <no-reply@stoasis.gurkeschale.dev>
+STOASIS_UPLOAD_DIRECTORY=/data/uploads
+RAILWAY_RUN_UID=0
 ```
 
 `Postgres` muss dabei exakt dem Railway-Service-Namen der Datenbank entsprechen. Für `RESEND_API_KEY` wird in Resend ein API-Key erstellt. Die Domain aus `STOASIS_MAIL_FROM` muss in Resend verifiziert sein, bevor Magic-Link-Mails zuverlässig zugestellt werden. `RESEND_API_URL` ist optional und wird ohne Angabe auf `https://api.resend.com/emails` gesetzt.
 
 Falls ein anderer Host mit SMTP genutzt wird, kann der Versand weiterhin auf SMTP umgestellt werden. Dafür `STOASIS_MAIL_PROVIDER=smtp` setzen und zusätzlich `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS` und `STOASIS_MAIL_FROM` konfigurieren.
+
+### Backend-Volume auf Railway
+
+Im Railway-Projekt ein Volume erstellen, dem Backend-Service zuordnen und als Mount Path `/data/uploads` setzen. Railway unterstützt keine `VOLUME`-Anweisung im Dockerfile; der persistente Speicher wird direkt am Service eingerichtet. Ohne dieses Volume bleiben neue Foto-Uploads nicht über Deployments hinweg erhalten.
+
+Railway mountet Volumes mit Root-Berechtigungen. Deshalb ist für dieses Image mit `USER stoasis` die oben aufgeführte Variable `RAILWAY_RUN_UID=0` erforderlich, damit das Backend auf das Volume schreiben kann. Das folgt der [Railway-Dokumentation zu Volume-Berechtigungen](https://docs.railway.com/volumes#permissions). Volume und PostgreSQL gemeinsam sichern.
 
 ### MCP-Variablen
 

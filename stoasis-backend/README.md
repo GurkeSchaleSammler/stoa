@@ -88,6 +88,7 @@ Prod starten – mit dem Argument `prod` und einer Datei mit den benötigten Umg
 ```bash
 docker run --rm -p 4000:4000 \
   --env-file .env.prod \
+  --mount type=volume,source=stoasis-uploads,target=/data/uploads \
   stoasis-backend prod
 ```
 
@@ -176,6 +177,8 @@ Free accounts can activate 2 shared boards with 3 members each, create 50 photo 
 Uploads accept decoded JPEG, PNG and WebP images up to 5 MB (Free) or 20 MB (Premium), with at most 12,000 pixels per side and 40 megapixels. Stored previews strip metadata, are limited to 1,600 or 3,200 pixels, and include a 480-pixel thumbnail. Accounts are limited to 20 upload attempts per minute. Unused uploads can be discarded through `DELETE /api/uploads/{fileKey}`; referenced photos and avatars are retained. Upload storage allows 10 spare files beyond the photo capacity for pending photos and avatars.
 
 Development stores image variants in the database. Production writes new images to `STOASIS_UPLOAD_DIRECTORY` (default `/data/uploads`) and still reads existing database images. Mount a persistent volume at that path, writable by the `stoasis` container user, and back it up with PostgreSQL. All replicas must share the same durable volume. A separate object-store integration is not required for this setup.
+
+On Railway, attach a Railway Volume to the backend at `/data/uploads` and set `RAILWAY_RUN_UID=0` as required for its root-owned mounts. Do not add a Dockerfile `VOLUME` instruction. See [the Railway setup](../DEPLOYMENT.md#backend-volume-auf-railway).
 
 CSV imports require UTF-8 with `url` or `resolved_url`, optional `title` and `tags` columns, at most 10 MB, and 100 or 10,000 rows per batch. Quoted fields and multiline values are supported. Preview with `POST /api/profile/import/pocket/preview?collectionId=...`, then confirm the same file and destination in the same session through `POST /api/profile/import/pocket?collectionId=...`. Duplicate, invalid and non-link rows are reported separately. Rows without free board space are reported as failed; valid rows commit together. Imports never fetch URLs. JSON export is available once per UTC calendar day with Free. Premium adds repeated CSV exports and `scope=account`, including owned image bytes, tags and saved searches; account archives allow up to 64 MB of image data.
 
