@@ -115,3 +115,9 @@ ghcr.io/gurkeschalesammler/stoasis-backend
 ghcr.io/gurkeschalesammler/stoasis-frontend
 ghcr.io/gurkeschalesammler/stoasis-mcp
 ```
+
+### Upload volume and MCP settings
+
+For the backend, mount persistent storage at `/data/uploads` (or the path in `STOASIS_UPLOAD_DIRECTORY`) and grant the `stoasis` container user write access. Back up this volume together with the database. Existing database images continue to work; new production uploads use the volume. Multiple backend replicas require a shared volume and an ingress-level upload rate limit in addition to the per-process account limiter.
+
+Set the backend's `STOASIS_MCP_PUBLIC_URL` to the complete public MCP endpoint, for example `https://mcp.example.com/mcp`. This controls the setup instructions in the profile. The MCP service still uses its own `PUBLIC_BASE_URL`, HTTPS and persistent PostgreSQL OAuth storage. Profile skills are enabled by default in production; `STOASIS_SKILLS_ENABLED=false` remains an explicit operational switch.

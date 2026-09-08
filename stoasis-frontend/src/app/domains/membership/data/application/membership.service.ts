@@ -11,6 +11,7 @@ import { canManage } from '../../../../shared/models/can-manage';
 import { Role } from '../../../../shared/models/role';
 import { canEdit } from '../../../../shared/models/can-edit';
 
+/** Loads members and applies authorized role and invitation changes. */
 @Injectable({ providedIn: 'root' })
 export class MembershipService {
   private readonly api = inject(MembershipApi);
@@ -63,9 +64,6 @@ export class MembershipService {
       .pipe(
         tap((invite) => {
           this.state.update((state) => ({ ...state, invite, status: 'idle' }));
-          if (invite.alreadyMember) {
-            void this.router.navigate(['/collections', invite.collectionId]);
-          }
         }),
         catchError((error) => this.handleError(error)),
         takeUntilDestroyed(this.destroyRef),
@@ -83,6 +81,7 @@ export class MembershipService {
             ...state,
             members: state.members.map((member) => (member.userId === userId ? updated : member)),
           }));
+          this.loadInvite(collectionId);
           this.snackbars.success('snackbar.memberRoleUpdated');
         }),
         catchError((error) => this.handleError(error)),
@@ -112,6 +111,7 @@ export class MembershipService {
             ...state,
             members: state.members.filter((item) => item.userId !== userId),
           }));
+          this.loadInvite(collectionId);
           this.snackbars.success('snackbar.memberRemoved');
         }),
         catchError((error) => this.handleError(error)),

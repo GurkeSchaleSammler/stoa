@@ -1,3 +1,4 @@
+import { McpConnectionSectionComponent } from '../../mcp/mcp-connection-section';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { form, minLength, required } from '@angular/forms/signals';
 import { ProfileService } from '../data/application/profile.service';
@@ -8,10 +9,12 @@ import { ThemeToggleHandlerComponent } from './theme-toggle-handler';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProfileFormValue } from '../data/models/profile-form-value';
 
+/** Combines account, portability and connection settings. */
 @Component({
   selector: 'feature-profile-page-handler',
   standalone: true,
   imports: [
+    McpConnectionSectionComponent,
     ProfilePageComponent,
     ImportExportHandlerComponent,
     ThemeToggleHandlerComponent,
@@ -37,6 +40,7 @@ import { ProfileFormValue } from '../data/models/profile-form-value';
           (onSave)="save()"
         />
         <feature-import-export-handler />
+        <feature-mcp-connection />
         <feature-theme-toggle-handler />
         <feature-danger-zone-handler />
       </div>

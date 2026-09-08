@@ -9,6 +9,7 @@ import { ExportFormat } from '../models/export-format';
 import { ProfileState } from '../models/profile-state';
 import { UpdateProfileRequest } from '../models/update-profile-request';
 
+/** Manages the current profile and account actions. */
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
   private readonly api = inject(ProfileApi);
@@ -79,8 +80,8 @@ export class ProfileService {
       )
       .subscribe();
   }
-  exportData(format: ExportFormat): Observable<Blob> {
-    return this.api.export(format);
+  exportData(format: ExportFormat, scope: 'boards' | 'account' = 'boards'): Observable<Blob> {
+    return this.api.export(format, scope);
   }
   logout(): void {
     this.api

@@ -11,18 +11,26 @@ import com.stoasis.backend.domains.search.data.TagEntity
 import com.stoasis.backend.domains.search.data.TagRepository
 import com.stoasis.backend.domains.skill.data.SkillDataRepository
 import com.stoasis.backend.shared.web.ApiException
+import com.stoasis.backend.domains.search.data.PinSearch
+import com.stoasis.backend.domains.plan.application.PlanService
+import com.stoasis.backend.domains.collection.application.CollectionService
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import com.stoasis.backend.domains.collection.model.canEdit
 import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+/** Searches accessible pins and manages normalized tags. */
 @Service
 class SearchService(
     private val pins: PinRepository,
     private val pinService: PinService,
     private val tags: TagRepository,
     private val users: UserRepository,
-    private val skillData: SkillDataRepository,
+    private val plans: PlanService,
+    private val collections: CollectionService,
 ) {
     @Transactional(readOnly = true)
     fun search(
@@ -31,37 +39,23 @@ class SearchService(
         type: PinType?,
         tag: String?,
         collectionId: String? = null,
+        page: Int = 0,
+        size: Int = 50,
+        extraTags: List<String> = emptyList(),
+        tagMode: String = "all",
     ): List<SearchResultDto> {
-        val q = query.trim().lowercase()
-        if (q.isBlank()) return emptyList()
-        val visiblePins = pins.findAllVisibleTo(userId)
-        val skillsByPin = skillData.findAllByPinIdIn(visiblePins.map { it.id }).associateBy { it.pinId }
-        return visiblePins
-            .asSequence()
-            .filter { collectionId == null || it.collection?.id == collectionId }
-            .filter { type == null || it.type == type }
-            .filter { tag.isNullOrBlank() || it.tags.any { value -> value.equals(tag, true) } }
-            .filter { pin ->
-                listOf(pin.title, pin.description, pin.content, pin.caption, pin.url, pin.siteName)
-                    .filterNotNull()
-                    .any { it.lowercase().contains(q) } ||
-                    skillsByPin[pin.id]?.skillName?.lowercase()?.contains(q) == true ||
-                    pin.tags.any { it.lowercase().contains(q) }
-            }
-            .map { pinService.toDto(it).toSearchResult(it.collection?.name.orEmpty()) }
-            .toList()
+        if (page < 0 || size !in 1..100 || query.length > 500 || tagMode !in setOf("all", "any")) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Ungültige Suchfilter oder Seitengrösse.")
+        }
+        val filters = normalizeTags(listOfNotNull(tag) + extraTags).toList()
+        if (filters.size > 1) plans.requirePremium(userId)
+        val request = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt"), Sort.Order.asc("id")))
+        return pins.findAll(PinSearch.matching(userId, query.trim(), type, filters, tagMode, collectionId), request)
+            .content.map { pinService.toDto(it).toSearchResult(it.collection?.name.orEmpty()) }
     }
 
     @Transactional(readOnly = true)
-    fun findByTag(userId: String, tag: String): List<SearchResultDto> {
-        val normalized = tag.trim().lowercase()
-        if (normalized.isBlank()) return emptyList()
-        return pins.findAllVisibleTo(userId)
-            .asSequence()
-            .filter { pin -> pin.tags.any { it.equals(normalized, ignoreCase = true) } }
-            .map { pinService.toDto(it).toSearchResult(it.collection?.name.orEmpty()) }
-            .toList()
-    }
+    fun findByTag(userId: String, tag: String): List<SearchResultDto> = search(userId, "", null, tag)
 
     @Transactional(readOnly = true)
     fun tags(userId: String): List<TagDto> {
@@ -74,7 +68,7 @@ class SearchService(
 
     @Transactional
     fun createTag(userId: String, rawName: String): TagDto {
-        val name = rawName.trim().lowercase()
+        val name = normalizeTag(rawName)
         if (name.isBlank()) throw ApiException(HttpStatus.BAD_REQUEST, "Tag-Name ist erforderlich.")
         if (tags.existsByOwnerIdAndName(userId, name)) {
             throw ApiException(HttpStatus.CONFLICT, "Diesen Tag gibt es bereits.")
@@ -95,6 +89,9 @@ class SearchService(
         val name = explicit?.name ?: id.removePrefix("tag-").takeIf(String::isNotBlank)
             ?: throw ApiException(HttpStatus.NOT_FOUND, "Tag nicht gefunden.")
         explicit?.let(tags::delete)
-        pins.findAllVisibleTo(userId).forEach { pin -> pin.tags.removeIf { it == name } }
+        pins.findAllVisibleTo(userId).filter { collections.roleOf(it.collection!!, userId)?.canEdit() == true }
+            .forEach { pin ->
+                if (pin.tags.removeIf { normalizeTag(it) == normalizeTag(name) }) pin.collection!!.updatedAt = java.time.Instant.now()
+            }
     }
 }

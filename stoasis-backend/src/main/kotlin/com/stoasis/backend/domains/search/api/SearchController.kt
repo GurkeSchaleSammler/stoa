@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
+/** Exposes paginated search and tag management. */
 @RestController
 class SearchController(private val search: SearchService, private val currentUser: CurrentUser) {
     @GetMapping("/api/search")
@@ -20,7 +21,11 @@ class SearchController(private val search: SearchService, private val currentUse
         @RequestParam(defaultValue = "") q: String,
         @RequestParam(required = false) type: PinType?,
         @RequestParam(required = false) tag: String?,
-    ) = search.search(currentUser.id(), q, type, tag)
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "50") size: Int,
+        @RequestParam(required = false) tags: List<String>?,
+        @RequestParam(defaultValue = "all") tagMode: String,
+    ) = search.search(currentUser.id(), q, type, tag, page = page, size = size, extraTags = tags.orEmpty(), tagMode = tagMode)
 
     @GetMapping("/api/tags")
     fun tags() = search.tags(currentUser.id())

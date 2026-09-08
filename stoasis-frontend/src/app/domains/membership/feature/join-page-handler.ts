@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MembershipService } from '../data/application/membership.service';
 import { JoinPageComponent } from '../ui/join-page';
 
+/** Loads invitation previews and confirms membership. */
 @Component({
   selector: 'feature-join-page-handler',
   standalone: true,
@@ -11,6 +12,8 @@ import { JoinPageComponent } from '../ui/join-page';
     [status]="joinStatus()"
     [collectionName]="membership.invite()?.collectionName || ''"
     [error]="membership.error()"
+    [alreadyMember]="membership.invite()?.alreadyMember ?? false"
+    [limitReason]="membership.invite()?.capacity?.limitReason ?? null"
     (onConfirmJoin)="join()"
   />`,
   changeDetection: ChangeDetectionStrategy.OnPush,

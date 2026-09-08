@@ -30,6 +30,7 @@ const emptyDraft: AddPinDraft = {
   tags: '',
 };
 
+/** Builds pin requests from the current draft and validated previews. */
 @Component({
   selector: 'feature-add-pin-dialog-handler',
   standalone: true,
@@ -45,7 +46,8 @@ const emptyDraft: AddPinDraft = {
       [isUploading]="upload.isUploading()"
       [isParsing]="parser.isLoading()"
       [uploadProgress]="upload.progress()"
-      [uploadedFileName]="upload.photo()?.originalName || null"
+      [uploadedFileName]="upload.fileName()"
+      [localPreview]="upload.previewUrl()"
       [uploadedPhoto]="upload.photo()"
       [error]="parser.error() || upload.error() || pins.error()"
       [allowCustomColors]="allowCustomColors()"

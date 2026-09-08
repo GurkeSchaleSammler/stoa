@@ -1,0 +1,69 @@
+<section class="discovery">
+  <h2>{{ 'discovery.title' | translate }} · Premium</h2>
+  @if (!premium()) {
+    <p>{{ 'discovery.premium' | translate }}</p>
+  }
+  @if (discovery.error()) {
+    <p role="alert">{{ discovery.error() | translate }}</p>
+  }
+  <fieldset [disabled]="!premium()">
+    <legend>{{ 'discovery.multiTag' | translate }}</legend>
+    <label
+      >{{ 'common.tags' | translate
+      }}<input
+        [ngModel]="tags()"
+        (ngModelChange)="tags.set($event)"
+        [placeholder]="'pin.separateWithComma' | translate"
+    /></label>
+    <label
+      >{{ 'discovery.match' | translate
+      }}<select [ngModel]="mode()" (ngModelChange)="mode.set($event)">
+        <option value="all">{{ 'discovery.all' | translate }}</option>
+        <option value="any">{{ 'discovery.any' | translate }}</option>
+      </select></label
+    >
+    <button (click)="applyTags()">{{ 'discovery.apply' | translate }}</button>
+  </fieldset>
+  @if (search.extraTags().length) {
+    <p>#{{ search.extraTags().join(' #') }} · {{ 'discovery.' + search.tagMode() | translate }}</p>
+    <button (click)="reset()">{{ 'common.reset' | translate }}</button>
+  }
+  <fieldset [disabled]="!premium() || discovery.busy()">
+    <legend>{{ 'discovery.saved' | translate }}</legend>
+    <label
+      >{{ 'common.name' | translate
+      }}<input maxlength="120" [ngModel]="name()" (ngModelChange)="name.set($event)"
+    /></label>
+    <button
+      [disabled]="!name().trim() || !search.hasQuery()"
+      (click)="discovery.save(name(), search.currentQuery())"
+    >
+      {{ 'common.save' | translate }}
+    </button>
+    <button (click)="discovery.analytics()">{{ 'discovery.analytics' | translate }}</button>
+  </fieldset>
+  @for (item of discovery.saved(); track item.id) {
+    <div class="saved-row">
+      <button [disabled]="!premium()" (click)="search.applySaved(item.query)">
+        {{ item.name }}
+      </button>
+      <button
+        [disabled]="discovery.busy()"
+        (click)="discovery.delete(item.id)"
+        [attr.aria-label]="('common.delete' | translate) + ': ' + item.name"
+      >
+        ×
+      </button>
+    </div>
+  }
+  @if (discovery.usage().length) {
+    <p>{{ 'discovery.cleanup' | translate }}</p>
+    <ul>
+      @for (tag of discovery.usage(); track tag.name) {
+        <li>
+          #{{ tag.name }} <strong>{{ tag.count }}</strong>
+        </li>
+      }
+    </ul>
+  }
+</section>

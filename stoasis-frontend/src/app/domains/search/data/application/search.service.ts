@@ -1,26 +1,17 @@
 import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  EMPTY,
-  Subject,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { catchError, of, Subject, switchMap, timer } from 'rxjs';
 import { SearchApi } from '../api/search.api';
-import { SnackbarService } from '../../../../shared/application/snackbar.service';
 import { initialSearchState } from '../models/initial-search-state';
 import { SearchState } from '../models/search-state';
 import { SearchQuery } from '../models/search-query';
 import { PinType } from '../../../../shared/models/pin-type';
 
+/** Cancels stale searches and pages current filters without hiding accessible content. */
 @Injectable({ providedIn: 'root' })
 export class SearchService {
   private readonly api = inject(SearchApi);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly snackbars = inject(SnackbarService);
   private readonly state = signal<SearchState>(initialSearchState);
   private readonly requests = new Subject<SearchQuery>();
   readonly query = computed(() => this.state().query);
@@ -29,60 +20,106 @@ export class SearchService {
   readonly status = computed(() => this.state().status);
   readonly isLoading = computed(() => this.state().status === 'loading');
   readonly error = computed(() => this.state().error);
-  readonly hasQuery = computed(() => this.state().query.trim().length > 0);
+  readonly extraTags = signal<string[]>([]);
+  readonly tagMode = signal<'all' | 'any'>('all');
+  readonly page = signal(0);
+  readonly hasNext = computed(() => this.results().length === 50);
+  readonly hasQuery = computed(
+    () =>
+      !!(
+        this.query().trim() ||
+        this.activeFilters().tag ||
+        this.activeFilters().type ||
+        this.extraTags().length
+      ),
+  );
+  readonly currentQuery = computed<SearchQuery>(() => ({
+    q: this.query(),
+    type: this.activeFilters().type ?? undefined,
+    tag: this.activeFilters().tag ?? undefined,
+    tags: this.extraTags(),
+    tagMode: this.tagMode(),
+    page: this.page(),
+  }));
 
   constructor() {
     this.requests
       .pipe(
-        debounceTime(300),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        tap(() => this.state.update((state) => ({ ...state, status: 'loading', error: null }))),
         switchMap((query) =>
-          this.api.search(query).pipe(
+          timer(250).pipe(
+            switchMap(() => (this.hasQuery() ? this.api.search(query) : of([]))),
             catchError((error) => {
-              this.handleError(error);
-              return EMPTY;
+              const message =
+                (error as { error?: { message?: string } })?.error?.message ?? 'errors.search';
+              this.state.update((state) => ({
+                ...state,
+                status: 'error',
+                error: message,
+                results: [],
+              }));
+              return of(null);
             }),
           ),
         ),
-        tap((results) => this.state.update((state) => ({ ...state, results, status: 'idle' }))),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe();
+      .subscribe((results) => {
+        if (results) this.state.update((state) => ({ ...state, results, status: 'idle' }));
+      });
   }
 
   search(query: string): void {
-    const value = query.trim();
-    this.state.update((state) => ({ ...state, query: value }));
-    if (!value) {
-      this.clear();
-      return;
-    }
+    this.state.update((state) => ({ ...state, query }));
     this.enqueue();
   }
 
   setFilter(type: PinType | null, tag: string | null): void {
     this.state.update((state) => ({ ...state, activeFilters: { type, tag } }));
-    if (this.hasQuery()) this.enqueue();
+    this.enqueue();
+  }
+
+  setAdvanced(tags: string[], mode: 'all' | 'any'): void {
+    this.extraTags.set([
+      ...new Set(
+        tags
+          .map((tag) => tag.trim().replace(/^#/, '').normalize('NFC').toLowerCase())
+          .filter(Boolean),
+      ),
+    ]);
+    this.tagMode.set(mode);
+    this.enqueue();
+  }
+
+  applySaved(query: SearchQuery): void {
+    this.state.update((state) => ({
+      ...state,
+      query: query.q,
+      activeFilters: { type: query.type ?? null, tag: null },
+    }));
+    this.setAdvanced(query.tags ?? [], query.tagMode ?? 'all');
+  }
+
+  goToPage(page: number): void {
+    if (page < 0 || this.isLoading()) return;
+    this.page.set(page);
+    this.enqueue(false);
   }
 
   clear(): void {
-    this.state.set({ ...initialSearchState, activeFilters: this.state().activeFilters });
+    this.search('');
   }
   clearError(): void {
     this.state.update((state) => ({ ...state, error: null }));
   }
-  private enqueue(): void {
-    const state = this.state();
-    this.requests.next({
-      q: state.query,
-      type: state.activeFilters.type ?? undefined,
-      tag: state.activeFilters.tag ?? undefined,
-    });
-  }
-  private handleError(error: unknown): void {
-    const message = (error as { error?: { message?: string } })?.error?.message ?? 'errors.search';
-    this.state.update((state) => ({ ...state, status: 'error', error: message }));
-    this.snackbars.error(message);
+
+  private enqueue(resetPage = true): void {
+    if (resetPage) this.page.set(0);
+    this.state.update((state) => ({
+      ...state,
+      status: this.hasQuery() ? 'loading' : 'idle',
+      error: null,
+      results: [],
+    }));
+    this.requests.next(this.currentQuery());
   }
 }

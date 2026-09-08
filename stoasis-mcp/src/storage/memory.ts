@@ -110,7 +110,15 @@ export class MemoryOAuthStorage implements OAuthStorage {
 
   async revokeToken(tokenHash: string, clientId: string): Promise<void> {
     const value = this.tokens.get(tokenHash);
-    if (value?.clientId === clientId) value.revokedAt = new Date();
+    if (value?.clientId !== clientId) return;
+    for (const token of this.tokens.values()) {
+      if (
+        token.clientId === clientId &&
+        token.encryptedSession === value.encryptedSession
+      ) {
+        token.revokedAt = new Date();
+      }
+    }
   }
 
   async cleanup(): Promise<void> {

@@ -22,12 +22,15 @@ import com.stoasis.backend.domains.skill.api.ProfileSkillDto
 import com.stoasis.backend.domains.skill.api.SaveProfileSkillRequest
 import com.stoasis.backend.domains.skill.data.SkillDataRepository
 import com.stoasis.backend.shared.web.ApiException
+import com.stoasis.backend.domains.plan.application.PlanService
+import com.stoasis.backend.shared.utils.normalizeUiColor
 import java.time.Instant
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.ObjectMapper
 
+/** Maintains system skill boards and explicit profile sharing. */
 @Service
 class ProfileBoardService(
     private val collections: CollectionRepository,
@@ -37,6 +40,7 @@ class ProfileBoardService(
     private val pinService: PinService,
     private val skillData: SkillDataRepository,
     private val objectMapper: ObjectMapper,
+    private val plans: PlanService,
 ) {
     @Transactional
     fun ensureForUser(user: UserEntity) {
@@ -101,6 +105,19 @@ class ProfileBoardService(
         return toDto(board, includeToken = true)
     }
 
+    @Transactional
+    fun setAccent(userId: String, kind: BoardKind, accent: String?): ProfileBoardDto {
+        plans.requirePremium(userId)
+        val board = board(userId, kind)
+        val color = accent?.takeIf(String::isNotBlank)?.let { normalizeUiColor(it) }
+        if (accent != null && (color == null || !color.startsWith("#"))) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Ungültiger Farbcode.")
+        }
+        board.accent = color
+        board.updatedAt = Instant.now()
+        return toDto(board, true)
+    }
+
     @Transactional(readOnly = true)
     fun sharedView(boardId: String, token: String?, viewerId: String?): ProfileBoardDto {
         val board = collections.findDetailedById(boardId)
@@ -149,6 +166,9 @@ class ProfileBoardService(
             boardKind = board.boardKind!!,
             visibility = board.visibility,
             shareToken = board.inviteToken.takeIf { includeToken },
+            accent = board.accent,
+            ownerName = users.getReferenceById(board.ownerId).name,
+            ownerAvatarUrl = users.getReferenceById(board.ownerId).avatarUrl,
             skills = boardPins.mapNotNull { pin ->
                 details[pin.id]?.let { skill ->
                     ProfileSkillDto(

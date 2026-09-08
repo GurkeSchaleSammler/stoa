@@ -14,11 +14,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+/** Manages invitations and preserves at least one owner per board. */
 @Service
 class MembershipService(
     private val collectionService: CollectionService,
     private val collections: CollectionRepository,
     private val members: CollectionMemberRepository,
+    private val policy: CollaborationPolicy,
 ) {
     @Transactional(readOnly = true)
     fun list(collectionId: String, userId: String): List<MemberDto> {
@@ -38,7 +40,9 @@ class MembershipService(
         if (member.role == Role.owner && role != Role.owner && members.countByCollectionIdAndRole(collectionId, Role.owner) <= 1) {
             throw ApiException(HttpStatus.CONFLICT, "Mindestens ein Owner muss bleiben.")
         }
+        if (role == Role.owner && member.role != Role.owner) policy.requireOwnership(targetUserId, member.collection!!)
         member.role = role
+        transferPrimaryOwner(member.collection!!, targetUserId)
         member.collection?.updatedAt = Instant.now()
         val user = member.user!!
         return MemberDto(user.id, role, user.name, user.email, user.avatarUrl)
@@ -53,7 +57,10 @@ class MembershipService(
             throw ApiException(HttpStatus.CONFLICT, "Mindestens ein Owner muss bleiben.")
         }
         member.collection?.updatedAt = Instant.now()
+        val board = member.collection!!
+        board.members.remove(member)
         members.delete(member)
+        transferPrimaryOwner(board, targetUserId)
     }
 
     @Transactional(readOnly = true)
@@ -84,7 +91,7 @@ class MembershipService(
 
     private fun inviteInfo(collectionId: String, userId: String, baseUrl: String): InviteInfo {
         val collection = collectionService.get(collectionId)
-        val token = collection.inviteToken.orEmpty()
+        val token = collection.inviteToken.orEmpty().takeIf { collectionService.roleOf(collection, userId) == Role.owner }.orEmpty()
         return info(collection.id, token, baseUrl, collection.visibility, collection.name, collectionService.roleOf(collection, userId) != null)
     }
 
@@ -96,12 +103,19 @@ class MembershipService(
             visibility = visibility,
             collectionName = name,
             alreadyMember = member,
+            capacity = policy.capacity(collectionService.get(id)),
         )
 
-    private fun requireOwner(collectionId: String, userId: String) = collectionService.get(collectionId).also {
+    private fun requireOwner(collectionId: String, userId: String) = collections.lockById(collectionId)?.also {
         if (collectionService.roleOf(it, userId) != Role.owner) {
             throw ApiException(HttpStatus.FORBIDDEN, "Nur der Owner darf Mitglieder verwalten.")
         }
+    } ?: throw ApiException(HttpStatus.NOT_FOUND, "Sammlung nicht gefunden.")
+
+    private fun transferPrimaryOwner(board: com.stoasis.backend.domains.collection.data.CollectionEntity, userId: String) {
+        if (board.ownerId != userId) return
+        val owner = board.members.firstOrNull { it.role == Role.owner } ?: return
+        board.ownerId = owner.user!!.id
     }
 
     private fun forbidden(): Nothing = throw ApiException(HttpStatus.FORBIDDEN, "Kein Zugriff.")

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
@@ -6,6 +6,7 @@ import { Member } from '../data/models/member';
 import { Role } from '../../../shared/models/role';
 
 import { RoleBadgeComponent } from './role-badge';
+/** Displays members and protects the final owner in role controls. */
 @Component({
   selector: 'ui-member-list',
   standalone: true,
@@ -25,10 +26,18 @@ import { RoleBadgeComponent } from './role-badge';
       @if (error()) {
         <p class="error-banner" role="alert">{{ error() | translate }}</p>
       }
+      @if (limitReason()) {
+        <p role="status">{{ limitReason() }}</p>
+      }
       <div class="member-toolbar">
         <span>{{ 'membership.memberCount' | translate: { count: members().length } }}</span>
         @if (canManage()) {
-          <button type="button" class="button primary" (click)="onInviteClick.emit()">
+          <button
+            type="button"
+            class="button primary"
+            [disabled]="isMutating()"
+            (click)="onInviteClick.emit()"
+          >
             {{ 'membership.inviteLink' | translate }}
           </button>
         }
@@ -46,6 +55,9 @@ import { RoleBadgeComponent } from './role-badge';
             <div class="member-copy">
               <strong>{{ member.name }}</strong
               ><small>{{ member.email }}</small>
+              @if (canManage() && isLastOwner(member)) {
+                <small>{{ 'errors.lastOwner' | translate }}</small>
+              }
             </div>
             @if (canManage()) {
               <label class="role-select"
@@ -53,6 +65,8 @@ import { RoleBadgeComponent } from './role-badge';
                   {{ 'membership.roleOf' | translate: { name: member.name } }} </span
                 ><select
                   [ngModel]="member.role"
+                  [disabled]="isMutating() || isLastOwner(member)"
+                  [title]="isLastOwner(member) ? ('errors.lastOwner' | translate) : ''"
                   (ngModelChange)="onRoleChange.emit({ userId: member.userId, role: $event })"
                 >
                   <option value="owner">{{ 'role.owner' | translate }}</option>
@@ -63,6 +77,8 @@ import { RoleBadgeComponent } from './role-badge';
               <button
                 type="button"
                 class="remove-button"
+                [disabled]="isMutating() || isLastOwner(member)"
+                [title]="isLastOwner(member) ? ('errors.lastOwner' | translate) : ''"
                 [attr.aria-label]="'membership.removeMember' | translate: { name: member.name }"
                 (click)="onRemove.emit(member.userId)"
               >
@@ -80,6 +96,14 @@ import { RoleBadgeComponent } from './role-badge';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MemberListComponent {
+  readonly limitReason = input<string | null>(null);
+  readonly isMutating = input(false);
+  readonly ownerCount = computed(
+    () => this.members().filter((member) => member.role === 'owner').length,
+  );
+  isLastOwner(member: Member): boolean {
+    return member.role === 'owner' && this.ownerCount() <= 1;
+  }
   readonly members = input.required<Member[]>();
   readonly currentUserRole = input<Role | null>(null);
   readonly canManage = input(false);

@@ -1,41 +1,59 @@
-import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, EMPTY, finalize, tap } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { ProfileApi } from '../api/profile.api';
-import { SnackbarService } from '../../../../shared/application/snackbar.service';
 import { ImportResult } from '../models/import-result';
 
-@Injectable({ providedIn: 'root' })
+/** Keeps preview and confirmation tied to one file and destination. */
+@Injectable()
 export class ImportService {
   private readonly api = inject(ProfileApi);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly snackbars = inject(SnackbarService);
-  private readonly resultState = signal<ImportResult | null>(null);
-  private readonly loadingState = signal(false);
-  private readonly errorState = signal<string | null>(null);
-  readonly result = computed(() => this.resultState());
-  readonly isImporting = computed(() => this.loadingState());
-  readonly error = computed(() => this.errorState());
-  importPocketCsv(file: File): void {
-    this.loadingState.set(true);
-    this.errorState.set(null);
-    this.api
-      .importPocket(file)
-      .pipe(
-        tap((result) => {
-          this.resultState.set(result);
-          this.snackbars.success('snackbar.importCompleted');
-        }),
-        catchError((error) => {
-          this.errorState.set(
-            (error as { error?: { message?: string } })?.error?.message ?? 'errors.pocketImport',
-          );
-          this.snackbars.error(this.errorState() ?? 'errors.pocketImport');
-          return EMPTY;
-        }),
-        finalize(() => this.loadingState.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe();
+  private file: File | null = null;
+  private collectionId = '';
+  readonly result = signal<ImportResult | null>(null);
+  readonly preview = signal<ImportResult | null>(null);
+  readonly isImporting = signal(false);
+  readonly error = signal<string | null>(null);
+
+  async previewFile(file: File, collectionId: string): Promise<void> {
+    if (this.isImporting()) return;
+    this.reset();
+    this.file = file;
+    this.collectionId = collectionId;
+    await this.run(true);
+  }
+
+  async confirm(): Promise<void> {
+    if (this.isImporting() || !this.preview()?.ready) return;
+    await this.run(false);
+  }
+
+  reset(): void {
+    this.file = null;
+    this.preview.set(null);
+    this.result.set(null);
+    this.error.set(null);
+  }
+
+  private async run(preview: boolean): Promise<void> {
+    if (!this.file || !this.collectionId) return;
+    this.isImporting.set(true);
+    this.error.set(null);
+    try {
+      const result = await firstValueFrom(
+        this.api.importPocket(this.file, this.collectionId, preview),
+      );
+      if (preview) this.preview.set(result);
+      else {
+        this.result.set(result);
+        this.preview.set(null);
+        this.file = null;
+      }
+    } catch (error) {
+      this.error.set(
+        (error as { error?: { message?: string } })?.error?.message ?? 'errors.pocketImport',
+      );
+    } finally {
+      this.isImporting.set(false);
+    }
   }
 }

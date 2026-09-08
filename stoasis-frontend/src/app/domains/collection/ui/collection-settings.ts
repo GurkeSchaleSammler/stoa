@@ -6,6 +6,7 @@ import { PinType } from '../../../shared/models/pin-type';
 import { CollectionDetail } from '../data/models/collection-detail';
 import { UpdateCollectionRequest } from '../data/models/update-collection-request';
 
+/** Presents board settings with owner-only sharing controls. */
 @Component({
   selector: 'ui-collection-settings',
   standalone: true,
@@ -121,7 +122,7 @@ export class CollectionSettingsComponent {
     { value: 'photo', labelKey: 'pin.types.photos' },
   ];
 
-  isVisibilityOptionDisabled(value: 'private' | 'link' | 'public'): boolean {
-    return value !== 'private';
+  isVisibilityOptionDisabled(_value: 'private' | 'link' | 'public'): boolean {
+    return this.collection()?.currentUserRole !== 'owner';
   }
 }

@@ -13,7 +13,8 @@ RUN addgroup -S stoasis && adduser -S stoasis -G stoasis
 WORKDIR /app
 COPY --from=build /workspace/build/libs/stoasis.jar /app/stoasis.jar
 COPY docker/entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh && chown -R stoasis:stoasis /app
+RUN mkdir -p /data/uploads && chmod +x /app/entrypoint.sh && chown -R stoasis:stoasis /app /data/uploads
+VOLUME /data/uploads
 
 USER stoasis
 EXPOSE 4000

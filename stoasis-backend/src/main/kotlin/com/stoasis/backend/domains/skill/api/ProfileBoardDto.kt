@@ -6,6 +6,7 @@ import com.stoasis.backend.domains.skill.model.SkillLevel
 import com.stoasis.backend.domains.pin.api.GridBlockDto
 import java.time.Instant
 
+/** Describes a skill and its board position. */
 data class ProfileSkillDto(
     val id: String,
     val skillName: String,
@@ -15,6 +16,7 @@ data class ProfileSkillDto(
     val grid: GridBlockDto,
 )
 
+/** Presents one system profile board without exposing its invitation token publicly. */
 data class ProfileBoardDto(
     val id: String,
     val name: String,
@@ -22,4 +24,7 @@ data class ProfileBoardDto(
     val visibility: Visibility,
     val shareToken: String?,
     val skills: List<ProfileSkillDto>,
+    val accent: String? = null,
+    val ownerName: String = "",
+    val ownerAvatarUrl: String? = null,
 )

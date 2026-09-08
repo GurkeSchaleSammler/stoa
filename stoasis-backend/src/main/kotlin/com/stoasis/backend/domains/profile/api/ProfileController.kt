@@ -1,6 +1,7 @@
 package com.stoasis.backend.domains.profile.api
 
 import com.stoasis.backend.domains.profile.application.ProfileService
+import com.stoasis.backend.domains.profile.application.ProfileExportService
 import com.stoasis.backend.shared.security.CurrentUser
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
@@ -19,9 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
+/** Provides profile editing and owned-data exports. */
 @RestController
 @RequestMapping("/api/profile")
-class ProfileController(private val profiles: ProfileService, private val currentUser: CurrentUser) {
+class ProfileController(private val profiles: ProfileService, private val exports: ProfileExportService, private val currentUser: CurrentUser) {
     @PatchMapping
     fun update(@Valid @RequestBody request: UpdateProfileRequest) = profiles.update(currentUser.id(), request)
 
@@ -33,9 +35,9 @@ class ProfileController(private val profiles: ProfileService, private val curren
     }
 
     @GetMapping("/export")
-    fun export(@RequestParam(defaultValue = "json") format: String): ResponseEntity<ByteArray> {
+    fun export(@RequestParam(defaultValue = "json") format: String, @RequestParam(defaultValue = "boards") scope: String): ResponseEntity<ByteArray> {
         val csv = format.equals("csv", ignoreCase = true)
-        val body = if (csv) profiles.exportCsv(currentUser.id()) else profiles.exportJson(currentUser.id())
+        val body = exports.export(currentUser.id(), format, scope)
         val mediaType = if (csv) MediaType("text", "csv") else MediaType.APPLICATION_JSON
         return ResponseEntity.ok()
             .contentType(mediaType)
@@ -43,6 +45,4 @@ class ProfileController(private val profiles: ProfileService, private val curren
             .body(body)
     }
 
-    @PostMapping("/import/pocket", consumes = ["text/csv", "application/octet-stream"])
-    fun importPocket(@RequestBody csv: ByteArray) = profiles.importPocket(currentUser.id(), csv)
 }

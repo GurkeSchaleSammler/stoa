@@ -1,0 +1,10 @@
+ALTER TABLE uploads ADD COLUMN thumbnail BYTEA;
+ALTER TABLE users ADD COLUMN last_export_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE users ADD COLUMN mcp_version INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE users ADD COLUMN mcp_connected_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE collections ADD COLUMN accent VARCHAR(7);
+CREATE INDEX idx_pins_creator_type ON pins(created_by, type);
+CREATE INDEX idx_pins_file_key ON pins(file_key);
+CREATE INDEX idx_pin_tags_tag ON pin_tags(tag);
+CREATE INDEX idx_collections_owner ON collections(owner_id);
+CREATE INDEX idx_uploads_owner ON uploads(owner_id);

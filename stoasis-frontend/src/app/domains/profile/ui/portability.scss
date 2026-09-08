@@ -1,0 +1,48 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+select {
+  max-width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+.report-scroll {
+  max-width: 100%;
+  overflow: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+td,
+th {
+  padding: 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+td small {
+  display: block;
+  color: var(--muted);
+}
+.data-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+button:disabled,
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+code {
+  overflow-wrap: anywhere;
+}

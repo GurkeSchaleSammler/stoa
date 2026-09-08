@@ -139,3 +139,9 @@ Nach dem Deployment:
 5. Beim ersten Tool-Aufruf mit dem Stoasis-Konto anmelden und die Berechtigungen bestätigen.
 
 Für eine veröffentlichte Integration bleiben zusätzlich Domain-Verifikation, Datenschutzangaben und der OpenAI-Review-Prozess erforderlich.
+
+## Account access
+
+MCP requires a Premium Stoasis account. Authorization, token issuance, refresh and every authenticated MCP request check current account eligibility. Free accounts retain their normal web API access. Owners can revoke all MCP access from their profile; existing tokens then fail on their next request. OAuth token revocation also invalidates the other tokens issued for that same connection.
+
+The profile setup panel reads `STOASIS_MCP_PUBLIC_URL` from the backend configuration. Include the `/mcp` path in that value. Keep the MCP service's `PUBLIC_BASE_URL` at its service origin, as described above.

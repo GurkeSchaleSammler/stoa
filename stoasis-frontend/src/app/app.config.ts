@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withXhr, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor])),
+    provideHttpClient(withXhr(), withInterceptors([credentialsInterceptor])),
     provideRouter(routes, withRouterConfig({ paramsInheritanceStrategy: 'always' })),
     provideTranslateService({
       fallbackLang: defaultAppLanguage,

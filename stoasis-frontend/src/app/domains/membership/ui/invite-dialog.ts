@@ -3,6 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
 import { InviteInfo } from '../data/models/invite-info';
 
+/** Explains viewer access and invitation capacity. */
 @Component({
   selector: 'ui-invite-dialog',
   standalone: true,
@@ -33,6 +34,14 @@ import { InviteInfo } from '../data/models/invite-info';
           </header>
           @if (invite(); as data) {
             <p>{{ 'membership.inviteLead' | translate }}</p>
+            <p>{{ 'membership.viewerAccess' | translate }}</p>
+            @if (error()) {
+              <p role="alert">{{ error() | translate }}</p>
+            }
+            @if (data.capacity.limitReason) {
+              <p role="status">{{ data.capacity.limitReason }}</p>
+            }
+            <p>{{ 'membership.capacity' | translate: data.capacity }}</p>
             @if (data.visibility === 'link') {
               <div class="invite-link">
                 <code>{{ data.url }}</code
@@ -41,14 +50,24 @@ import { InviteInfo } from '../data/models/invite-info';
                   {{ (copied() ? 'common.copied' : 'common.copy') | translate }}
                 </button>
               </div>
-              <button type="button" class="text-danger" (click)="onRevokeInvite.emit()">
+              <button
+                type="button"
+                class="text-danger"
+                [disabled]="isMutating()"
+                (click)="onRevokeInvite.emit()"
+              >
                 {{ 'membership.revokeLink' | translate }}
               </button>
             } @else {
               <div class="private-state">
                 <span><ui-app-icon name="warning" /></span
                 ><strong>{{ 'membership.privateCollection' | translate }}</strong
-                ><button type="button" class="button primary" (click)="onEnableInvite.emit()">
+                ><button
+                  type="button"
+                  class="button primary"
+                  [disabled]="isMutating() || !!data.capacity.limitReason"
+                  (click)="onEnableInvite.emit()"
+                >
                   {{ 'membership.createInviteLink' | translate }}
                 </button>
               </div>
@@ -62,6 +81,8 @@ import { InviteInfo } from '../data/models/invite-info';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InviteDialogComponent {
+  readonly error = input<string | null>(null);
+  readonly isMutating = input(false);
   readonly isOpen = input(false);
   readonly invite = input<InviteInfo | null>(null);
   readonly copied = input(false);

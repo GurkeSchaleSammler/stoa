@@ -9,6 +9,7 @@ import {
   SaveProfileSkillRequest,
 } from './profile-board.models';
 
+/** Connects skill editing and profile sharing to the API. */
 @Injectable({ providedIn: 'root' })
 export class ProfileBoardApi {
   private readonly http = inject(HttpClient);
@@ -44,6 +45,10 @@ export class ProfileBoardApi {
 
   setVisibility(kind: BoardKind, visibility: ProfileBoardVisibility): Observable<ProfileBoard> {
     return this.http.patch<ProfileBoard>(`${this.base}/${kind}/visibility`, { visibility });
+  }
+
+  setAccent(kind: BoardKind, accent: string): Observable<ProfileBoard> {
+    return this.http.patch<ProfileBoard>(`${this.base}/${kind}/accent`, { accent });
   }
 
   publicView(id: string, token?: string | null): Observable<ProfileBoard> {

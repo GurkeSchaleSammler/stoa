@@ -342,3 +342,16 @@
     padding: 24px;
   }
 }
+
+.skill-pin {
+  border-top-color: var(--profile-accent, var(--accent));
+}
+.visibility-card {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.visibility-card label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

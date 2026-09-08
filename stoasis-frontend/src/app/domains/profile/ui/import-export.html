@@ -1,0 +1,79 @@
+<section class="settings-section stack">
+  <div>
+    <p class="eyebrow">{{ 'profile.data' | translate }}</p>
+    <h2>{{ 'profile.importExport' | translate }}</h2>
+    <p>{{ 'portability.scope' | translate }}</p>
+    <p>{{ (premium() ? 'portability.premiumLimits' : 'portability.freeLimits') | translate }}</p>
+  </div>
+  @if (error()) {
+    <p role="alert">{{ error() | translate }}</p>
+  }
+  <label
+    >{{ 'portability.destination' | translate }}
+    <select
+      [ngModel]="destination()"
+      (ngModelChange)="onDestination.emit($event)"
+      [disabled]="isImporting()"
+    >
+      <option value="">{{ 'portability.chooseBoard' | translate }}</option>
+      @for (board of boards(); track board.id) {
+        <option [value]="board.id">{{ board.emoji }} {{ board.name }}</option>
+      }
+    </select>
+  </label>
+  @if (!boards().length) {
+    <p>{{ 'portability.noBoard' | translate }}</p>
+  }
+  <div class="data-actions">
+    <label class="button secondary file-button" [class.disabled]="isImporting() || !destination()">
+      <input
+        type="file"
+        accept=".csv,text/csv"
+        [disabled]="isImporting() || !destination()"
+        (change)="selectFile($event)"
+      />
+      {{ (isImporting() ? 'profile.importing' : 'portability.previewFile') | translate }}
+    </label>
+    <button
+      class="button secondary"
+      [disabled]="isExporting()"
+      (click)="onExport.emit({ format: 'json', scope: 'boards' })"
+    >
+      {{ 'profile.exportJson' | translate }}
+    </button>
+    <button
+      class="button secondary"
+      [disabled]="isExporting() || !premium()"
+      (click)="onExport.emit({ format: 'csv', scope: 'boards' })"
+    >
+      {{ 'profile.exportCsv' | translate }} · Premium
+    </button>
+    <button
+      class="button secondary"
+      [disabled]="isExporting() || !premium()"
+      (click)="onExport.emit({ format: 'json', scope: 'account' })"
+    >
+      {{ 'portability.archive' | translate }} · Premium
+    </button>
+  </div>
+  @if (preview(); as report) {
+    <h3>{{ 'portability.preview' | translate }}</h3>
+    <ui-import-report [report]="report" />
+    <div class="data-actions">
+      <button
+        class="button primary"
+        [disabled]="isImporting() || !report.ready"
+        (click)="onConfirm.emit()"
+      >
+        {{ 'portability.confirm' | translate }}
+      </button>
+      <button class="button secondary" [disabled]="isImporting()" (click)="onCancel.emit()">
+        {{ 'common.cancel' | translate }}
+      </button>
+    </div>
+  }
+  @if (importResult(); as report) {
+    <h3>{{ 'portability.result' | translate }}</h3>
+    <ui-import-report [report]="report" />
+  }
+</section>

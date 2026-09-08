@@ -131,7 +131,10 @@
     "joinBeforeName": "Du wurdest zur Sammlung",
     "joinAfterName": "eingeladen. Du trittst zunächst mit Leserechten bei.",
     "joining": "Du trittst bei …",
-    "join": "Sammlung beitreten"
+    "join": "Sammlung beitreten",
+    "viewerAccess": "Wer den Link besitzt, kann das Board ansehen und als Viewer beitreten.",
+    "capacity": "{{ownedSharedBoards}} / {{sharedBoardLimit}} geteilte Boards · bis zu {{memberLimit}} Mitglieder",
+    "alreadyMember": "Du bist bereits Mitglied dieses Boards."
   },
   "pin": {
     "link": "Link",
@@ -185,7 +188,8 @@
       "links": "Links",
       "notes": "Notizen",
       "photos": "Fotos"
-    }
+    },
+    "invalidPhoto": "Bitte JPEG, PNG oder WebP wählen: maximal 5 MB mit Free, 20 MB mit Premium."
   },
   "profile": {
     "yourAccount": "Dein Konto",
@@ -241,7 +245,11 @@
     "boards": "Profil-Boards",
     "visibility": "Sichtbarkeit",
     "visibilityLead": "Gilt nur für dieses Profil-Board.",
-    "visibilityValue": { "private": "Privat", "link": "Per Link", "public": "Öffentlich" },
+    "visibilityValue": {
+      "private": "Privat",
+      "link": "Per Link",
+      "public": "Öffentlich"
+    },
     "add": "Skill hinzufügen",
     "edit": "Skill bearbeiten",
     "name": "Skill",
@@ -262,7 +270,12 @@
     "emptyLead": "Füge den ersten Skill über das Formular hinzu.",
     "saved": "Skill gespeichert.",
     "publicProfile": "Geteiltes Skill-Profil",
-    "unavailable": "Dieses Profil-Board ist nicht verfügbar."
+    "unavailable": "Dieses Profil-Board ist nicht verfügbar.",
+    "premiumSharing": "Öffentliche und per Link geteilte Profile benötigen Premium.",
+    "copyLink": "Profil-Link kopieren",
+    "accent": "Profilfarbe",
+    "capacity": "{{count}} / {{limit}} Skills",
+    "limitReached": "Skill-Limit erreicht. Bestehende Skills bleiben sichtbar und bearbeitbar."
   },
   "groups": {
     "nav": "Gruppen",
@@ -318,5 +331,55 @@
     "newTag": "Neuer Tag",
     "deleteTag": "{{tag}} löschen",
     "eyebrow": "Pins wiederfinden"
+  },
+  "mcp": {
+    "title": "Stoasis verbinden",
+    "unavailable": "Der Verbindungsstatus ist gerade nicht verfügbar. Deine Boards bleiben nutzbar.",
+    "revokeError": "Der Zugriff konnte nicht widerrufen werden. Bitte erneut versuchen.",
+    "premiumRequired": "Premium erforderlich: Mit ChatGPT Boards lesen und bearbeiten. Die normale Web-App bleibt mit Free nutzbar.",
+    "connected": "Zugriff autorisiert",
+    "disconnected": "Nicht verbunden",
+    "setup": "Füge diese Adresse als Remote-MCP-Verbindung in deinem KI-Client hinzu und melde dich mit deinem Stoasis-Konto an.",
+    "scopes": "Beim Verbinden erlaubst du Lesezugriff oder zusätzlich Schreibzugriff. Du kannst alle Verbindungen hier jederzeit widerrufen.",
+    "notConfigured": "Die öffentliche MCP-Adresse wurde noch nicht eingerichtet.",
+    "revoke": "Alle MCP-Zugriffe widerrufen"
+  },
+  "portability": {
+    "scope": "Exportiere Boards, die du besitzt, einschliesslich privater Skill-Boards. Boards, denen du nur beigetreten bist, sind ausgeschlossen.",
+    "premiumLimits": "Premium: bis zu 10.000 CSV-Zeilen pro Import und wiederholte Exporte. Kontoarchive enthalten Bilder und sind auf 64 MB Bilddaten begrenzt.",
+    "freeLimits": "Free: bis zu 100 CSV-Zeilen pro Import und ein JSON-Export pro UTC-Kalendertag.",
+    "destination": "Importziel",
+    "chooseBoard": "Board auswählen",
+    "noBoard": "Erstelle zuerst ein Board mit Link-Pins oder lass dir Bearbeitungsrechte geben.",
+    "previewFile": "CSV zur Vorschau auswählen",
+    "archive": "Kontoarchiv",
+    "preview": "Vorschau – noch nichts importiert",
+    "confirm": "Import bestätigen",
+    "result": "Importergebnis",
+    "counts": "{{ready}} bereit · {{imported}} erstellt · {{skipped}} übersprungen · {{duplicates}} Duplikate · {{failed}} fehlerhaft",
+    "row": "Zeile",
+    "outcome": "Ergebnis",
+    "rows": "Importzeilen",
+    "next": "Weiter",
+    "status": {
+      "ready": "Bereit",
+      "created": "Erstellt",
+      "skipped": "Übersprungen",
+      "duplicate": "Duplikat",
+      "failed": "Fehler"
+    }
+  },
+  "discovery": {
+    "title": "Erweiterte Suche",
+    "premium": "Mehrere Tags, gespeicherte Suchen und Tag-Statistiken sind mit Premium verfügbar. Die einfache Suche bleibt kostenlos.",
+    "pages": "Suchergebnisseiten",
+    "multiTag": "Mehrere Tags",
+    "match": "Verknüpfung",
+    "all": "Alle Tags",
+    "any": "Mindestens ein Tag",
+    "apply": "Filter anwenden",
+    "saved": "Suche speichern",
+    "analytics": "Tag-Nutzung anzeigen",
+    "cleanup": "Selten genutzte Tags (1 Pin) können beim Aufräumen helfen."
   }
 }

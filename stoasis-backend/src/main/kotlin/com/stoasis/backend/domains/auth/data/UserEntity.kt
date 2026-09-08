@@ -6,6 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.Instant
 
+/** Stores account identity, plan and revocation state. */
 @Entity
 @Table(name = "users")
 class UserEntity(
@@ -23,6 +24,12 @@ class UserEntity(
     var passwordHash: String? = null,
     @Column(name = "created_at", nullable = false)
     var createdAt: Instant = Instant.now(),
+    @Column(name = "last_export_at")
+    var lastExportAt: Instant? = null,
+    @Column(name = "mcp_version", nullable = false)
+    var mcpVersion: Int = 0,
+    @Column(name = "mcp_connected_at")
+    var mcpConnectedAt: Instant? = null,
     @Column(name = "deletion_scheduled_at")
     var deletionScheduledAt: Instant? = null,
 )

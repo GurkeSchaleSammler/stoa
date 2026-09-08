@@ -131,7 +131,10 @@
     "joinBeforeName": "Vous avez été invité à la collection",
     "joinAfterName": "Vous la rejoindrez d’abord avec un accès en lecture.",
     "joining": "Connexion …",
-    "join": "Rejoindre la collection"
+    "join": "Rejoindre la collection",
+    "viewerAccess": "Toute personne disposant du lien peut consulter ce tableau et le rejoindre comme lecteur.",
+    "capacity": "{{ownedSharedBoards}} / {{sharedBoardLimit}} tableaux partagés · jusqu’à {{memberLimit}} membres",
+    "alreadyMember": "Vous êtes déjà membre de ce tableau."
   },
   "pin": {
     "link": "Lien",
@@ -185,7 +188,8 @@
       "links": "Liens",
       "notes": "Notes",
       "photos": "Photos"
-    }
+    },
+    "invalidPhoto": "Choisissez JPEG, PNG ou WebP : 5 Mo maximum avec Free, 20 Mo avec Premium."
   },
   "profile": {
     "yourAccount": "Votre compte",
@@ -241,7 +245,11 @@
     "boards": "Tableaux de profil",
     "visibility": "Visibilité",
     "visibilityLead": "S’applique uniquement à ce tableau de profil.",
-    "visibilityValue": { "private": "Privé", "link": "Par lien", "public": "Public" },
+    "visibilityValue": {
+      "private": "Privé",
+      "link": "Par lien",
+      "public": "Public"
+    },
     "add": "Ajouter une compétence",
     "edit": "Modifier la compétence",
     "name": "Compétence",
@@ -262,7 +270,12 @@
     "emptyLead": "Ajoutez votre première compétence avec le formulaire.",
     "saved": "Compétence enregistrée.",
     "publicProfile": "Profil de compétences partagé",
-    "unavailable": "Ce tableau de profil n’est pas disponible."
+    "unavailable": "Ce tableau de profil n’est pas disponible.",
+    "premiumSharing": "Les profils publics ou partagés par lien nécessitent Premium.",
+    "copyLink": "Copier le lien du profil",
+    "accent": "Couleur du profil",
+    "capacity": "{{count}} / {{limit}} compétences",
+    "limitReached": "Limite atteinte. Les compétences existantes restent visibles et modifiables."
   },
   "groups": {
     "nav": "Groupes",
@@ -318,5 +331,55 @@
     "newTag": "Nouveau tag",
     "deleteTag": "Supprimer {{tag}}",
     "eyebrow": "Retrouver des pins"
+  },
+  "mcp": {
+    "title": "Connecter Stoasis",
+    "unavailable": "Le statut de connexion est temporairement indisponible. Vos tableaux restent accessibles.",
+    "revokeError": "Impossible de révoquer l’accès. Veuillez réessayer.",
+    "premiumRequired": "Premium requis pour lire et modifier vos tableaux avec ChatGPT. L’application web reste disponible avec Free.",
+    "connected": "Accès autorisé",
+    "disconnected": "Non connecté",
+    "setup": "Ajoutez cette adresse comme connexion MCP distante dans votre client IA et connectez-vous avec votre compte Stoasis.",
+    "scopes": "Autorisez la lecture seule ou la lecture et l’écriture lors de la connexion. Vous pouvez révoquer toutes les connexions ici.",
+    "notConfigured": "L’adresse MCP publique n’a pas encore été configurée.",
+    "revoke": "Révoquer tous les accès MCP"
+  },
+  "portability": {
+    "scope": "Exportez les tableaux dont vous êtes propriétaire, y compris vos compétences privées. Les tableaux simplement rejoints sont exclus.",
+    "premiumLimits": "Premium : jusqu’à 10 000 lignes CSV par import et exports répétés. Les archives incluent les images, dans une limite de 64 Mo.",
+    "freeLimits": "Free : jusqu’à 100 lignes CSV par import et un export JSON par jour UTC.",
+    "destination": "Destination de l’import",
+    "chooseBoard": "Choisir un tableau",
+    "noBoard": "Créez un tableau acceptant les liens ou demandez des droits de modification.",
+    "previewFile": "Choisir un CSV à prévisualiser",
+    "archive": "Archive du compte",
+    "preview": "Aperçu — aucune donnée importée",
+    "confirm": "Confirmer l’import",
+    "result": "Résultat de l’import",
+    "counts": "{{ready}} prêtes · {{imported}} créées · {{skipped}} ignorées · {{duplicates}} doublons · {{failed}} erreurs",
+    "row": "Ligne",
+    "outcome": "Résultat",
+    "rows": "Lignes importées",
+    "next": "Suivant",
+    "status": {
+      "ready": "Prête",
+      "created": "Créée",
+      "skipped": "Ignorée",
+      "duplicate": "Doublon",
+      "failed": "Erreur"
+    }
+  },
+  "discovery": {
+    "title": "Recherche avancée",
+    "premium": "Les filtres multiples, recherches enregistrées et statistiques nécessitent Premium. La recherche simple reste gratuite.",
+    "pages": "Pages des résultats",
+    "multiTag": "Plusieurs tags",
+    "match": "Correspondance",
+    "all": "Tous les tags",
+    "any": "Au moins un tag",
+    "apply": "Appliquer les filtres",
+    "saved": "Enregistrer la recherche",
+    "analytics": "Afficher l’usage des tags",
+    "cleanup": "Les tags rarement utilisés (1 épingle) peuvent aider au nettoyage."
   }
 }

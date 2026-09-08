@@ -10,6 +10,7 @@ import { LinkPreview } from '../data/models/link-preview';
 import { UploadedPhoto } from '../data/models/uploaded-photo';
 import { BoardColorPickerComponent } from './board-color-picker';
 
+/** Collects pin content and displays upload validation and progress. */
 @Component({
   selector: 'ui-add-pin-dialog',
   standalone: true,
@@ -109,19 +110,37 @@ import { BoardColorPickerComponent } from './board-color-picker';
             }
             @case ('photo') {
               <label class="file-drop"
-                ><input type="file" accept="image/*" (change)="selectFile($event)" />
+                ><input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  (change)="selectFile($event)"
+                />
                 <span><ui-app-icon name="upload" /></span
                 ><strong>{{ 'pin.choosePhoto' | translate }}</strong
                 ><small>{{ 'pin.photoFormats' | translate }}</small></label
               >
               @if (isUploading()) {
-                <div class="progress"><span [style.width.%]="uploadProgress()"></span></div>
+                <progress
+                  [value]="uploadProgress()"
+                  max="100"
+                  [attr.aria-label]="
+                    'pin.uploadProgress' | translate: { progress: uploadProgress() }
+                  "
+                ></progress>
                 <p class="helper">
                   {{ 'pin.uploadProgress' | translate: { progress: uploadProgress() } }}
                 </p>
               }
               @if (uploadedFileName()) {
                 <p class="file-name"><ui-app-icon name="check" /> {{ uploadedFileName() }}</p>
+              }
+              @if (localPreview() && !uploadedPhoto()) {
+                <figure class="upload-preview">
+                  <img
+                    [src]="localPreview()"
+                    [alt]="draft().caption || ('pin.imagePreview' | translate)"
+                  />
+                </figure>
               }
               @if (uploadedPhoto(); as photo) {
                 <figure class="upload-preview">
@@ -187,6 +206,7 @@ import { BoardColorPickerComponent } from './board-color-picker';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddPinDialogComponent {
+  readonly localPreview = input<string | null>(null);
   readonly isOpen = input(false);
   readonly allowedTypes = input.required<PinType[]>();
   readonly selectedType = input<PinType | null>(null);

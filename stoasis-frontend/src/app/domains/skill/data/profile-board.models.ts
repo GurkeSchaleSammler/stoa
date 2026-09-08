@@ -27,6 +27,9 @@ export interface ProfileBoard {
   boardKind: BoardKind;
   visibility: ProfileBoardVisibility;
   shareToken: string | null;
+  accent: string | null;
+  ownerName: string;
+  ownerAvatarUrl: string | null;
   skills: ProfileSkill[];
 }
 

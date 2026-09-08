@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import com.stoasis.backend.domains.pin.api.UpdateGridBlockRequest
 
+/** Provides skill editing and profile presentation settings. */
 @RestController
 @ConditionalOnProperty(prefix = "stoasis.features", name = ["skills-enabled"], havingValue = "true")
 @RequestMapping("/api/profile-boards")
@@ -48,6 +49,10 @@ class ProfileBoardController(
         @RequestBody grid: UpdateGridBlockRequest,
     ) = profileBoards.moveSkill(currentUser.id(), kind, pinId, grid)
 
+    @PatchMapping("/{kind}/accent")
+    fun setAccent(@PathVariable kind: BoardKind, @RequestBody request: UpdateProfileAccentRequest) =
+        profileBoards.setAccent(currentUser.id(), kind, request.accent)
+
     @PatchMapping("/{kind}/visibility")
     fun setVisibility(
         @PathVariable kind: BoardKind,
@@ -55,6 +60,7 @@ class ProfileBoardController(
     ) = profileBoards.setVisibility(currentUser.id(), kind, request.visibility)
 }
 
+/** Exposes profile boards through explicit public or token-based read access. */
 @RestController
 @ConditionalOnProperty(prefix = "stoasis.features", name = ["skills-enabled"], havingValue = "true")
 @RequestMapping("/api/public/profile-boards")

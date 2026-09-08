@@ -61,6 +61,23 @@ export class StoasisApiClient {
     return this.request<User>("/api/auth/me");
   }
 
+  /** Starts a premium MCP session independently of browser sessions. */
+  async connectMcp(): Promise<void> {
+    await this.request("/api/profile/mcp/connect", {
+      method: "POST",
+      body: "{}",
+    });
+  }
+
+  /** Checks current plan eligibility and account revocation. */
+  async authorizeMcp(): Promise<void> {
+    await this.request("/api/profile/mcp/authorization");
+  }
+
+  async logout(): Promise<void> {
+    await this.request("/api/auth/logout", { method: "POST", body: "{}" });
+  }
+
   async listCollections(filter = "all"): Promise<CollectionSummary[]> {
     return this.request<CollectionSummary[]>(
       `/api/collections?filter=${encodeURIComponent(filter)}`,

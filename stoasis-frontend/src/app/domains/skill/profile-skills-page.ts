@@ -7,6 +7,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { SessionContextStore } from '../../shared/application/session-context.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -31,6 +32,7 @@ interface SkillDragState {
   origin: SkillGrid;
 }
 
+/** Edits profile skills and their spatial presentation. */
 @Component({
   selector: 'app-profile-skills-page',
   standalone: true,
@@ -66,6 +68,9 @@ interface SkillDragState {
           <div>
             <strong>{{ 'skills.visibility' | translate }}</strong>
             <span>{{ 'skills.visibilityLead' | translate }}</span>
+            @if (!premium()) {
+              <p>{{ 'skills.premiumSharing' | translate }}</p>
+            }
           </div>
           <div class="visibility-actions">
             @for (option of visibilityOptions; track option) {
@@ -79,8 +84,27 @@ interface SkillDragState {
               </button>
             }
           </div>
+          @if (board.visibility !== 'private') {
+            <button type="button" class="secondary" (click)="copyShareLink(board)">
+              {{ 'skills.copyLink' | translate }}
+            </button>
+          }
+          <label
+            >{{ 'skills.accent' | translate }} · Premium
+            <input
+              type="color"
+              [value]="board.accent || '#506b59'"
+              [disabled]="!premium() || isSaving()"
+              (change)="setAccent($event)"
+            />
+          </label>
         </section>
-
+        <p role="status">
+          {{ 'skills.capacity' | translate: { count: skillCount(), limit: skillLimit() } }}
+        </p>
+        @if (!canAdd()) {
+          <p role="status">{{ 'skills.limitReached' | translate }}</p>
+        }
         <section class="skill-layout">
           <form class="skill-form" (ngSubmit)="saveSkill()">
             <h2>{{ (editingId() ? 'skills.edit' : 'skills.add') | translate }}</h2>
@@ -114,7 +138,11 @@ interface SkillDragState {
                   {{ 'common.cancel' | translate }}
                 </button>
               }
-              <button type="submit" class="primary" [disabled]="!skillName.trim() || isSaving()">
+              <button
+                type="submit"
+                class="primary"
+                [disabled]="!skillName().trim() || isSaving() || (!editingId() && !canAdd())"
+              >
                 <ui-app-icon name="plus" />
                 {{ (isSaving() ? 'common.saving' : 'common.save') | translate }}
               </button>
@@ -132,6 +160,7 @@ interface SkillDragState {
             <div class="skill-board-viewport">
               <div
                 class="skill-board"
+                [style.--profile-accent]="board.accent"
                 (pointermove)="moveDrag($event)"
                 (pointerup)="endDrag($event)"
                 (pointercancel)="cancelDrag()"
@@ -195,6 +224,13 @@ interface SkillDragState {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileSkillsPageComponent implements OnInit {
+  private readonly session = inject(SessionContextStore);
+  readonly premium = computed(() => this.session.user()?.plan === 'premium');
+  readonly skillLimit = computed(() => (this.premium() ? 10000 : 12));
+  readonly skillCount = computed(() =>
+    this.boards().reduce((count, board) => count + board.skills.length, 0),
+  );
+  readonly canAdd = computed(() => this.skillCount() < this.skillLimit());
   private readonly api = inject(ProfileBoardApi);
   private readonly destroyRef = inject(DestroyRef);
   private readonly snackbars = inject(SnackbarService);
@@ -213,25 +249,25 @@ export class ProfileSkillsPageComponent implements OnInit {
   readonly visibilityOptions: ProfileBoardVisibility[] = ['private', 'link', 'public'];
   readonly clipSize = 10;
 
-  skillName = '';
-  level: SkillLevel = 'INTERMEDIATE';
-  yearsExperience: number | null = null;
+  readonly skillName = signal('');
+  readonly level = signal<SkillLevel>('INTERMEDIATE');
+  readonly yearsExperience = signal<number | null>(null);
 
   ngOnInit(): void {
     this.api
       .list()
       .pipe(
         finalize(() => this.isLoading.set(false)),
-        catchError(() => this.fail()),
+        catchError((error) => this.fail(error)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((boards) => this.boards.set(boards));
   }
 
   saveSkill(): void {
-    const name = this.skillName.trim();
-    if (!name) return;
-    const body = { skillName: name, level: this.level, yearsExperience: this.yearsExperience };
+    const name = this.skillName().trim();
+    if (!name || this.isSaving() || (!this.editingId() && !this.canAdd())) return;
+    const body = { skillName: name, level: this.level(), yearsExperience: this.yearsExperience() };
     const request = this.editingId()
       ? this.api.updateSkill(this.activeKind(), this.editingId()!, body)
       : this.api.createSkill(this.activeKind(), body);
@@ -239,7 +275,7 @@ export class ProfileSkillsPageComponent implements OnInit {
     request
       .pipe(
         finalize(() => this.isSaving.set(false)),
-        catchError(() => this.fail()),
+        catchError((error) => this.fail(error)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((board) => {
@@ -253,9 +289,9 @@ export class ProfileSkillsPageComponent implements OnInit {
     const skill = this.activeBoard()?.skills.find((item) => item.id === id);
     if (!skill) return;
     this.editingId.set(id);
-    this.skillName = skill.skillName;
-    this.level = skill.level;
-    this.yearsExperience = skill.yearsExperience;
+    this.skillName.set(skill.skillName);
+    this.level.set(skill.level);
+    this.yearsExperience.set(skill.yearsExperience);
   }
 
   deleteSkill(id: string): void {
@@ -264,7 +300,7 @@ export class ProfileSkillsPageComponent implements OnInit {
       .deleteSkill(this.activeKind(), id)
       .pipe(
         finalize(() => this.isSaving.set(false)),
-        catchError(() => this.fail()),
+        catchError((error) => this.fail(error)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((board) => {
@@ -342,7 +378,21 @@ export class ProfileSkillsPageComponent implements OnInit {
       .setVisibility(this.activeKind(), visibility)
       .pipe(
         finalize(() => this.isSaving.set(false)),
-        catchError(() => this.fail()),
+        catchError((error) => this.fail(error)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((board) => this.replaceBoard(board));
+  }
+
+  setAccent(event: Event): void {
+    if (!this.premium() || this.isSaving()) return;
+    const accent = (event.target as HTMLInputElement).value;
+    this.isSaving.set(true);
+    this.api
+      .setAccent(this.activeKind(), accent)
+      .pipe(
+        finalize(() => this.isSaving.set(false)),
+        catchError((error) => this.fail(error)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((board) => this.replaceBoard(board));
@@ -352,15 +402,17 @@ export class ProfileSkillsPageComponent implements OnInit {
     const url = new URL(`/profile-boards/${board.id}`, window.location.origin);
     if (board.visibility === 'link' && board.shareToken)
       url.searchParams.set('token', board.shareToken);
-    void navigator.clipboard.writeText(url.toString());
-    this.snackbars.success('common.copied');
+    void navigator.clipboard
+      .writeText(url.toString())
+      .then(() => this.snackbars.success('common.copied'))
+      .catch(() => this.fail());
   }
 
   resetForm(): void {
     this.editingId.set(null);
-    this.skillName = '';
-    this.level = 'INTERMEDIATE';
-    this.yearsExperience = null;
+    this.skillName.set('');
+    this.level.set('INTERMEDIATE');
+    this.yearsExperience.set(null);
   }
 
   private replaceBoard(board: ProfileBoard): void {
@@ -389,11 +441,13 @@ export class ProfileSkillsPageComponent implements OnInit {
   }
 
   isVisibilityOptionDisabled(visibility: ProfileBoardVisibility): boolean {
-    return visibility !== 'private';
+    return visibility !== 'private' && !this.premium();
   }
 
-  private fail() {
-    this.snackbars.error('errors.skills');
+  private fail(error?: unknown) {
+    this.snackbars.error(
+      (error as { error?: { message?: string } })?.error?.message ?? 'errors.skills',
+    );
     return EMPTY;
   }
 }

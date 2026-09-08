@@ -1,76 +1,49 @@
 package com.stoasis.backend.domains.upload.api
 
-import com.stoasis.backend.domains.auth.data.UserRepository
-import com.stoasis.backend.domains.upload.data.UploadEntity
-import com.stoasis.backend.domains.upload.data.UploadRepository
+import com.stoasis.backend.domains.upload.application.UploadService
 import com.stoasis.backend.shared.security.CurrentUser
-import com.stoasis.backend.shared.web.ApiException
-import java.io.ByteArrayInputStream
-import java.util.UUID
-import javax.imageio.ImageIO
-import org.springframework.beans.factory.annotation.Value
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
+/** Accepts bounded image streams and serves authorized previews with safe headers. */
 @RestController
 @RequestMapping("/api/uploads")
-class UploadController(
-    private val uploads: UploadRepository,
-    private val users: UserRepository,
-    private val currentUser: CurrentUser,
-    @Value("\${stoasis.public-api-base-url}") private val publicApiBaseUrl: String,
-) {
-    @PostMapping(consumes = ["image/jpeg", "image/png", "image/webp", "application/octet-stream"])
+class UploadController(private val uploads: UploadService, private val currentUser: CurrentUser) {
+    @PostMapping(consumes = ["image/jpeg", "image/png", "image/webp"])
     @ResponseStatus(HttpStatus.CREATED)
-    @Transactional
-    fun upload(
-        @RequestBody content: ByteArray,
-        @RequestHeader(HttpHeaders.CONTENT_TYPE, required = false) contentType: String?,
-        @RequestHeader("X-File-Name", required = false) originalName: String?,
-    ): UploadResponse {
-        if (content.isEmpty()) throw ApiException(HttpStatus.BAD_REQUEST, "Keine Bilddatei empfangen.")
-        val mediaType = contentType?.substringBefore(';') ?: MediaType.APPLICATION_OCTET_STREAM_VALUE
-        if (mediaType != MediaType.APPLICATION_OCTET_STREAM_VALUE && !mediaType.startsWith("image/")) {
-            throw ApiException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Nur Bilddateien sind erlaubt.")
-        }
-        val image = runCatching { ImageIO.read(ByteArrayInputStream(content)) }.getOrNull()
-        val id = "upload-${UUID.randomUUID().toString().take(12)}"
-        val entity = uploads.save(
-            UploadEntity(
-                id = id,
-                owner = users.getReferenceById(currentUser.id()),
-                originalName = originalName?.takeIf(String::isNotBlank) ?: "Foto",
-                contentType = mediaType,
-                content = content,
-                imageWidth = image?.width ?: 1600,
-                imageHeight = image?.height ?: 1000,
-            ),
-        )
-        val baseUrl = publicApiBaseUrl.trimEnd('/')
-        return UploadResponse(entity.id, "$baseUrl/api/uploads/${entity.id}", entity.imageWidth, entity.imageHeight, entity.originalName)
-    }
+    fun upload(request: HttpServletRequest, @RequestHeader("X-File-Name", required = false) name: String?) =
+        uploads.upload(currentUser.id(), request.inputStream, request.contentType, name)
+
+    @DeleteMapping("/{fileKey}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun discard(@PathVariable fileKey: String) = uploads.discard(fileKey, currentUser.id())
 
     @GetMapping("/{fileKey}")
-    @Transactional(readOnly = true)
-    fun download(@PathVariable fileKey: String): ResponseEntity<ByteArray> {
-        val upload = uploads.findById(fileKey).orElseThrow {
-            ApiException(HttpStatus.NOT_FOUND, "Bild nicht gefunden.")
-        }
+    fun download(
+        @PathVariable fileKey: String,
+        @RequestParam(required = false) token: String?,
+        @RequestParam(defaultValue = "false") thumbnail: Boolean,
+    ): ResponseEntity<ByteArray> {
+        val (mime, content) = uploads.download(fileKey, currentUser.idOrNull(), token, thumbnail)
         return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(upload.contentType))
-            .cacheControl(CacheControl.noCache())
-            .body(upload.content)
+            .contentType(MediaType.parseMediaType(mime))
+            .cacheControl(CacheControl.noStore())
+            .header("X-Content-Type-Options", "nosniff")
+            .header("Content-Security-Policy", "default-src 'none'; sandbox")
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+            .body(content)
     }
 }

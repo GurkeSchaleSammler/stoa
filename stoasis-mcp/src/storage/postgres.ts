@@ -257,7 +257,9 @@ export class PostgresOAuthStorage implements OAuthStorage {
   async revokeToken(tokenHash: string, clientId: string): Promise<void> {
     await this.pool.query(
       `UPDATE stoasis_mcp_tokens SET revoked_at = COALESCE(revoked_at, NOW())
-       WHERE token_hash = $1 AND client_id = $2`,
+       WHERE client_id = $2 AND encrypted_session IN (
+         SELECT encrypted_session FROM stoasis_mcp_tokens WHERE token_hash = $1 AND client_id = $2
+       )`,
       [tokenHash, clientId],
     );
   }

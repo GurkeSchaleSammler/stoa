@@ -15,8 +15,12 @@ spring:
       enabled: false
 
 stoasis:
+  mcp:
+    public-url: ${STOASIS_MCP_PUBLIC_URL:}
+  upload:
+    directory: ${STOASIS_UPLOAD_DIRECTORY:/data/uploads}
   features:
-    skills-enabled: ${STOASIS_SKILLS_ENABLED:false}
+    skills-enabled: ${STOASIS_SKILLS_ENABLED:true}
   public-api-base-url: ${STOASIS_PUBLIC_API_URL:https://stoasis.gurkeschale.dev}
   cors:
     allowed-origins: ${STOASIS_CORS_ALLOWED_ORIGINS:https://stoasis.gurkeschale.dev}

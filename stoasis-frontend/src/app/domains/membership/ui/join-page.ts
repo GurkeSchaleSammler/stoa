@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
+/** Shows the target board and existing membership before joining. */
 @Component({
   selector: 'ui-join-page',
   standalone: true,
@@ -21,13 +22,25 @@ import { TranslatePipe } from '@ngx-translate/core';
           <strong>{{ collectionName() }}</strong>
           {{ 'membership.joinAfterName' | translate }}
         </p>
+        @if (alreadyMember()) {
+          <p>{{ 'membership.alreadyMember' | translate }}</p>
+        } @else if (limitReason()) {
+          <p role="status">{{ limitReason() }}</p>
+        }
         <button
           type="button"
           class="button primary wide"
-          [disabled]="status() === 'joining'"
+          [disabled]="status() === 'joining' || (!alreadyMember() && !!limitReason())"
           (click)="onConfirmJoin.emit()"
         >
-          {{ (status() === 'joining' ? 'membership.joining' : 'membership.join') | translate }}
+          {{
+            (alreadyMember()
+              ? 'membership.backToBoard'
+              : status() === 'joining'
+                ? 'membership.joining'
+                : 'membership.join'
+            ) | translate
+          }}
         </button>
       }
     </section>
@@ -36,6 +49,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JoinPageComponent {
+  readonly alreadyMember = input(false);
+  readonly limitReason = input<string | null>(null);
   readonly status = input<'loading' | 'idle' | 'joining' | 'error'>('loading');
   readonly collectionName = input('');
   readonly error = input<string | null>(null);

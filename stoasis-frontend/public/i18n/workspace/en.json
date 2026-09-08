@@ -131,7 +131,10 @@
     "joinBeforeName": "You have been invited to the collection",
     "joinAfterName": "You will initially join with view access.",
     "joining": "Joining …",
-    "join": "Join collection"
+    "join": "Join collection",
+    "viewerAccess": "Anyone with the link can view this board and join as a viewer.",
+    "capacity": "{{ownedSharedBoards}} / {{sharedBoardLimit}} shared boards · up to {{memberLimit}} members",
+    "alreadyMember": "You already belong to this board."
   },
   "pin": {
     "link": "Link",
@@ -185,7 +188,8 @@
       "links": "Links",
       "notes": "Notes",
       "photos": "Photos"
-    }
+    },
+    "invalidPhoto": "Choose JPEG, PNG or WebP: up to 5 MB on Free or 20 MB on Premium."
   },
   "profile": {
     "yourAccount": "Your account",
@@ -241,7 +245,11 @@
     "boards": "Profile boards",
     "visibility": "Visibility",
     "visibilityLead": "Applies only to this profile board.",
-    "visibilityValue": { "private": "Private", "link": "Via link", "public": "Public" },
+    "visibilityValue": {
+      "private": "Private",
+      "link": "Via link",
+      "public": "Public"
+    },
     "add": "Add skill",
     "edit": "Edit skill",
     "name": "Skill",
@@ -262,7 +270,12 @@
     "emptyLead": "Add your first skill using the form.",
     "saved": "Skill saved.",
     "publicProfile": "Shared skill profile",
-    "unavailable": "This profile board is unavailable."
+    "unavailable": "This profile board is unavailable.",
+    "premiumSharing": "Public and link-shared profiles require Premium.",
+    "copyLink": "Copy profile link",
+    "accent": "Profile accent",
+    "capacity": "{{count}} / {{limit}} skills",
+    "limitReached": "Skill limit reached. Existing skills remain visible and editable."
   },
   "groups": {
     "nav": "Groups",
@@ -318,5 +331,55 @@
     "newTag": "New tag",
     "deleteTag": "Delete {{tag}}",
     "eyebrow": "Find pins again"
+  },
+  "mcp": {
+    "title": "Connect Stoasis",
+    "unavailable": "Connection status is temporarily unavailable. Your boards remain usable.",
+    "revokeError": "Access could not be revoked. Please try again.",
+    "premiumRequired": "Premium required: read and edit boards with ChatGPT. The regular web app remains available on Free.",
+    "connected": "Access authorized",
+    "disconnected": "Not connected",
+    "setup": "Add this address as a remote MCP connection in your AI client and sign in with your Stoasis account.",
+    "scopes": "Authorize read access or read and write access when connecting. You can revoke all connections here at any time.",
+    "notConfigured": "The public MCP address has not been configured yet.",
+    "revoke": "Revoke all MCP access"
+  },
+  "portability": {
+    "scope": "Export boards you own, including private skill boards. Boards you only joined are excluded.",
+    "premiumLimits": "Premium: up to 10,000 CSV rows per import and repeated exports. Account archives include images, limited to 64 MB of image data.",
+    "freeLimits": "Free: up to 100 CSV rows per import and one JSON export per UTC calendar day.",
+    "destination": "Import destination",
+    "chooseBoard": "Choose a board",
+    "noBoard": "Create a board that allows link pins or ask for editing access first.",
+    "previewFile": "Choose CSV to preview",
+    "archive": "Account archive",
+    "preview": "Preview — nothing imported yet",
+    "confirm": "Confirm import",
+    "result": "Import results",
+    "counts": "{{ready}} ready · {{imported}} created · {{skipped}} skipped · {{duplicates}} duplicates · {{failed}} failed",
+    "row": "Row",
+    "outcome": "Outcome",
+    "rows": "Import rows",
+    "next": "Next",
+    "status": {
+      "ready": "Ready",
+      "created": "Created",
+      "skipped": "Skipped",
+      "duplicate": "Duplicate",
+      "failed": "Failed"
+    }
+  },
+  "discovery": {
+    "title": "Advanced search",
+    "premium": "Multiple tags, saved searches and tag analytics are available with Premium. Basic search remains free.",
+    "pages": "Search result pages",
+    "multiTag": "Multiple tags",
+    "match": "Match",
+    "all": "All tags",
+    "any": "Any tag",
+    "apply": "Apply filters",
+    "saved": "Save search",
+    "analytics": "Show tag usage",
+    "cleanup": "Rarely used tags (1 pin) can help you identify cleanup opportunities."
   }
 }

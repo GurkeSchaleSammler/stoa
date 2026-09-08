@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input, output, signal } fro
 import { MembershipService } from '../data/application/membership.service';
 import { InviteDialogComponent } from '../ui/invite-dialog';
 
+/** Connects invitation state to sharing controls. */
 @Component({
   selector: 'feature-invite-dialog-handler',
   standalone: true,
@@ -11,6 +12,8 @@ import { InviteDialogComponent } from '../ui/invite-dialog';
       [isOpen]="isOpen()"
       [invite]="membership.invite()"
       [copied]="copied()"
+      [error]="membership.error()"
+      [isMutating]="membership.isMutating()"
       (onCopyLink)="copyLink()"
       (onRevokeInvite)="membership.setInviteVisibility(collectionId(), 'private')"
       (onEnableInvite)="membership.setInviteVisibility(collectionId(), 'link')"

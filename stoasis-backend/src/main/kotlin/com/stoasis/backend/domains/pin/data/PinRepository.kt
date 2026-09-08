@@ -4,8 +4,15 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import com.stoasis.backend.domains.collection.model.PinType
 
-interface PinRepository : JpaRepository<PinEntity, String> {
+/** Reads pins within collections and counts account usage. */
+interface PinRepository : JpaRepository<PinEntity, String>, JpaSpecificationExecutor<PinEntity> {
+    fun countByCreatedByIdAndType(userId: String, type: PinType): Long
+
+    fun findAllByFileKey(fileKey: String): List<PinEntity>
+
     @EntityGraph(attributePaths = ["createdBy", "comments", "comments.author", "tags", "collection"])
     fun findAllByCollectionIdOrderBySortOrder(collectionId: String): List<PinEntity>
 
@@ -14,7 +21,7 @@ interface PinRepository : JpaRepository<PinEntity, String> {
     fun findDetailed(@Param("collectionId") collectionId: String, @Param("id") id: String): PinEntity?
 
     @EntityGraph(attributePaths = ["createdBy", "comments", "comments.author", "tags", "collection"])
-    @Query("select distinct p from PinEntity p join p.collection c join c.members m where m.user.id = :userId")
+    @Query("select p from PinEntity p join p.collection c where c.visibility = com.stoasis.backend.domains.collection.model.Visibility.public or exists (select m.id from CollectionMemberEntity m where m.collection = c and m.user.id = :userId)")
     fun findAllVisibleTo(@Param("userId") userId: String): List<PinEntity>
 
     fun countByCollectionId(collectionId: String): Long

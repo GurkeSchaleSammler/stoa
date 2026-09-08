@@ -6,6 +6,7 @@ import { InviteDialogHandlerComponent } from './invite-dialog-handler';
 import { ConfirmationDialogService } from '../../../shared/application/confirmation-dialog.service';
 import { Role } from '../../../shared/models/role';
 
+/** Coordinates board members, role changes and invitations. */
 @Component({
   selector: 'feature-member-list-handler',
   standalone: true,
@@ -16,6 +17,8 @@ import { Role } from '../../../shared/models/role';
       [currentUserRole]="membership.currentUserRole()"
       [canManage]="membership.canManageMembers()"
       [error]="membership.error()"
+      [isMutating]="membership.isMutating()"
+      [limitReason]="membership.invite()?.capacity?.limitReason ?? null"
       (onRoleChange)="changeRole($event.userId, $event.role)"
       (onRemove)="remove($event)"
       (onInviteClick)="openInvite()"

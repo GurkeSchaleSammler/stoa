@@ -17,18 +17,23 @@ import com.stoasis.backend.domains.collection.model.Visibility
 import com.stoasis.backend.domains.collection.model.canEdit
 import com.stoasis.backend.domains.pin.data.PinRepository
 import com.stoasis.backend.shared.web.ApiException
+import com.stoasis.backend.domains.membership.application.CollaborationPolicy
+import com.stoasis.backend.domains.plan.application.PlanService
 import java.time.Instant
 import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+/** Manages boards and their explicit read, edit and sharing permissions. */
 @Service
 class CollectionService(
     private val collections: CollectionRepository,
     private val members: CollectionMemberRepository,
     private val users: UserRepository,
     private val pins: PinRepository,
+    private val collaboration: CollaborationPolicy,
+    private val plans: PlanService,
 ) {
     @Transactional(readOnly = true)
     fun list(userId: String, filter: String): List<CollectionSummary> =
@@ -70,7 +75,7 @@ class CollectionService(
 
     @Transactional
     fun update(id: String, userId: String, request: UpdateCollectionRequest): CollectionDetail {
-        val collection = get(id)
+        val collection = lock(id)
         val role = roleOf(collection, userId)
         if (role?.canEdit() != true) forbidden()
         if (collection.isSystem && (request.name != null || request.emoji != null || request.allowedTypes != null)) {
@@ -86,7 +91,10 @@ class CollectionService(
             collection.allowedTypes.clear()
             collection.allowedTypes.addAll(it)
         }
-        request.visibility?.let { setVisibility(collection, it) }
+        request.visibility?.let {
+            if (role != Role.owner) forbidden()
+            setVisibility(collection, it)
+        }
         collection.updatedAt = Instant.now()
         return detail(collection, role)
     }
@@ -105,10 +113,12 @@ class CollectionService(
 
     @Transactional
     fun join(token: String, userId: String): CollectionIdResponse {
-        val collection = collections.findByInviteToken(token)
-            ?.takeIf { it.visibility == Visibility.link }
+        val collection = collections.findIdByInviteToken(token)?.let(collections::lockById)
+            ?.takeIf { it.visibility == Visibility.link && it.inviteToken == token }
             ?: throw ApiException(HttpStatus.NOT_FOUND, "Einladung ungültig oder abgelaufen.")
+        if (collection.isSystem) throw ApiException(HttpStatus.CONFLICT, "Profil-Boards werden nur lesend geteilt.")
         if (roleOf(collection, userId) == null) {
+            collaboration.requireInvite(collection)
             collection.members.add(
                 CollectionMemberEntity(
                     collection = collection,
@@ -120,6 +130,9 @@ class CollectionService(
         }
         return CollectionIdResponse(collection.id)
     }
+
+    fun lock(id: String): CollectionEntity = collections.lockById(id)
+        ?: throw ApiException(HttpStatus.NOT_FOUND, "Sammlung nicht gefunden.")
 
     fun get(id: String): CollectionEntity = collections.findDetailedById(id)
         ?: throw ApiException(HttpStatus.NOT_FOUND, "Sammlung nicht gefunden.")
@@ -178,10 +191,14 @@ class CollectionService(
     }
 
     fun setVisibility(collection: CollectionEntity, visibility: Visibility) {
+        if (visibility == collection.visibility) return
+        collections.lockById(collection.id)
+        if (collection.isSystem && visibility != Visibility.private) plans.requirePremium(collection.ownerId)
+        if (!collection.isSystem && visibility != Visibility.private) collaboration.requireInvite(collection)
         collection.visibility = visibility
         collection.inviteToken = when (visibility) {
             Visibility.private -> null
-            Visibility.link -> collection.inviteToken ?: "invite-${UUID.randomUUID().toString().take(8)}"
+            Visibility.link -> collection.inviteToken ?: "invite-${UUID.randomUUID()}"
             Visibility.public -> null
         }
     }
@@ -200,7 +217,7 @@ class CollectionService(
         boardKind = collection.boardKind,
         isSystem = collection.isSystem,
         ownerId = collection.ownerId,
-        inviteToken = collection.inviteToken,
+        inviteToken = collection.inviteToken.takeIf { role == Role.owner },
         currentUserRole = role,
     )
 

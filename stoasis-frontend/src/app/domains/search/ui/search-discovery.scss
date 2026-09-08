@@ -1,0 +1,58 @@
+.discovery {
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+h2 {
+  font-size: 1rem;
+}
+fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+  border: 0;
+  padding: 12px 0;
+}
+label {
+  display: grid;
+  gap: 5px;
+  font-size: 0.8rem;
+}
+button,
+input,
+select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled,
+fieldset:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.saved-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 6px 0;
+}
+ul {
+  max-height: 220px;
+  overflow: auto;
+  padding-left: 18px;
+}

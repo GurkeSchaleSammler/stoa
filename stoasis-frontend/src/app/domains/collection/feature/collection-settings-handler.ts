@@ -7,13 +7,14 @@ import { ConfirmationDialogService } from '../../../shared/application/confirmat
 import { PinType } from '../../../shared/models/pin-type';
 import { UpdateCollectionRequest } from '../data/models/update-collection-request';
 
+/** Keeps board settings in a signal draft until they are saved. */
 @Component({
   selector: 'feature-collection-settings-handler',
   standalone: true,
   imports: [CollectionSettingsComponent],
   template: `
     <ui-collection-settings
-      [collection]="collections.activeCollection()"
+      [collection]="draftCollection()"
       [inviteUrl]="inviteUrl()"
       [canSave]="canSave()"
       [isSaving]="collections.isSaving()"
@@ -35,6 +36,10 @@ export class CollectionSettingsHandlerComponent {
   private readonly confirmation = inject(ConfirmationDialogService);
   private readonly collectionId = this.route.snapshot.paramMap.get('id') ?? '';
   private readonly pendingModel = signal<UpdateCollectionRequest>({});
+  readonly draftCollection = computed(() => {
+    const board = this.collections.activeCollection();
+    return board ? { ...board, ...this.pendingModel() } : null;
+  });
   readonly settingsForm = form(this.pendingModel);
   readonly canSave = computed(() => {
     const changes = this.pendingModel();

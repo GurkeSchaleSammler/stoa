@@ -1,3 +1,4 @@
+import { SearchDiscoveryComponent } from '../ui/search-discovery';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SearchService } from '../data/application/search.service';
@@ -9,10 +10,12 @@ import { TagManagerHandlerComponent } from './tag-manager-handler';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SearchResult } from '../data/models/search-result';
 
+/** Combines search controls and navigation to matching boards. */
 @Component({
   selector: 'feature-search-results-handler',
   standalone: true,
   imports: [
+    SearchDiscoveryComponent,
     SearchBarHandlerComponent,
     FilterBarHandlerComponent,
     SearchResultsComponent,
@@ -33,7 +36,25 @@ import { SearchResult } from '../data/models/search-result';
       [isLoading]="search.isLoading()"
       [hasQuery]="search.hasQuery()"
       (onResultClick)="openResult($event)"
-    /><feature-tag-manager-handler />
+    />
+    @if (search.hasQuery() && (search.page() > 0 || search.hasNext())) {
+      <nav class="search-pagination" [attr.aria-label]="'discovery.pages' | translate">
+        <button
+          [disabled]="search.isLoading() || search.page() === 0"
+          (click)="search.goToPage(search.page() - 1)"
+        >
+          {{ 'common.back' | translate }}
+        </button>
+        <span>{{ search.page() + 1 }}</span>
+        <button
+          [disabled]="search.isLoading() || !search.hasNext()"
+          (click)="search.goToPage(search.page() + 1)"
+        >
+          {{ 'portability.next' | translate }}
+        </button>
+      </nav>
+    }
+    <ui-search-discovery /><feature-tag-manager-handler />
   </main>`,
   styles: `
     :host {
@@ -79,7 +100,7 @@ export class SearchResultsHandlerComponent {
   }
   openResult(result: SearchResult): void {
     if (result.type === 'skill') {
-      void this.router.navigate(['/skills']);
+      void this.router.navigate(['/profile-boards', result.collectionId]);
       return;
     }
     void this.router.navigate(['/collections', result.collectionId], {

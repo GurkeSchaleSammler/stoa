@@ -8,6 +8,7 @@ import { ExportFormat } from '../models/export-format';
 import { ImportResult } from '../models/import-result';
 import { User } from '../../../../shared/models/user';
 
+/** Connects profile settings and data portability to the API. */
 @Injectable({ providedIn: 'root' })
 export class ProfileApi {
   private readonly http = inject(HttpClient);
@@ -25,16 +26,21 @@ export class ProfileApi {
   delete(): Observable<void> {
     return this.http.delete<void>(`${API_URL}/profile`);
   }
-  export(format: ExportFormat): Observable<Blob> {
+  export(format: ExportFormat, scope: 'boards' | 'account' = 'boards'): Observable<Blob> {
     return this.http.get(`${API_URL}/profile/export`, {
-      params: new HttpParams().set('format', format),
+      params: new HttpParams().set('format', format).set('scope', scope),
       responseType: 'blob',
     });
   }
-  importPocket(file: File): Observable<ImportResult> {
-    return this.http.post<ImportResult>(`${API_URL}/profile/import/pocket`, file, {
-      headers: { 'Content-Type': 'text/csv', 'X-File-Name': file.name },
-    });
+  importPocket(file: File, collectionId: string, preview = false): Observable<ImportResult> {
+    return this.http.post<ImportResult>(
+      `${API_URL}/profile/import/pocket${preview ? '/preview' : ''}`,
+      file,
+      {
+        params: new HttpParams().set('collectionId', collectionId),
+        headers: { 'Content-Type': 'text/csv', 'X-File-Name': file.name },
+      },
+    );
   }
   billingPortal(): Observable<{ url: string }> {
     return this.http.get<{ url: string }>(`${API_URL}/billing/portal-url`);

@@ -13,6 +13,7 @@ import { catchError, EMPTY, finalize } from 'rxjs';
 import { ProfileBoardApi } from './data/profile-board.api';
 import { ProfileBoard } from './data/profile-board.models';
 
+/** Presents a shared profile as a read-only skill board. */
 @Component({
   selector: 'app-public-profile-board-page',
   standalone: true,
@@ -23,9 +24,10 @@ import { ProfileBoard } from './data/profile-board.models';
       @if (isLoading()) {
         <p>{{ 'common.loading' | translate }}</p>
       } @else if (board(); as item) {
-        <section class="public-board-card">
+        <section class="public-board-card" [style.--profile-accent]="item.accent">
           <p class="eyebrow">{{ 'skills.publicProfile' | translate }}</p>
-          <h1>{{ item.boardKind === 'WORK' ? '💼 Work' : '🌿 Personal' }}</h1>
+          <h1>{{ item.ownerName }}</h1>
+          <h2>{{ item.boardKind === 'WORK' ? '💼 Work' : '🌿 Personal' }}</h2>
           <div class="public-board-viewport">
             <div class="public-skill-board">
               @for (skill of item.skills; track skill.id) {

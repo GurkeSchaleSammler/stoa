@@ -29,6 +29,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jsoup:jsoup:1.22.2")
+	implementation("org.apache.commons:commons-csv:1.14.1")
+	implementation("com.twelvemonkeys.imageio:imageio-webp:3.13.1")
 	implementation("tools.jackson.module:jackson-module-kotlin")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.flywaydb:flyway-database-postgresql")

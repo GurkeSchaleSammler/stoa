@@ -315,6 +315,7 @@ class StoasisBackendApplicationTests {
     }
 
     @Test
+    @org.springframework.transaction.annotation.Transactional
     fun `profile skills are private by default and can be shared explicitly`() {
         val session = loginSession()
         val boards = mvc.get("/api/profile-boards") { this.session = session }.andExpect {
@@ -348,6 +349,9 @@ class StoasisBackendApplicationTests {
 
         mvc.get("/api/public/profile-boards/$workBoardId").andExpect { status { isForbidden() } }
 
+        val premiumUser = users.findByEmailIgnoreCase("du@stoa.test")!!
+        premiumUser.plan = "premium"
+        users.saveAndFlush(premiumUser)
         mvc.patch("/api/profile-boards/WORK/visibility") {
             this.session = session
             contentType = MediaType.APPLICATION_JSON

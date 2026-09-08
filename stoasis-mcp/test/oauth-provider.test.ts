@@ -63,7 +63,12 @@ describe("StoasisOAuthProvider", () => {
       if (url.endsWith("/api/auth/login")) {
         return new Response(
           JSON.stringify({
-            user: { id: "user-1", email: "sam@example.com", name: "Sam" },
+            user: {
+              id: "user-1",
+              email: "sam@example.com",
+              name: "Sam",
+              plan: "premium",
+            },
             expiresAt: "2026-09-17T10:00:00Z",
           }),
           {
@@ -75,7 +80,10 @@ describe("StoasisOAuthProvider", () => {
           },
         );
       }
-      if (url.endsWith("/api/auth/me")) {
+      if (
+        url.endsWith("/api/profile/mcp/connect") ||
+        url.endsWith("/api/profile/mcp/authorization")
+      ) {
         return new Response(
           JSON.stringify({
             id: "user-1",

@@ -131,7 +131,10 @@
     "joinBeforeName": "Sei stato invitato alla raccolta",
     "joinAfterName": "Inizialmente parteciperai con accesso in lettura.",
     "joining": "Accesso …",
-    "join": "Partecipa alla raccolta"
+    "join": "Partecipa alla raccolta",
+    "viewerAccess": "Chiunque abbia il link può visualizzare la bacheca e unirsi come lettore.",
+    "capacity": "{{ownedSharedBoards}} / {{sharedBoardLimit}} bacheche condivise · fino a {{memberLimit}} membri",
+    "alreadyMember": "Sei già membro di questa bacheca."
   },
   "pin": {
     "link": "Link",
@@ -185,7 +188,8 @@
       "links": "Link",
       "notes": "Note",
       "photos": "Foto"
-    }
+    },
+    "invalidPhoto": "Scegli JPEG, PNG o WebP: massimo 5 MB con Free, 20 MB con Premium."
   },
   "profile": {
     "yourAccount": "Il tuo account",
@@ -241,7 +245,11 @@
     "boards": "Bacheche del profilo",
     "visibility": "Visibilità",
     "visibilityLead": "Vale solo per questa bacheca del profilo.",
-    "visibilityValue": { "private": "Privata", "link": "Tramite link", "public": "Pubblica" },
+    "visibilityValue": {
+      "private": "Privata",
+      "link": "Tramite link",
+      "public": "Pubblica"
+    },
     "add": "Aggiungi competenza",
     "edit": "Modifica competenza",
     "name": "Competenza",
@@ -262,7 +270,12 @@
     "emptyLead": "Aggiungi la prima competenza con il modulo.",
     "saved": "Competenza salvata.",
     "publicProfile": "Profilo competenze condiviso",
-    "unavailable": "Questa bacheca del profilo non è disponibile."
+    "unavailable": "Questa bacheca del profilo non è disponibile.",
+    "premiumSharing": "I profili pubblici o condivisi tramite link richiedono Premium.",
+    "copyLink": "Copia il link del profilo",
+    "accent": "Colore del profilo",
+    "capacity": "{{count}} / {{limit}} competenze",
+    "limitReached": "Limite raggiunto. Le competenze esistenti restano visibili e modificabili."
   },
   "groups": {
     "nav": "Gruppi",
@@ -318,5 +331,55 @@
     "newTag": "Nuovo tag",
     "deleteTag": "Elimina {{tag}}",
     "eyebrow": "Ritrova i pin"
+  },
+  "mcp": {
+    "title": "Collega Stoasis",
+    "unavailable": "Lo stato della connessione non è disponibile. Le tue bacheche restano utilizzabili.",
+    "revokeError": "Impossibile revocare l’accesso. Riprova.",
+    "premiumRequired": "Premium richiesto per leggere e modificare le bacheche con ChatGPT. L’app web resta disponibile con Free.",
+    "connected": "Accesso autorizzato",
+    "disconnected": "Non collegato",
+    "setup": "Aggiungi questo indirizzo come connessione MCP remota nel tuo client IA e accedi con il tuo account Stoasis.",
+    "scopes": "Autorizza la lettura o anche la scrittura durante la connessione. Puoi revocare tutte le connessioni qui.",
+    "notConfigured": "L’indirizzo MCP pubblico non è ancora configurato.",
+    "revoke": "Revoca tutti gli accessi MCP"
+  },
+  "portability": {
+    "scope": "Esporta le bacheche di cui sei proprietario, incluse le competenze private. Le bacheche a cui ti sei solo unito sono escluse.",
+    "premiumLimits": "Premium: fino a 10.000 righe CSV per importazione ed esportazioni ripetute. Gli archivi includono immagini, fino a 64 MB.",
+    "freeLimits": "Free: fino a 100 righe CSV per importazione e un’esportazione JSON per giorno UTC.",
+    "destination": "Destinazione",
+    "chooseBoard": "Scegli una bacheca",
+    "noBoard": "Crea una bacheca che consenta link oppure richiedi i permessi di modifica.",
+    "previewFile": "Scegli CSV per l’anteprima",
+    "archive": "Archivio account",
+    "preview": "Anteprima — nessun dato importato",
+    "confirm": "Conferma importazione",
+    "result": "Risultato importazione",
+    "counts": "{{ready}} pronte · {{imported}} create · {{skipped}} saltate · {{duplicates}} duplicati · {{failed}} errori",
+    "row": "Riga",
+    "outcome": "Risultato",
+    "rows": "Righe importate",
+    "next": "Avanti",
+    "status": {
+      "ready": "Pronta",
+      "created": "Creata",
+      "skipped": "Saltata",
+      "duplicate": "Duplicato",
+      "failed": "Errore"
+    }
+  },
+  "discovery": {
+    "title": "Ricerca avanzata",
+    "premium": "Tag multipli, ricerche salvate e statistiche sono disponibili con Premium. La ricerca di base resta gratuita.",
+    "pages": "Pagine dei risultati",
+    "multiTag": "Tag multipli",
+    "match": "Corrispondenza",
+    "all": "Tutti i tag",
+    "any": "Almeno un tag",
+    "apply": "Applica filtri",
+    "saved": "Salva ricerca",
+    "analytics": "Mostra utilizzo dei tag",
+    "cleanup": "I tag poco usati (1 pin) possono aiutare a riordinare."
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpEvent } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../../../../shared/api/api-url';
@@ -21,6 +21,7 @@ import { CreateStickerRequest } from '../models/create-sticker-request';
 import { StickerElement } from '../models/sticker-element';
 import { UpdateStickerRequest } from '../models/update-sticker-request';
 
+/** Connects board actions and image uploads to the API. */
 @Injectable({ providedIn: 'root' })
 export class BoardApi {
   private readonly http = inject(HttpClient);
@@ -62,13 +63,19 @@ export class BoardApi {
     });
   }
 
-  upload(file: File): Observable<UploadedPhoto> {
+  upload(file: File): Observable<HttpEvent<UploadedPhoto>> {
     return this.http.post<UploadedPhoto>(`${API_URL}/uploads`, file, {
+      observe: 'events',
+      reportProgress: true,
       headers: {
         'Content-Type': file.type || 'application/octet-stream',
         'X-File-Name': file.name,
       },
     });
+  }
+
+  discardUpload(key: string): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/uploads/${key}`);
   }
 
   createStack(

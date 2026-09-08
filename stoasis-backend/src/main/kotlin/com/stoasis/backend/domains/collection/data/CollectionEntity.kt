@@ -17,6 +17,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import java.time.Instant
 
+/** Stores a board, its visibility and membership. */
 @Entity
 @Table(name = "collections")
 class CollectionEntity(
@@ -25,6 +26,7 @@ class CollectionEntity(
     @Column(nullable = false) var emoji: String = "",
     @Column(name = "owner_id", nullable = false) var ownerId: String = "",
     @Enumerated(EnumType.STRING) @Column(nullable = false) var visibility: Visibility = Visibility.private,
+    @Column(name = "accent") var accent: String? = null,
     @Column(name = "invite_token") var inviteToken: String? = null,
     @Column(name = "created_at", nullable = false) var createdAt: Instant = Instant.now(),
     @Column(name = "updated_at", nullable = false) var updatedAt: Instant = Instant.now(),

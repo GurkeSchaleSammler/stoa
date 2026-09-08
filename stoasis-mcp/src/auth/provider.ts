@@ -24,7 +24,11 @@ import type {
   PendingAuthorization,
   StoredToken,
 } from "../storage/types.js";
-import { StoasisApiClient, StoasisApiError } from "../stoasis/client.js";
+import {
+  StoasisApiClient,
+  StoasisApiError,
+  type StoasisLogin,
+} from "../stoasis/client.js";
 
 export const READ_SCOPE = "stoasis:read";
 export const WRITE_SCOPE = "stoasis:write";
@@ -37,6 +41,7 @@ type LoginInput = {
   password: string;
 };
 
+/** Issues scoped OAuth grants backed by revocable premium sessions. */
 export class StoasisOAuthProvider implements OAuthServerProvider {
   readonly clientsStore: OAuthRegisteredClientsStore;
 
@@ -98,8 +103,7 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
     }
 
     try {
-      const loginClient = new StoasisApiClient(this.config);
-      const login = await loginClient.login(input.email.trim(), input.password);
+      const login = await this.loginForMcp(input);
       const consumed = await this.storage.consumePendingAuthorization(
         input.transactionId,
         csrfHash,
@@ -108,47 +112,66 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
         this.sendExpiredPage(res);
         return;
       }
-
-      const code = randomToken();
-      await this.storage.saveAuthorizationCode({
-        codeHash: hashSecret(code),
-        clientId: consumed.clientId,
-        params: consumed.params,
-        encryptedSession: this.secretBox.encrypt(login.sessionCookie),
-        user: {
-          id: login.user.id,
-          email: login.user.email,
-          name: login.user.name,
-        },
-        expiresAt: new Date(
-          Date.now() + this.config.authCodeTtlSeconds * 1_000,
-        ),
-      });
-
-      const redirect = new URL(consumed.params.redirectUri);
-      redirect.searchParams.set("code", code);
-      if (consumed.params.state !== undefined)
-        redirect.searchParams.set("state", consumed.params.state);
-      res.redirect(302, redirect.href);
+      await this.finishAuthorization(consumed, login, res);
     } catch (error) {
-      if (error instanceof StoasisApiError && error.status === 401) {
-        this.sendLoginPage(
-          res,
-          pending,
-          input.csrfToken,
-          "E-Mail oder Passwort ist nicht korrekt.",
-          input.email,
-        );
-        return;
-      }
       this.sendLoginPage(
         res,
         pending,
         input.csrfToken,
-        "Die Anmeldung ist momentan nicht möglich. Bitte versuche es erneut.",
+        this.loginError(error),
         input.email,
       );
     }
+  }
+
+  private async loginForMcp(input: LoginInput): Promise<StoasisLogin> {
+    const login = await new StoasisApiClient(this.config).login(
+      input.email.trim(),
+      input.password,
+    );
+    const session = new StoasisApiClient(this.config, login.sessionCookie);
+    try {
+      if (login.user.plan !== "premium")
+        throw new StoasisApiError(403, "Premium erforderlich.");
+      await session.connectMcp();
+      return login;
+    } catch (error) {
+      await session.logout().catch(() => undefined);
+      throw error;
+    }
+  }
+
+  private async finishAuthorization(
+    pending: PendingAuthorization,
+    login: StoasisLogin,
+    res: Response,
+  ): Promise<void> {
+    const code = randomToken();
+    await this.storage.saveAuthorizationCode({
+      codeHash: hashSecret(code),
+      clientId: pending.clientId,
+      params: pending.params,
+      encryptedSession: this.secretBox.encrypt(login.sessionCookie),
+      user: {
+        id: login.user.id,
+        email: login.user.email,
+        name: login.user.name,
+      },
+      expiresAt: new Date(Date.now() + this.config.authCodeTtlSeconds * 1_000),
+    });
+    const redirect = new URL(pending.params.redirectUri);
+    redirect.searchParams.set("code", code);
+    if (pending.params.state !== undefined)
+      redirect.searchParams.set("state", pending.params.state);
+    res.redirect(302, redirect.href);
+  }
+
+  private loginError(error: unknown): string {
+    if (error instanceof StoasisApiError && error.status === 401)
+      return "E-Mail oder Passwort ist nicht korrekt.";
+    if (error instanceof StoasisApiError && error.status === 403)
+      return "Premium ist erforderlich, um Stoasis mit ChatGPT zu verbinden.";
+    return "Die Anmeldung ist momentan nicht möglich. Bitte versuche es erneut.";
   }
 
   async challengeForAuthorizationCode(
@@ -215,15 +238,6 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
       );
     }
 
-    const sessionCookie = this.secretBox.decrypt(stored.encryptedSession);
-    try {
-      await new StoasisApiClient(this.config, sessionCookie).me();
-    } catch {
-      throw new InvalidGrantError(
-        "The Stoasis session expired. Reconnect the MCP server.",
-      );
-    }
-
     return this.issueTokens({
       clientId: stored.clientId,
       scopes: requestedScopes,
@@ -239,6 +253,16 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
       throw new InvalidTokenError("Access token is invalid or expired.");
     if (stored.resource !== this.config.resourceUrl.href) {
       throw new InvalidTokenError("Access token has an invalid audience.");
+    }
+    try {
+      await new StoasisApiClient(
+        this.config,
+        this.secretBox.decrypt(stored.encryptedSession),
+      ).authorizeMcp();
+    } catch {
+      throw new InvalidTokenError(
+        "MCP access was revoked or Premium is required. Reconnect Stoasis.",
+      );
     }
     return {
       token,
@@ -305,6 +329,16 @@ export class StoasisOAuthProvider implements OAuthServerProvider {
   private async issueTokens(
     source: Omit<StoredToken, "tokenHash" | "tokenType" | "expiresAt">,
   ): Promise<OAuthTokens> {
+    try {
+      await new StoasisApiClient(
+        this.config,
+        this.secretBox.decrypt(source.encryptedSession),
+      ).authorizeMcp();
+    } catch {
+      throw new InvalidGrantError(
+        "MCP access was revoked or Premium is required.",
+      );
+    }
     const accessToken = randomToken();
     const refreshToken = randomToken();
     const now = Date.now();

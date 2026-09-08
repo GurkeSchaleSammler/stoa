@@ -6,6 +6,7 @@ import { SearchResult } from '../models/search-result';
 import { SearchQuery } from '../models/search-query';
 import { Tag } from '../models/tag';
 
+/** Requests paginated search results and tag operations. */
 @Injectable({ providedIn: 'root' })
 export class SearchApi {
   private readonly http = inject(HttpClient);
@@ -13,6 +14,8 @@ export class SearchApi {
     let params = new HttpParams().set('q', query.q);
     if (query.type) params = params.set('type', query.type);
     if (query.tag) params = params.set('tag', query.tag);
+    for (const tag of query.tags ?? []) params = params.append('tags', tag);
+    params = params.set('page', query.page ?? 0).set('tagMode', query.tagMode ?? 'all');
     return this.http.get<SearchResult[]>(`${API_URL}/search`, { params });
   }
   tags(): Observable<Tag[]> {

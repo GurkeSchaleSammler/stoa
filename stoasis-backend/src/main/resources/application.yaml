@@ -24,6 +24,8 @@ spring:
       "[mail.smtp.writetimeout]": 5000
 
 stoasis:
+  mcp:
+    public-url: ${STOASIS_MCP_PUBLIC_URL:http://localhost:3000/mcp}
   features:
     skills-enabled: ${STOASIS_SKILLS_ENABLED:true}
   public-api-base-url: ${STOASIS_PUBLIC_API_URL:http://localhost:4000}

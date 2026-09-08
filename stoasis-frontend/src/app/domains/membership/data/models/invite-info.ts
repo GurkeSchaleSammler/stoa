@@ -5,4 +5,10 @@ export interface InviteInfo {
   visibility: 'private' | 'link';
   collectionName: string;
   alreadyMember?: boolean;
+  capacity: {
+    memberLimit: number;
+    sharedBoardLimit: number;
+    ownedSharedBoards: number;
+    limitReason: string | null;
+  };
 }

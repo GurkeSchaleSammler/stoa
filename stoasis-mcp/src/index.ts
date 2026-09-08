@@ -226,7 +226,7 @@ async function main(): Promise<void> {
       console.error(
         JSON.stringify({
           event: "http_error",
-          message: error instanceof Error ? error.message : "unknown",
+          message: "Request failed",
         }),
       );
       if (!res.headersSent)

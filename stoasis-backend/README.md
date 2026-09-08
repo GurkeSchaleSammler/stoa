@@ -168,3 +168,15 @@ Optional kann `RESEND_API_URL` gesetzt werden. Ohne Wert wird `https://api.resen
 SMTP bleibt weiterhin unterstützt. Dafür `STOASIS_MAIL_PROVIDER=smtp` setzen und diese Variablen konfigurieren: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS`, `STOASIS_MAIL_FROM`, `STOASIS_FRONTEND_URL` und `STOASIS_PUBLIC_API_URL`.
 
 Magic-Link-Tokens werden nur gehasht gespeichert, laufen nach 15 Minuten ab, sind auch bei parallelen Aufrufen atomar einmalig und werden pro E-Mail/IP gedrosselt.
+
+## Feature limits and image storage
+
+Free accounts can activate 2 shared boards with 3 members each, create 50 photo pins and maintain 12 skills. Premium allows 25 shared boards with 25 members, 2,000 photos and up to 10,000 skills. Membership in another user's boards does not consume the owned-board capacity. Existing content remains accessible after a downgrade.
+
+Uploads accept decoded JPEG, PNG and WebP images up to 5 MB (Free) or 20 MB (Premium), with at most 12,000 pixels per side and 40 megapixels. Stored previews strip metadata, are limited to 1,600 or 3,200 pixels, and include a 480-pixel thumbnail. Accounts are limited to 20 upload attempts per minute. Unused uploads can be discarded through `DELETE /api/uploads/{fileKey}`; referenced photos and avatars are retained. Upload storage allows 10 spare files beyond the photo capacity for pending photos and avatars.
+
+Development stores image variants in the database. Production writes new images to `STOASIS_UPLOAD_DIRECTORY` (default `/data/uploads`) and still reads existing database images. Mount a persistent volume at that path, writable by the `stoasis` container user, and back it up with PostgreSQL. All replicas must share the same durable volume. A separate object-store integration is not required for this setup.
+
+CSV imports require UTF-8 with `url` or `resolved_url`, optional `title` and `tags` columns, at most 10 MB, and 100 or 10,000 rows per batch. Quoted fields and multiline values are supported. Preview with `POST /api/profile/import/pocket/preview?collectionId=...`, then confirm the same file and destination in the same session through `POST /api/profile/import/pocket?collectionId=...`. Duplicate, invalid and non-link rows are reported separately. Rows without free board space are reported as failed; valid rows commit together. Imports never fetch URLs. JSON export is available once per UTC calendar day with Free. Premium adds repeated CSV exports and `scope=account`, including owned image bytes, tags and saved searches; account archives allow up to 64 MB of image data.
+
+MCP authorization requires Premium and a separate MCP session. `DELETE /api/profile/mcp` invalidates all current MCP sessions and grants without signing the browser out. Set `STOASIS_MCP_PUBLIC_URL` to the public MCP endpoint including `/mcp` to show setup instructions in the profile. Production OAuth storage remains PostgreSQL in the MCP service.

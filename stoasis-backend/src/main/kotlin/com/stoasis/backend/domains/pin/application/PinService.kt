@@ -31,6 +31,10 @@ import com.stoasis.backend.domains.skill.model.SkillLevel
 import com.stoasis.backend.shared.utils.normalizeNoteBackgroundColor
 import com.stoasis.backend.shared.utils.normalizeUiColor
 import com.stoasis.backend.shared.web.ApiException
+import com.stoasis.backend.domains.plan.application.PlanService
+import com.stoasis.backend.domains.search.application.normalizeTags
+import com.stoasis.backend.domains.upload.application.PhotoPinService
+import com.stoasis.backend.domains.upload.application.UploadService
 import java.time.Instant
 import java.util.UUID
 import org.springframework.http.HttpStatus
@@ -38,6 +42,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.JsonNode
 
+/** Creates and edits pins while enforcing board permissions and account capacity. */
 @Service
 class PinService(
     private val pins: PinRepository,
@@ -47,6 +52,9 @@ class PinService(
     private val stacks: PinStackRepository,
     private val stackChildren: PinStackChildRepository,
     private val skillData: SkillDataRepository,
+    private val plans: PlanService,
+    private val photos: PhotoPinService,
+    private val uploads: UploadService,
 ) {
     companion object {
         const val CARD_WIDTH_CLIPS = 16
@@ -65,7 +73,13 @@ class PinService(
     fun listShared(collectionId: String, token: String?, viewerId: String?): List<PinDto> {
         val collection = collections.get(collectionId)
         collections.requireSharedView(collection, token, viewerId)
-        return pins.findAllByCollectionIdOrderBySortOrder(collectionId).map(::toDto)
+        return pins.findAllByCollectionIdOrderBySortOrder(collectionId).map { pin ->
+            val dto = toDto(pin)
+            val data = dto.data
+            if (token != null && data is PhotoPinData && data.imageUrl != null) {
+                dto.copy(data = data.copy(imageUrl = "${data.imageUrl}?token=${java.net.URLEncoder.encode(token, Charsets.UTF_8)}"))
+            } else dto
+        }
     }
 
     @Transactional(readOnly = true)
@@ -77,11 +91,12 @@ class PinService(
 
     @Transactional
     fun create(collectionId: String, userId: String, request: CreatePinRequest): PinDto {
-        val collection = collections.get(collectionId)
+        val collection = collections.lock(collectionId)
         collections.requireEdit(collection, userId)
         if (request.type !in collection.allowedTypes) {
             throw ApiException(HttpStatus.BAD_REQUEST, "Dieser Pin-Typ ist nicht erlaubt.")
         }
+        plans.requirePinCapacity(userId, request.type)
         val pin = PinEntity(
             id = "pin-${UUID.randomUUID().toString().take(8)}",
             collection = collection,
@@ -89,7 +104,7 @@ class PinService(
             createdBy = users.getReferenceById(userId),
             sortOrder = pins.countByCollectionId(collectionId).toInt() + 1,
             color = cleanPinColor(request.color, userId),
-            tags = request.tags.map { it.trim().lowercase() }.filter { it.isNotBlank() }.toMutableSet(),
+            tags = normalizeTags(request.tags),
         )
         if (request.type != PinType.skill) applyData(pin, request.data, userId)
         val existing = pins.findAllByCollectionIdOrderBySortOrder(collectionId)
@@ -109,13 +124,15 @@ class PinService(
         val collection = collections.get(collectionId)
         collections.requireEdit(collection, userId)
         val pin = get(collectionId, pinId)
+        val previousFile = pin.fileKey
         request.data?.let {
             if (pin.type == PinType.skill) applySkillData(pin.id, it) else applyData(pin, it, userId)
         }
+        if (previousFile != null && previousFile != pin.fileKey) uploads.discardUnused(previousFile)
         request.color?.let { pin.color = cleanPinColor(it, userId, pin.color) }
         request.tags?.let {
             pin.tags.clear()
-            pin.tags.addAll(it.map(String::trim).map(String::lowercase).filter(String::isNotBlank))
+            pin.tags.addAll(normalizeTags(it))
         }
         request.sortOrder?.let { pin.sortOrder = it }
         request.grid?.let { applyGrid(collectionId, pin, it, pins.findAllByCollectionIdOrderBySortOrder(collectionId)) }
@@ -141,13 +158,16 @@ class PinService(
             }
         }
         pins.delete(pin)
+        pin.fileKey?.let(uploads::discardUnused)
         collection.updatedAt = Instant.now()
     }
 
     @Transactional
     fun addComment(collectionId: String, pinId: String, userId: String, request: AddCommentRequest): PinCommentDto {
         val collection = collections.get(collectionId)
-        collections.requireView(collection, userId)
+        if (collection.isSystem || collections.roleOf(collection, userId) == null) {
+            throw ApiException(HttpStatus.FORBIDDEN, "Kommentare sind hier nicht erlaubt.")
+        }
         val comment = comments.save(
             PinCommentEntity(
                 pin = get(collectionId, pinId),
@@ -298,14 +318,7 @@ class PinService(
                     throw ApiException(HttpStatus.BAD_REQUEST, "Notiz ist erforderlich.")
                 }
             }
-            PinType.photo -> {
-                text("fileKey")?.let { pin.fileKey = it }
-                if (data.has("caption")) pin.caption = text("caption")
-                number("width")?.let { pin.imageWidth = it }
-                number("height")?.let { pin.imageHeight = it }
-                if (data.has("imageUrl")) pin.imageUrl = text("imageUrl")
-                if (pin.fileKey.isNullOrBlank()) throw ApiException(HttpStatus.BAD_REQUEST, "Foto fehlt.")
-            }
+            PinType.photo -> photos.apply(pin, data, userId)
             PinType.skill -> applySkillData(pin.id, data)
         }
     }

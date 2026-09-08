@@ -5,6 +5,7 @@ import { Tag } from '../data/models/tag';
 import { SearchFilters } from '../data/models/search-filters';
 import { PinType } from '../../../shared/models/pin-type';
 
+/** Presents the free tag and pin-type filters. */
 @Component({
   selector: 'ui-filter-bar',
   standalone: true,
@@ -59,5 +60,6 @@ export class FilterBarComponent {
     { value: 'link', labelKey: 'pin.types.links' },
     { value: 'note', labelKey: 'pin.types.notes' },
     { value: 'photo', labelKey: 'pin.types.photos' },
+    { value: 'skill', labelKey: 'skills.nav' },
   ];
 }
