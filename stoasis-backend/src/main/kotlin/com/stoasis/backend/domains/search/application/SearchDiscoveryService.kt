@@ -5,8 +5,8 @@ import com.stoasis.backend.domains.pin.data.PinRepository
 import com.stoasis.backend.domains.plan.application.PlanService
 import com.stoasis.backend.domains.search.data.SavedSearchEntity
 import com.stoasis.backend.domains.search.data.SavedSearchRepository
+import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
-import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,6 +19,7 @@ class SearchDiscoveryService(
     private val pins: PinRepository,
     private val plans: PlanService,
     private val mapper: ObjectMapper,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional(readOnly = true)
     fun list(userId: String) = saved.findAllByOwnerIdOrderByName(userId).map(::dto)
@@ -32,7 +33,7 @@ class SearchDiscoveryService(
         }
         if (saved.countByOwnerId(userId) >= 100) throw ApiException(HttpStatus.CONFLICT, "Höchstens 100 gespeicherte Suchen.")
         val query = request.query.copy(tags = normalizeTags(request.query.tags).toList())
-        return dto(saved.save(SavedSearchEntity("search-${UUID.randomUUID()}", userId, request.name.trim(), mapper.writeValueAsString(query))))
+        return dto(saved.save(SavedSearchEntity("search-${idGenerator.newId()}", userId, request.name.trim(), mapper.writeValueAsString(query))))
     }
 
     @Transactional

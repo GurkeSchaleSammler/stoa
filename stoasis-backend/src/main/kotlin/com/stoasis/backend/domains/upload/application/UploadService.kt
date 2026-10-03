@@ -7,11 +7,11 @@ import com.stoasis.backend.domains.plan.application.PlanService
 import com.stoasis.backend.domains.upload.api.UploadResponse
 import com.stoasis.backend.domains.upload.data.UploadEntity
 import com.stoasis.backend.domains.upload.data.UploadRepository
+import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
 import java.io.InputStream
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.UUID
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -28,6 +28,7 @@ class UploadService(
     private val storage: UploadStorage,
     private val limiter: UploadRateLimiter,
     @Value("\${stoasis.public-api-base-url}") private val publicApiBaseUrl: String,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional
     fun upload(userId: String, input: InputStream, contentType: String, originalName: String?): UploadResponse {
@@ -46,7 +47,7 @@ class UploadService(
         val image = images.decode(content, contentType.substringBefore(';'))
         val preview = images.encode(image, limits.previewDimension, limits.premium)
         val thumbnail = images.encode(image, 480, false)
-        val id = "upload-${UUID.randomUUID()}"
+        val id = "upload-${idGenerator.newId()}"
         val upload = uploads.save(UploadEntity(
             id = id, owner = user, originalName = cleanName(originalName),
             contentType = preview.mimeType, imageWidth = preview.width, imageHeight = preview.height,

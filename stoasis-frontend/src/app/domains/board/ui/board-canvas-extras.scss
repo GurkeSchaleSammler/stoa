@@ -1,112 +1,114 @@
-.board-zoom-controls {
-  position: fixed;
-  z-index: 38;
-  top: calc(env(safe-area-inset-top) + 132px);
-  right: calc(env(safe-area-inset-right) + 24px);
-  display: flex;
-  justify-content: flex-end;
-  margin: 0;
-  pointer-events: none;
-}
-
-.board-zoom-panel {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px;
-  border: 1px solid color-mix(in srgb, var(--border) 48%, transparent);
-  border-radius: 11px;
-  background: color-mix(in srgb, var(--surface-raised) 92%, transparent);
-  box-shadow: var(--shadow-sm);
-  pointer-events: auto;
-  backdrop-filter: blur(12px);
-}
-
-.board-zoom-panel button {
-  display: grid;
-  min-width: 31px;
-  height: 31px;
-  place-items: center;
-  padding: 0 8px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.74rem;
-  font-weight: 750;
-  cursor: pointer;
-}
-
-.board-zoom-panel button:hover,
-.board-zoom-panel button:focus-visible {
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
-
-.board-zoom-panel button:disabled {
-  opacity: 0.42;
-  cursor: default;
-}
-
-.board-zoom-value {
-  min-width: 44px;
-  color: var(--text);
-  font-size: 0.72rem;
-  font-weight: 760;
-  text-align: center;
-}
-
-.board-zoom-stage {
-  position: relative;
-}
-
-.board-zoom-stage .clip-board {
-  transform-origin: top left;
-}
-
-.connector-thread.selected {
-  stroke-width: 5.2;
-  opacity: 0.78;
-}
-
-.connector-editor {
-  position: absolute;
-  z-index: 25;
-  width: 250px;
-  padding: 12px;
-  border: 1px solid color-mix(in srgb, var(--border) 48%, transparent);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--surface-raised) 94%, transparent);
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(16px);
-}
-
-.connector-editor-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-}
-
-.connector-delete {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 31px;
-  padding: 0 10px;
-  border: 1px solid var(--danger-soft);
-  border-radius: 9px;
-  background: transparent;
-  color: var(--danger);
-  font: inherit;
-  font-size: 0.72rem;
-  font-weight: 750;
-  cursor: pointer;
-}
-
-@media (max-width: 760px) {
+.stoa-board {
   .board-zoom-controls {
-    top: calc(env(safe-area-inset-top) + 104px);
-    right: calc(env(safe-area-inset-right) + 13px);
+    position: fixed;
+    z-index: 38;
+    top: calc(env(safe-area-inset-top) + 132px);
+    right: calc(env(safe-area-inset-right) + 24px);
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  .board-zoom-panel {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid color-mix(in srgb, var(--border) 48%, transparent);
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--surface-raised) 92%, transparent);
+    box-shadow: var(--shadow-sm);
+    pointer-events: auto;
+    backdrop-filter: blur(12px);
+  }
+
+  .board-zoom-panel button {
+    display: grid;
+    min-width: 31px;
+    height: 31px;
+    place-items: center;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.74rem;
+    font-weight: 750;
+    cursor: pointer;
+  }
+
+  .board-zoom-panel button:hover,
+  .board-zoom-panel button:focus-visible {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+
+  .board-zoom-panel button:disabled {
+    opacity: 0.42;
+    cursor: default;
+  }
+
+  .board-zoom-value {
+    min-width: 44px;
+    color: var(--text);
+    font-size: 0.72rem;
+    font-weight: 760;
+    text-align: center;
+  }
+
+  .board-zoom-stage {
+    position: relative;
+  }
+
+  .board-zoom-stage .clip-board {
+    transform-origin: top left;
+  }
+
+  .connector-thread.selected {
+    stroke-width: 5.2;
+    opacity: 0.78;
+  }
+
+  .connector-editor {
+    position: absolute;
+    z-index: 25;
+    width: 250px;
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--border) 48%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--surface-raised) 94%, transparent);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(16px);
+  }
+
+  .connector-editor-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  .connector-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 31px;
+    padding: 0 10px;
+    border: 1px solid var(--danger-soft);
+    border-radius: 9px;
+    background: transparent;
+    color: var(--danger);
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 750;
+    cursor: pointer;
+  }
+
+  @media (max-width: 760px) {
+    .board-zoom-controls {
+      top: calc(env(safe-area-inset-top) + 104px);
+      right: calc(env(safe-area-inset-right) + 13px);
+    }
   }
 }

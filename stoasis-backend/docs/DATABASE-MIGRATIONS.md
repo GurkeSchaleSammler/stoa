@@ -25,5 +25,11 @@ Bei einem Fehler wird kein automatischer Schema-Rollback versucht. Das alte Back
 kann wegen der additiven Migrationen weiterverwendet werden; Datenkorrekturen oder ein
 Restore werden separat geprüft und ausgeführt.
 
+`V15` legt die PostgreSQL-Tabellen für gemeinsam genutzte HTTP-Sessions an. Die Migration
+ist additiv und verändert keine vorhandenen Nutzerdaten. Beim erstmaligen Wechsel vom
+prozesslokalen Session-Speicher gehen noch aktive Backend-Sessions verloren; betroffene
+Nutzer melden sich einmal neu an. Danach überstehen Backend-Neustarts und mehrere
+Backend-Replikas den Wechsel ohne erneute Anmeldung.
+
 Das Feature ist im Produktionsprofil standardmäßig deaktiviert und kann während des
 Rollouts mit `STOASIS_SKILLS_ENABLED=true` schrittweise aktiviert werden.

@@ -85,9 +85,11 @@ Target shape:
 
 ### 6. Persistence
 
+- Preserve ACID transaction guarantees, data consistency/integrity, and availability during every persistence or schema change.
 - Flyway is the sole source of schema changes; Hibernate remains on `validate`.
 - Never edit a published migration; add a new one.
 - Constraints protect central invariants in addition to application checks.
+- Production migrations are additive and backward-compatible where practical; test upgrades against PostgreSQL with existing data before rollout. Never trade data integrity for a faster deployment.
 - Generate IDs through an injectable generator using full UUID/ULID values.
 - Time comes from an injected `Clock`; the database uses UTC-capable types.
 - Paginate list queries once their business upper bound is not small and strictly enforced.

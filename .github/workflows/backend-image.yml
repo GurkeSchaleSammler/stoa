@@ -20,7 +20,25 @@ env:
   IMAGE_NAME: gurkeschalesammler/stoasis-backend
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: gradle
+
+      - name: Run backend tests
+        working-directory: stoasis-backend
+        run: ./gradlew --no-daemon test
+
   build:
+    needs: verify
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository

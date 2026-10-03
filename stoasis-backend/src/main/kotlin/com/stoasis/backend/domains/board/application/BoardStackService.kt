@@ -9,12 +9,12 @@ import com.stoasis.backend.domains.board.data.PinStackChildEntity
 import com.stoasis.backend.domains.board.data.PinStackEntity
 import com.stoasis.backend.domains.board.data.PinStackRepository
 import com.stoasis.backend.domains.board.utils.badRequest
-import com.stoasis.backend.domains.board.utils.boardElementId
 import com.stoasis.backend.domains.board.utils.requireGridBounds
 import com.stoasis.backend.domains.board.utils.toDto
 import com.stoasis.backend.domains.board.utils.touchCollection
 import com.stoasis.backend.domains.pin.application.PinService.Companion.CARD_WIDTH_CLIPS
 import com.stoasis.backend.domains.pin.data.PinEntity
+import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -25,6 +25,7 @@ class BoardStackService(
     private val support: BoardElementSupport,
     private val query: BoardElementQueryService,
     private val stacks: PinStackRepository,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional
     fun createStack(collectionId: String, userId: String, request: CreateStackRequest): StackBlockDto {
@@ -38,7 +39,7 @@ class BoardStackService(
         support.requireNewStackPositionAllowed(collectionId, target.gridX, target.gridY, height, setOf(source.id, target.id))
 
         val stack = PinStackEntity(
-            id = boardElementId("stack"),
+            id = "stack-${idGenerator.newId()}",
             collection = collection,
             gridX = target.gridX,
             gridY = target.gridY,

@@ -27,6 +27,7 @@ docker compose up -d mailpit
 Backend: `http://localhost:4000`  
 H2-Konsole: `http://localhost:4000/h2-console`
 Mailpit-Postfach: `http://localhost:8025`
+HTTP contract: `http://localhost:4000/v3/api-docs` (JSON) or `http://localhost:4000/v3/api-docs.yaml` (YAML)
 
 - JDBC URL: `jdbc:h2:mem:stoasis`
 - User: `sa`
@@ -68,6 +69,7 @@ STOASIS_CORS_ALLOWED_ORIGINS
 ```
 
 Das Profil `prod` verwendet PostgreSQL und lädt ausschließlich die allgemeinen Migrationen unter `db/migration`. Lokale Seeds werden nicht ausgeführt.
+HTTP sessions werden ebenfalls in PostgreSQL gespeichert. `V15` legt dafür die Sessiontabellen an; beim ersten Rollout gehen noch aktive Sessions aus dem früheren Prozessspeicher verloren, danach bleiben Sessions bei Backend-Neustarts und zwischen Replikas verfügbar.
 
 ## Docker
 
@@ -105,6 +107,8 @@ Der Container lauscht standardmäßig auf Port `4000`; `PORT` kann ihn überschr
 ```bash
 ./gradlew test
 ```
+
+Die PostgreSQL-Migrationsprüfung nutzt Testcontainers und benötigt eine erreichbare Docker-Engine.
 
 ## Domain-Struktur
 

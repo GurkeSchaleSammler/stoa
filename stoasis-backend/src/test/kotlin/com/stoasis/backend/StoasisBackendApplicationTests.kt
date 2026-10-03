@@ -4,6 +4,7 @@ import com.stoasis.backend.domains.auth.data.UserRepository
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.nullValue
+import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -26,10 +27,35 @@ class StoasisBackendApplicationTests {
     private lateinit var users: UserRepository
 
     @Test
+    fun `validation errors expose stable field codes`() {
+        mvc.post("/api/auth/register") {
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"email":"invalid","name":"x","password":"short"}"""
+        }.andExpect {
+            status { isBadRequest() }
+            jsonPath("$.code", `is`("request.validation_failed"))
+            jsonPath("$.fieldErrors.email", `is`("request.invalid_email"))
+            jsonPath("$.fieldErrors.name", `is`("request.invalid_size"))
+            jsonPath("$.fieldErrors.password", `is`("request.invalid_size"))
+        }
+    }
+
+    @Test
     fun `protected API rejects requests without a session`() {
         mvc.get("/api/collections").andExpect {
             status { isUnauthorized() }
             jsonPath("$.message", `is`("Nicht angemeldet."))
+            jsonPath("$.code", `is`("auth.required"))
+        }
+    }
+
+    @Test
+    fun `OpenAPI exposes the HTTP schema and session authentication contract`() {
+        mvc.get("/v3/api-docs").andExpect {
+            status { isOk() }
+            jsonPath("$.info.title", `is`("Stoasis HTTP API"))
+            jsonPath("$.components.securitySchemes.sessionCookie.name", `is`("stoasis_session"))
+            jsonPath("$.paths['/api/collections'].get", notNullValue())
         }
     }
 

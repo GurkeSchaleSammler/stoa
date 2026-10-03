@@ -5,3 +5,8 @@
 @use './board-05';
 @use './board-06';
 @use './board-07';
+
+ui-board-canvas.stoa-board {
+  display: block;
+  min-width: 0;
+}

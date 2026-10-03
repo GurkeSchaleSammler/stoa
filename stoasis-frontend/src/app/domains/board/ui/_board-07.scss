@@ -1,120 +1,122 @@
-.board-sticker:hover,
-.board-sticker.selected {
-  filter: drop-shadow(0 6px 13px rgb(24 27 22 / 12%));
-}
-.board-sticker > svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  fill: currentColor;
-}
-.board-sticker .outline {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.board-sticker .cut {
-  fill: none;
-  stroke: var(--surface-sunken);
-  stroke-width: 6;
-  stroke-linecap: round;
-}
-.sticker-delete {
-  top: -14px;
-  right: -14px;
-}
-.sticker-layer-controls {
-  position: absolute;
-  right: -15px;
-  bottom: -34px;
-  display: flex;
-  gap: 5px;
-}
-.sticker-layer-controls button {
-  display: grid;
-  width: 25px;
-  height: 25px;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: var(--surface-raised);
-  color: var(--text);
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-}
-.sticker-rotate {
-  position: absolute;
-  top: -32px;
-  left: 50%;
-  display: grid;
-  width: 25px;
-  height: 25px;
-  place-items: center;
-  padding: 0;
-  transform: translateX(-50%);
-  border: 0;
-  border-radius: 999px;
-  background: var(--surface-raised);
-  color: var(--text);
-  box-shadow: var(--shadow-md);
-  cursor: grab;
-}
-.board-sticker:not(.selected) .sticker-rotate,
-.board-sticker:not(.selected) .sticker-resize,
-.board-sticker:not(.selected) .sticker-layer-controls {
-  display: none;
-}
-
-@media (max-width: 760px) {
-  .board-toolbar {
-    align-items: flex-start;
-    padding: 13px;
+.stoa-board {
+  .board-sticker:hover,
+  .board-sticker.selected {
+    filter: drop-shadow(0 6px 13px rgb(24 27 22 / 12%));
   }
-  .member-count,
-  .toolbar-button:not(.decorate-button) {
+  .board-sticker > svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    fill: currentColor;
+  }
+  .board-sticker .outline {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .board-sticker .cut {
+    fill: none;
+    stroke: var(--surface-sunken);
+    stroke-width: 6;
+    stroke-linecap: round;
+  }
+  .sticker-delete {
+    top: -14px;
+    right: -14px;
+  }
+  .sticker-layer-controls {
+    position: absolute;
+    right: -15px;
+    bottom: -34px;
+    display: flex;
+    gap: 5px;
+  }
+  .sticker-layer-controls button {
+    display: grid;
+    width: 25px;
+    height: 25px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--surface-raised);
+    color: var(--text);
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+  }
+  .sticker-rotate {
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    display: grid;
+    width: 25px;
+    height: 25px;
+    place-items: center;
+    padding: 0;
+    transform: translateX(-50%);
+    border: 0;
+    border-radius: 999px;
+    background: var(--surface-raised);
+    color: var(--text);
+    box-shadow: var(--shadow-md);
+    cursor: grab;
+  }
+  .board-sticker:not(.selected) .sticker-rotate,
+  .board-sticker:not(.selected) .sticker-resize,
+  .board-sticker:not(.selected) .sticker-layer-controls {
     display: none;
   }
-  .decorate-button {
-    width: 36px;
-    padding: 0;
-    font-size: 0;
-  }
-  .decorate-button ui-app-icon {
-    font-size: 1rem;
-  }
-  .board-palette {
-    top: 64px;
-    right: 8px;
-    width: calc(100% - 16px);
-  }
-  .board-heading h1 {
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .board-hint {
-    padding: 7px 13px;
-  }
-  .board-canvas {
-    padding: 13px;
-  }
-  .board-loading {
-    grid-template-columns: 1fr;
-  }
-  .dialog-card {
-    padding: 19px;
-  }
-  .pin-type-picker {
-    grid-template-columns: 1fr;
-  }
-  .detail-panel {
-    width: 100%;
-  }
-  .dialog-backdrop {
-    padding: 8px;
+
+  @media (max-width: 760px) {
+    .board-toolbar {
+      align-items: flex-start;
+      padding: 13px;
+    }
+    .member-count,
+    .toolbar-button:not(.decorate-button) {
+      display: none;
+    }
+    .decorate-button {
+      width: 36px;
+      padding: 0;
+      font-size: 0;
+    }
+    .decorate-button ui-app-icon {
+      font-size: 1rem;
+    }
+    .board-palette {
+      top: 64px;
+      right: 8px;
+      width: calc(100% - 16px);
+    }
+    .board-heading h1 {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .board-hint {
+      padding: 7px 13px;
+    }
+    .board-canvas {
+      padding: 13px;
+    }
+    .board-loading {
+      grid-template-columns: 1fr;
+    }
+    .dialog-card {
+      padding: 19px;
+    }
+    .pin-type-picker {
+      grid-template-columns: 1fr;
+    }
+    .detail-panel {
+      width: 100%;
+    }
+    .dialog-backdrop {
+      padding: 8px;
+    }
   }
 }

@@ -17,7 +17,7 @@ import com.stoasis.backend.domains.collection.application.CollectionService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import com.stoasis.backend.domains.collection.model.canEdit
-import java.util.UUID
+import com.stoasis.backend.shared.id.IdGenerator
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -31,6 +31,7 @@ class SearchService(
     private val users: UserRepository,
     private val plans: PlanService,
     private val collections: CollectionService,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional(readOnly = true)
     fun search(
@@ -75,7 +76,7 @@ class SearchService(
         }
         val tag = tags.save(
             TagEntity(
-                id = "tag-${UUID.randomUUID().toString().take(8)}",
+                id = "tag-${idGenerator.newId()}",
                 owner = users.getReferenceById(userId),
                 name = name,
             ),

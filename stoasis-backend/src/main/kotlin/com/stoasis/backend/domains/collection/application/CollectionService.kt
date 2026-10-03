@@ -19,8 +19,8 @@ import com.stoasis.backend.domains.pin.data.PinRepository
 import com.stoasis.backend.shared.web.ApiException
 import com.stoasis.backend.domains.membership.application.CollaborationPolicy
 import com.stoasis.backend.domains.plan.application.PlanService
+import com.stoasis.backend.shared.id.IdGenerator
 import java.time.Instant
-import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,6 +34,7 @@ class CollectionService(
     private val pins: PinRepository,
     private val collaboration: CollaborationPolicy,
     private val plans: PlanService,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional(readOnly = true)
     fun list(userId: String, filter: String): List<CollectionSummary> =
@@ -60,7 +61,7 @@ class CollectionService(
     @Transactional
     fun create(userId: String, request: CreateCollectionRequest): CollectionDetail {
         val user = users.getReferenceById(userId)
-        val id = "coll-${UUID.randomUUID().toString().take(8)}"
+        val id = "coll-${idGenerator.newId()}"
         val collection = CollectionEntity(
             id = id,
             name = request.name.trim(),
@@ -198,7 +199,7 @@ class CollectionService(
         collection.visibility = visibility
         collection.inviteToken = when (visibility) {
             Visibility.private -> null
-            Visibility.link -> collection.inviteToken ?: "invite-${UUID.randomUUID()}"
+            Visibility.link -> collection.inviteToken ?: "invite-${idGenerator.newId()}"
             Visibility.public -> null
         }
     }

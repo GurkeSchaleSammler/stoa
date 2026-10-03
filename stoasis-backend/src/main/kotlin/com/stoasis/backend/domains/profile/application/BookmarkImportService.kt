@@ -14,9 +14,9 @@ import com.stoasis.backend.domains.auth.data.UserEntity
 import com.stoasis.backend.domains.pin.model.PinGridRect
 import com.stoasis.backend.domains.pin.utils.findFreePinPosition
 import com.stoasis.backend.domains.board.data.PinStackRepository
+import com.stoasis.backend.shared.id.IdGenerator
 import java.net.URI
 import java.time.Instant
-import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -30,6 +30,7 @@ class BookmarkImportService(
     private val pins: PinRepository,
     private val plans: PlanService,
     private val stacks: PinStackRepository,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional(readOnly = true)
     fun preview(userId: String, collectionId: String, content: ByteArray): ImportResult {
@@ -68,7 +69,7 @@ class BookmarkImportService(
             return row.copy(status = "failed", message = "Kein freier Platz auf dem Board.")
         }
         pins.save(PinEntity(
-            id = "pin-${UUID.randomUUID()}", collection = board, createdBy = user,
+            id = "pin-${idGenerator.newId()}", collection = board, createdBy = user,
             type = PinType.link, sortOrder = order, title = row.title, url = row.url,
             siteName = URI(row.url!!).host, parseStatus = "ok", tags = row.tags.toMutableSet(),
             gridX = position.first, gridY = position.second, heightClips = 18, layer = order,

@@ -1,36 +1,51 @@
 # Backend Technical Debt
 
-Status: October 3, 2026. This assessment is based on `stoasis-backend`, its configuration, migrations, tests, and deployment files. The current backend test suite passes.
+Status: October 3, 2026. This assessment is based on `stoasis-backend`, its configuration, migrations, tests, and deployment files. The backend test suite, including the new PostgreSQL migration and origin-filter tests, passed locally.
 
 ## Executive Summary
 
 The backend is a pragmatic modular monolith with strong foundations: domain packages, explicit application services, transaction boundaries, Flyway, server-side permission checks, `open-in-view: false`, and especially careful protection around external link previews.
 
-The most important debt concerns production readiness and changeability: process-local sessions and rate limits, missing PostgreSQL contract tests, duplicated API types, unenforced module boundaries, and a few very large services.
+The most important remaining debt concerns production readiness and changeability: process-local rate limits, incomplete PostgreSQL integration coverage, manually maintained client DTOs, unenforced module boundaries, and a few very large services. Backend HTTP sessions now use PostgreSQL, production cookie mutations validate their origin, and image publication is gated on tests. Debt reduction is subordinate to database safety: changes must preserve ACID transaction behavior, data consistency and integrity, and service availability during deployments and recovery.
+
+## Implementation Status From This Pass
+
+- **BE-01 — Implemented:** HTTP sessions are stored in PostgreSQL using Flyway-managed tables. Existing in-memory sessions are invalidated once during the first rollout; subsequent restarts and replicas share sessions.
+- **BE-02 — Implemented:** production rejects state-changing session requests unless browser provenance is trusted or the server-side MCP client supplies its explicit marker. A prod-profile context test verifies the security chain starts and fails closed. Login, registration, and verification replace existing sessions; regression tests cover ID replacement and removal of prior attributes. The session, cookie, CSRF, MCP exception, rollout, and revocation decisions are recorded in ADR 0001.
+- **BE-03 — Partially implemented:** CI runs a PostgreSQL Testcontainers upgrade test from schema `14`, verifies an existing user row survives `V15`, and checks the current session tables and foreign keys. Critical application integration paths still run with H2.
+- **BE-04 — Partially implemented:** Springdoc exposes the generated HTTP schema at `/v3/api-docs` and `/v3/api-docs.yaml`, covered by an API test; Angular and MCP DTOs are not generated from it yet.
+- **BE-05 — Partially implemented:** backend tests now gate image publication. Formatting, static analysis, and dependency scanning are not yet separate gates.
+- **BE-10 — Partially implemented:** unexpected API errors use the application logger instead of `printStackTrace`; correlation IDs, business metrics, and audit events remain open.
+- **BE-11 — Partially implemented:** all general API handlers now require explicit stable status/validation codes and report stable machine-readable codes for every invalid field in both request-body and constraint-violation validation, preserving nested paths; domain-specific codes and client-side code translation remain open.
+- **BE-12 — Partially implemented:** newly generated IDs use full UUIDs through an injectable generator, within the existing `VARCHAR(64)` limits. Direct clock calls and an injectable clock remain open.
+- **BE-14 — Partially implemented:** migration procedures and a PostgreSQL-plus-upload backup/restore runbook are documented; key rotation, incident response, and config-drift checks remain open.
 
 ## Prioritized Debt
 
 | ID    | Priority | Debt                                                        | Evidence and risk                                                                                                                                                                               | Recommended next step                                                                                                                                              |
 | ----- | -------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| BE-01 | P1       | Sessions are tied to one backend process                    | The README currently requires one replica; restarts also invalidate MCP connections. Horizontal scaling and rolling deployments are not robust.                                                 | Introduce Spring Session with PostgreSQL or Redis; cover session and MCP revocation semantics with integration tests.                                              |
-| BE-02 | P1       | Cookie authentication runs with CSRF protection disabled    | `csrf.disable()` and credentialed CORS are configured deliberately. `SameSite=Lax` reduces risk but does not replace a documented CSRF decision, particularly with future same-site subdomains. | Record a threat model; preferably introduce CSRF tokens for mutating browser requests or strict Origin/Fetch Metadata checks. Clearly separate MCP/API exceptions. |
-| BE-03 | P1       | The production database is not tested in CI                 | Development and tests use H2 in PostgreSQL mode. SQL, locks, types, constraints, and Flyway can behave differently on real PostgreSQL.                                                          | Add Testcontainers PostgreSQL for migration tests and critical integration paths. H2 may remain for fast unit/slice tests.                                         |
-| BE-04 | P1       | The HTTP contract has no machine-readable canonical source  | Angular and MCP maintain DTOs manually. Error objects are partly generic and partly StoaQL-specific; field validation retains only the first error.                                             | Publish versioned OpenAPI with examples, error codes, and authentication; validate contract diffs in CI.                                                           |
-| BE-05 | P1       | CI builds artifacts but does not gate on tests              | The backend Dockerfile runs `bootJar`, not `test`; the workflow builds only the image.                                                                                                          | Add a backend check containing tests, format/lint, migration tests, and dependency scanning before image publication.                                              |
+| BE-01 | P1       | HTTP sessions needed shared persistence                     | Resolved with PostgreSQL-backed Spring Session and Flyway-managed tables. First rollout invalidates existing process-local sessions; future restarts/replicas share them.                            | Keep revocation behavior covered as MCP/session integration evolves.                                                                                                 |
+| BE-02 | P1       | Cookie authentication needs an explicit CSRF boundary       | Production session mutations fail closed unless an allowlisted browser `Origin`, same-origin Fetch Metadata, or the explicit server-side MCP marker is present. A prod-profile context test covers filter wiring and missing provenance; `SameSite=Lax` remains defense in depth, and ADR 0001 documents the trust boundary and coordinated rollout. | Keep origin, missing-provenance, MCP-marker, and revocation behavior covered as the authentication boundary evolves.                                                |
+| BE-03 | P1       | Critical database paths still lack PostgreSQL CI coverage   | CI verifies the V14-to-V15 PostgreSQL upgrade preserves an existing user row and checks session tables and foreign keys. Core app integration tests still use H2, where SQL, locking, and isolation can differ. | Extend PostgreSQL Testcontainers coverage to critical authentication and board mutation paths; retain H2 for fast unit/slice tests.                                  |
+| BE-04 | P1       | Client contracts are not yet generated from the HTTP schema | Springdoc now exposes generated OpenAPI JSON/YAML. Angular and MCP still maintain their own transport DTOs, and the API error shapes are not fully unified.                                           | Generate/check client transport types from OpenAPI and standardize error codes before changing public response shapes.                                              |
+| BE-05 | P1       | CI quality gates are incomplete                             | Backend tests gate image publication now. Formatting/lint, static analysis, dependency scanning, and explicit required-check branch protection remain unconfigured.                                 | Add the remaining checks and mark the verification job required in repository settings.                                                                              |
 | BE-06 | P2       | Rate limits are process-local                               | Magic-link limits use a `ConcurrentHashMap`; upload limits use a local map. Restarts and multiple replicas bypass global enforcement.                                                           | Use a distributed atomic limiter, or gateway limits plus business limits in PostgreSQL/Redis. Document proxy IP trust.                                             |
 | BE-07 | P2       | Module boundaries are named but not enforced                | Domains directly import entities, repositories, and services from other domains. This creates cyclic or hard-to-separate coupling.                                                              | Use ArchUnit or Spring Modulith; define allowed dependencies. Cross domains through application ports/IDs/DTOs rather than foreign repositories.                   |
 | BE-08 | P2       | Individual services carry too many responsibilities         | `StoaQlQueryService` has 509 lines, `PinService` 379, and `StoaQlErrorI18n` 443. Parsing, validation, planning, execution, and mapping risk merging.                                            | Split by use case or pipeline stage; test pure domain policies separately; keep application services small orchestrators.                                          |
 | BE-09 | P2       | Upload storage limits scaling and operations                | Production writes to a local directory; all replicas would have to share the same volume. Database and files need coordinated backups.                                                          | Preserve/expand the storage port, plan an object-storage adapter, and operationalize checksums and lifecycle/orphan cleanup.                                       |
-| BE-10 | P2       | Observability is minimal and inconsistent                   | Unexpected errors use `printStackTrace`; structured request/trace IDs, business metrics, and audit events are absent.                                                                           | Add consistent structured logging, correlation IDs, Micrometer metrics, and safe audit events for auth, roles, export, delete, and MCP revocation.                 |
-| BE-11 | P2       | Error messages are part of an implicit contract             | Many services produce German text directly; clients use a mix of raw text and translation keys. Text changes can couple tests and UI behavior.                                                  | Return stable error codes plus localizable parameters; retain backend messages only as fallback. Use a Problem Details-style schema.                               |
-| BE-12 | P2       | Time and IDs are difficult to test and operationally narrow | `Instant.now()` and `UUID.randomUUID().take(8)` are used directly. Short IDs increase long-term collision risk, and time logic requires real clocks.                                            | Inject `Clock` and an ID generator; use full UUID/ULID; test expiration rules deterministically.                                                                   |
+| BE-10 | P2       | Observability is minimal and inconsistent                   | Unexpected API errors use the application logger now, but structured request/trace IDs, business metrics, and audit events are absent.                                                           | Add correlation IDs, Micrometer metrics, and safe audit events for auth, roles, export, delete, and MCP revocation.                                                   |
+| BE-11 | P2       | Error messages are part of an implicit contract             | `ApiError` requires an explicit stable code, including malformed-body and unsupported-media handlers, and validation maps every invalid field to a stable constraint code. Service errors still rely on German messages and StoaQL has a separate contract. | Add domain-specific stable codes and localizable parameters; migrate clients to code-based translation. Retain backend text as fallback.                              |
+| BE-12 | P2       | Time and ID creation are difficult to test                  | New IDs use full UUIDs supplied by an injectable `IdGenerator`; direct `Instant.now()` calls remain in services/entities and expiration rules are not yet deterministic.                         | Inject `Clock` and test expiration rules deterministically.                                                                                                          |
 | BE-13 | P3       | JPA and domain models are largely identical                 | Business rules primarily live in services; entities are persistence-focused and strings represent some plans/types. This is pragmatic, but rules can become dispersed.                          | Do not perform a blanket rewrite. Move only complex invariants into value objects/policies and protect persistent strings with enums/converters.                   |
-| BE-14 | P3       | Operational documentation is distributed                    | README, `DEPLOYMENT.md`, Compose, and specs overlap; recovery, rotation, and upgrade paths are not documented as runbooks.                                                                      | Adopt the documentation structure from `backend-principles-and-contracts.md` and automatically check configuration drift.                                          |
+| BE-14 | P3       | Operational documentation is distributed                    | Database migration steps and a coordinated PostgreSQL/upload backup-restore runbook now exist. Key rotation, incident response, and automatic config-drift checks are still missing.             | Add key-rotation and incident runbooks; automatically check configuration drift.                                                                                     |
 
 ## Existing Quality That Must Be Protected
 
 Debt reduction must not weaken:
 
+- ACID transaction guarantees and data consistency/integrity; preserve constraints and transaction boundaries for every mutation.
+- Availability during schema changes: use compatible expand/backfill/contract migrations where needed, and document deployment and recovery steps before risky changes.
+- The ability to restore PostgreSQL together with uploaded files from a coordinated backup.
 - server-side role and plan checks,
 - atomic single-use magic links,
 - SSRF protection and hard limits for link previews,
@@ -44,24 +59,24 @@ Debt reduction must not weaken:
 
 ### Within the Next 1–2 Iterations
 
-1. Document CSRF and session decisions in a security ADR.
-2. Add a PostgreSQL test container for migrations and core auth/board flows.
-3. Add CI gates for tests and static analysis.
-4. Establish an OpenAPI baseline including a unified error contract.
+1. Add PostgreSQL Testcontainers coverage for core auth and board mutation flows.
+2. Add CI gates for formatting, static analysis, and dependency scanning; require the verification job in branch protection.
+3. Generate Angular and MCP transport types from OpenAPI and validate schema changes in CI.
+4. Expand security regression coverage as the documented session and MCP trust boundary evolves.
 
 ### Afterward
 
-1. Distributed sessions and rate limits.
-2. Automated module-boundary checks.
-3. Split the StoaQL and Pin hotspots.
-4. Observability and recovery runbooks.
-5. Object storage only when scaling demand justifies it.
+1. Distributed rate limits and automated module-boundary checks.
+2. Split the StoaQL and Pin hotspots.
+3. Observability and recovery runbooks.
+4. Object storage only when scaling demand justifies it.
 
 ## Definition of Done for Debt Reduction
 
 An item is complete when:
 
 - migration and rollback are documented,
+- PostgreSQL constraints, transaction behavior, and data consistency/integrity are verified for affected paths,
 - relevant security and data invariants are covered by automated tests,
 - production configuration and runbooks are updated,
 - the frontend and MCP contract remains compatible or is changed through versioning.
