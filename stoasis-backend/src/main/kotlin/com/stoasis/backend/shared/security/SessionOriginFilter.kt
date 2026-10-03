@@ -30,7 +30,7 @@ class SessionOriginFilter(
             HttpMethod.GET.name(), HttpMethod.HEAD.name(), HttpMethod.OPTIONS.name(), HttpMethod.TRACE.name(),
         )
         val hasSession = request.getSession(false) != null
-        if (changesState && hasSession && !isTrustedBrowserRequest(request)) {
+        if (changesState && hasSession && isUntrustedBrowserRequest(request)) {
             response.status = HttpServletResponse.SC_FORBIDDEN
             response.contentType = MediaType.APPLICATION_JSON_VALUE
             objectMapper.writeValue(
@@ -43,11 +43,14 @@ class SessionOriginFilter(
         filterChain.doFilter(request, response)
     }
 
-    private fun isTrustedBrowserRequest(request: HttpServletRequest): Boolean {
+    private fun isUntrustedBrowserRequest(request: HttpServletRequest): Boolean {
         val origin = request.getHeader("Origin")
-        if (origin != null) return origin in trustedOrigins
+        if (origin != null) return origin !in trustedOrigins
 
-        // Some same-origin browser requests omit Origin; Fetch Metadata is the fallback.
-        return request.getHeader("Sec-Fetch-Site") == "same-origin"
+        val fetchSite = request.getHeader("Sec-Fetch-Site")
+        if (fetchSite != null) return fetchSite != "same-origin"
+
+        // Server-to-server clients such as stoasis-mcp send neither browser header.
+        return false
     }
 }
