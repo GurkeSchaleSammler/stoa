@@ -66,3 +66,12 @@ docker compose up --build
 - [UI-Wireframe](stoa-wireframe.html)
 - [Relationales Datenmodell](stoa_erd_relational.html)
 - [Dokumentenmodell](stoa_document_model.html)
+
+## Architecture, debt, and design contracts
+
+- [Frontend technical debt](.github/ai-review/rules/frontend-technical-debt.md)
+- [Backend technical debt](.github/ai-review/rules/backend-technical-debt.md)
+- [Frontend principles and contracts](.github/ai-review/rules/frontend-principles-and-contracts.md)
+- [Backend principles and contracts](.github/ai-review/rules/backend-principles-and-contracts.md)
+- [Stoasis design system](.github/ai-review/rules/design-system.md)
+- [Node MCP architecture, principles, and contract](.github/ai-review/rules/mcp.md)
