@@ -27,6 +27,20 @@ class StoasisBackendApplicationTests {
     private lateinit var users: UserRepository
 
     @Test
+    fun `validation errors expose stable field codes`() {
+        mvc.post("/api/auth/register") {
+            contentType = MediaType.APPLICATION_JSON
+            content = """{"email":"invalid","name":"x","password":"short"}"""
+        }.andExpect {
+            status { isBadRequest() }
+            jsonPath("$.code", `is`("request.validation_failed"))
+            jsonPath("$.fieldErrors.email", `is`("request.invalid_email"))
+            jsonPath("$.fieldErrors.name", `is`("request.invalid_size"))
+            jsonPath("$.fieldErrors.password", `is`("request.invalid_size"))
+        }
+    }
+
+    @Test
     fun `protected API rejects requests without a session`() {
         mvc.get("/api/collections").andExpect {
             status { isUnauthorized() }

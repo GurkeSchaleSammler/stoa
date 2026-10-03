@@ -9,6 +9,7 @@ import com.stoasis.backend.domains.auth.data.MagicLinkTokenEntity
 import com.stoasis.backend.domains.auth.data.MagicLinkTokenRepository
 import com.stoasis.backend.domains.auth.data.UserEntity
 import com.stoasis.backend.domains.auth.data.UserRepository
+import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
 import com.stoasis.backend.domains.skill.application.ProfileBoardService
 import java.time.Duration
@@ -16,7 +17,6 @@ import java.time.Instant
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
-import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -30,6 +30,7 @@ class AuthService(
     private val magicLinkMailSender: MagicLinkMailSender,
     private val magicLinkRateLimiter: MagicLinkRateLimiter,
     private val profileBoards: ProfileBoardService,
+    private val idGenerator: IdGenerator,
 ) {
     private val sessionDuration = Duration.ofDays(30)
 
@@ -51,7 +52,7 @@ class AuthService(
         }
         val user = users.save(
             UserEntity(
-                id = "user-${UUID.randomUUID().toString()}",
+                id = "user-${idGenerator.newId()}",
                 email = email,
                 name = request.name.trim(),
                 passwordHash = passwordEncoder.encode(request.password),
@@ -95,7 +96,7 @@ class AuthService(
         val existingUser = users.findByEmailIgnoreCase(entry.email)
         val user = existingUser ?: users.save(
             UserEntity(
-                id = "user-${UUID.randomUUID().toString()}",
+                id = "user-${idGenerator.newId()}",
                 email = entry.email,
                 name = entry.email.substringBefore('@'),
             ),

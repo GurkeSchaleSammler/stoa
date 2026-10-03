@@ -6,10 +6,10 @@ import com.stoasis.backend.domains.board.api.UpdateConnectorRequest
 import com.stoasis.backend.domains.board.data.BoardConnectorEntity
 import com.stoasis.backend.domains.board.data.BoardConnectorRepository
 import com.stoasis.backend.domains.board.utils.badRequest
-import com.stoasis.backend.domains.board.utils.boardElementId
 import com.stoasis.backend.domains.board.utils.toDto
 import com.stoasis.backend.domains.board.utils.touchCollection
 import com.stoasis.backend.domains.board.utils.validBoardColor
+import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 class BoardConnectorService(
     private val support: BoardElementSupport,
     private val connectors: BoardConnectorRepository,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional
     fun createConnector(
@@ -38,7 +39,7 @@ class BoardConnectorService(
         if (duplicate) throw ApiException(HttpStatus.CONFLICT, "Diese Karten sind bereits verbunden.")
         val connector = connectors.save(
             BoardConnectorEntity(
-                id = boardElementId("thread"),
+                id = "thread-${idGenerator.newId()}",
                 collection = collection,
                 sourcePin = source,
                 targetPin = target,

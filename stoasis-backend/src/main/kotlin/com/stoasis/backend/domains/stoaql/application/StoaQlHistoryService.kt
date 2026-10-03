@@ -7,9 +7,9 @@ import com.stoasis.backend.domains.stoaql.api.StoaQlQueryRequest
 import com.stoasis.backend.domains.stoaql.api.StoaQlQueryResponse
 import com.stoasis.backend.domains.stoaql.data.StoaQlQueryHistoryEntity
 import com.stoasis.backend.domains.stoaql.data.StoaQlQueryHistoryRepository
+import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
 import java.time.Instant
-import java.util.UUID
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 class StoaQlHistoryService(
     private val history: StoaQlQueryHistoryRepository,
     private val collections: CollectionService,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional(readOnly = true)
     fun list(userId: String, collectionReference: String, limit: Int): List<StoaQlHistoryItem> {
@@ -73,7 +74,7 @@ class StoaQlHistoryService(
         durationMs: Long? = null,
         errorCode: String? = null,
     ) = StoaQlQueryHistoryEntity(
-        id = "history-${UUID.randomUUID().toString()}",
+        id = "history-${idGenerator.newId()}",
         userId = userId,
         collectionId = resolveHistoryCollection(request.context?.collectionId, userId),
         queryId = queryId,

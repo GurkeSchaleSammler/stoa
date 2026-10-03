@@ -35,8 +35,8 @@ import com.stoasis.backend.domains.plan.application.PlanService
 import com.stoasis.backend.domains.search.application.normalizeTags
 import com.stoasis.backend.domains.upload.application.PhotoPinService
 import com.stoasis.backend.domains.upload.application.UploadService
+import com.stoasis.backend.shared.id.IdGenerator
 import java.time.Instant
-import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -55,6 +55,7 @@ class PinService(
     private val plans: PlanService,
     private val photos: PhotoPinService,
     private val uploads: UploadService,
+    private val idGenerator: IdGenerator,
 ) {
     companion object {
         const val CARD_WIDTH_CLIPS = 16
@@ -98,7 +99,7 @@ class PinService(
         }
         plans.requirePinCapacity(userId, request.type)
         val pin = PinEntity(
-            id = "pin-${UUID.randomUUID().toString()}",
+            id = "pin-${idGenerator.newId()}",
             collection = collection,
             type = request.type,
             createdBy = users.getReferenceById(userId),

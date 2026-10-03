@@ -3,7 +3,6 @@ package com.stoasis.backend.domains.board.utils
 import com.stoasis.backend.domains.collection.data.CollectionEntity
 import com.stoasis.backend.shared.utils.normalizeUiColor
 import java.time.Instant
-import java.util.UUID
 
 private val stickerMotifs = setOf(
     "circle",
@@ -35,8 +34,6 @@ fun cleanOptionalBoardText(value: String?, maxLength: Int): String? =
     value?.trim()?.takeIf(String::isNotBlank)?.also {
         if (it.length > maxLength) badRequest("Text ist zu lang.")
     }
-
-fun boardElementId(prefix: String): String = "$prefix-${UUID.randomUUID().toString()}"
 
 fun touchCollection(collection: CollectionEntity) {
     collection.updatedAt = Instant.now()

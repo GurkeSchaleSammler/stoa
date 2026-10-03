@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.validation.FieldError
 import org.slf4j.LoggerFactory
 
 @RestControllerAdvice
@@ -39,11 +40,18 @@ class ApiExceptionHandler {
             ?: "Die Eingaben sind ungültig."
         val fieldErrors = exception.bindingResult.fieldErrors
             .groupBy { it.field }
-            .mapValues { (_, errors) ->
-                errors.mapNotNull { it.defaultMessage }.distinct().ifEmpty { listOf("Ungültiger Wert.") }
-                    .joinToString("; ")
-            }
+            .mapValues { (_, errors) -> validationCode(errors.first()) }
         return ResponseEntity.badRequest().body(ApiError(message, "request.validation_failed", fieldErrors))
+    }
+
+    private fun validationCode(error: FieldError): String = when (error.codes?.lastOrNull()) {
+        "NotBlank", "NotEmpty", "NotNull" -> "request.required"
+        "Email" -> "request.invalid_email"
+        "Size" -> "request.invalid_size"
+        "Pattern" -> "request.invalid_format"
+        "Min", "DecimalMin", "Positive", "PositiveOrZero" -> "request.too_small"
+        "Max", "DecimalMax", "Negative", "NegativeOrZero" -> "request.too_large"
+        else -> "request.invalid"
     }
 
     @ExceptionHandler(ConstraintViolationException::class)

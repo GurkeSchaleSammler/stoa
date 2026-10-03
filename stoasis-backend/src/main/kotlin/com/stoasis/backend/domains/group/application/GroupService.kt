@@ -17,8 +17,8 @@ import com.stoasis.backend.domains.group.data.GroupMemberRepository
 import com.stoasis.backend.domains.group.model.SharingPreference
 import com.stoasis.backend.domains.pin.data.PinRepository
 import com.stoasis.backend.domains.skill.data.SkillDataRepository
+import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
-import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -31,6 +31,7 @@ class GroupService(
     private val collections: CollectionRepository,
     private val pins: PinRepository,
     private val skillData: SkillDataRepository,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional(readOnly = true)
     fun list(userId: String): List<GroupSummaryDto> = groups.findAllForUser(userId)
@@ -49,10 +50,10 @@ class GroupService(
     @Transactional
     fun create(userId: String, request: CreateGroupRequest): GroupDetailDto {
         val group = GroupEntity(
-            id = "group-${UUID.randomUUID().toString()}",
+            id = "group-${idGenerator.newId()}",
             name = request.name.trim(),
             ownerId = userId,
-            inviteToken = "group-invite-${UUID.randomUUID().toString()}",
+            inviteToken = "group-invite-${idGenerator.newId()}",
         )
         group.members.add(
             GroupMemberEntity(

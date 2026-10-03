@@ -41,11 +41,11 @@ import com.stoasis.backend.domains.stoaql.language.StoaQlStatement
 import com.stoasis.backend.domains.stoaql.language.UpdateField
 import com.stoasis.backend.domains.stoaql.language.UpdateStatement
 import com.stoasis.backend.domains.stoaql.language.UseStatement
+import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
 import java.net.URI
 import java.security.MessageDigest
 import java.time.Instant
-import java.util.UUID
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -64,6 +64,7 @@ class StoaQlQueryService(
     private val search: SearchService,
     private val idempotency: StoaQlQueryRequestRepository,
     private val objectMapper: ObjectMapper,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional(timeout = 5)
     fun execute(userId: String, request: StoaQlQueryRequest): StoaQlQueryResponse {
@@ -113,7 +114,7 @@ class StoaQlQueryService(
         }
         if (request.dryRun) TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()
         val response = StoaQlQueryResponse(
-            queryId = "qry-${UUID.randomUUID().toString()}",
+            queryId = "qry-${idGenerator.newId()}",
             languageVersion = request.languageVersion,
             dryRun = request.dryRun,
             operations = state.operations,
@@ -125,7 +126,7 @@ class StoaQlQueryService(
         if (requestHash != null) {
             idempotency.save(
                 StoaQlQueryRequestEntity(
-                    id = "qryreq-${UUID.randomUUID().toString()}",
+                    id = "qryreq-${idGenerator.newId()}",
                     userId = userId,
                     idempotencyKey = request.idempotencyKey,
                     requestHash = requestHash,

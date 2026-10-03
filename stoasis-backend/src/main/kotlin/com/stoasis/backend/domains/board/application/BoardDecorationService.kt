@@ -15,7 +15,6 @@ import com.stoasis.backend.domains.board.data.SoftZoneEntity
 import com.stoasis.backend.domains.board.data.SoftZoneRepository
 import com.stoasis.backend.domains.board.data.StickerEntity
 import com.stoasis.backend.domains.board.data.StickerRepository
-import com.stoasis.backend.domains.board.utils.boardElementId
 import com.stoasis.backend.domains.board.utils.cleanOptionalBoardText
 import com.stoasis.backend.domains.board.utils.requiredBoardText
 import com.stoasis.backend.domains.board.utils.requireLabelBounds
@@ -25,6 +24,7 @@ import com.stoasis.backend.domains.board.utils.toDto
 import com.stoasis.backend.domains.board.utils.touchCollection
 import com.stoasis.backend.domains.board.utils.validBoardColor
 import com.stoasis.backend.domains.board.utils.validStickerMotif
+import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -36,6 +36,7 @@ class BoardDecorationService(
     private val zones: SoftZoneRepository,
     private val labels: FloatingLabelRepository,
     private val stickers: StickerRepository,
+    private val idGenerator: IdGenerator,
 ) {
     @Transactional
     fun createZone(collectionId: String, userId: String, request: CreateSoftZoneRequest): SoftZoneDto {
@@ -43,7 +44,7 @@ class BoardDecorationService(
         requireZoneBounds(request.x, request.y, request.widthClips, request.heightClips)
         val zone = zones.save(
             SoftZoneEntity(
-                id = boardElementId("zone"),
+                id = "zone-${idGenerator.newId()}",
                 collection = collection,
                 gridX = request.x,
                 gridY = request.y,
@@ -102,7 +103,7 @@ class BoardDecorationService(
         requireLabelBounds(request.x, request.y, request.widthClips)
         val label = labels.save(
             FloatingLabelEntity(
-                id = boardElementId("label"),
+                id = "label-${idGenerator.newId()}",
                 collection = collection,
                 gridX = request.x,
                 gridY = request.y,
@@ -164,7 +165,7 @@ class BoardDecorationService(
         )
         val sticker = stickers.save(
             StickerEntity(
-                id = boardElementId("sticker"),
+                id = "sticker-${idGenerator.newId()}",
                 collection = collection,
                 positionX = request.x,
                 positionY = request.y,
@@ -218,4 +219,3 @@ class BoardDecorationService(
         touchCollection(collection)
     }
 }
-

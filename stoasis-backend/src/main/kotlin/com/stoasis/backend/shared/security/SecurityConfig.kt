@@ -66,8 +66,12 @@ class SecurityConfig(
                     objectMapper.writeValue(response.outputStream, ApiError("Kein Zugriff.", "authorization.denied"))
                 }
             }
-            .addFilterBefore(sessionAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-        sessionOriginFilter.ifAvailable { chain.addFilterBefore(it, SessionAuthenticationFilter::class.java) }
+        // Use the registered Spring Security anchor on both sides so production startup does
+        // not depend on resolving the order of another custom filter.
+        sessionOriginFilter.ifAvailable {
+            chain.addFilterBefore(it, UsernamePasswordAuthenticationFilter::class.java)
+        }
+        chain.addFilterAfter(sessionAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         return chain.build()
     }
 
