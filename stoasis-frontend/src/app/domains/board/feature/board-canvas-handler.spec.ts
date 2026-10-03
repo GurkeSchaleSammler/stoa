@@ -5,16 +5,18 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { vi } from 'vitest';
 import { PinService } from '../data/application/pin.service';
+import { BoardContext } from '../data/models/board-context';
 import { BoardCanvasHandlerComponent } from './board-canvas-handler';
 
 describe('BoardCanvasHandlerComponent', () => {
   const params = new BehaviorSubject(convertToParamMap({ id: 'coll-japan' }));
   const queryParams = new BehaviorSubject(convertToParamMap({}));
   const internalBoardState = signal(0);
+  const context = signal<BoardContext | null>(null);
   const pins = {
     sortedPins: signal([]),
     elements: signal({ stacks: [], connectors: [], zones: [], labels: [], stickers: [] }),
-    context: signal(null),
+    context,
     viewMode: signal('board'),
     selectedPinId: signal(null),
     selectedPin: signal(null),
@@ -52,6 +54,7 @@ describe('BoardCanvasHandlerComponent', () => {
     params.next(convertToParamMap({ id: 'coll-japan' }));
     queryParams.next(convertToParamMap({}));
     internalBoardState.set(0);
+    context.set(null);
     pins.loadPins.mockClear();
     pins.selectPin.mockClear();
 
@@ -96,5 +99,23 @@ describe('BoardCanvasHandlerComponent', () => {
 
     expect(pins.loadPins).toHaveBeenCalledTimes(1);
     expect(pins.selectPin).toHaveBeenCalledTimes(1);
+  });
+
+  it('scopes the canvas and sibling dialogs under the board style root', () => {
+    context.set({
+      id: 'coll-japan',
+      name: 'Japan',
+      emoji: '🗾',
+      allowedTypes: [],
+      visibility: 'private',
+      currentUserRole: 'owner',
+      members: [],
+    });
+    const fixture = TestBed.createComponent(BoardCanvasHandlerComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.classList.contains('stoa-board')).toBe(true);
+    expect(fixture.nativeElement.querySelector('ui-board-canvas')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('feature-add-pin-dialog-handler')).not.toBeNull();
   });
 });

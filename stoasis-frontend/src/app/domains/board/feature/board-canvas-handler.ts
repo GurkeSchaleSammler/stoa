@@ -19,6 +19,7 @@ import { BoardConsoleHandlerComponent } from './board-console-handler';
 
 @Component({
   selector: 'feature-board-canvas-handler',
+  host: { class: 'stoa-board' },
   standalone: true,
   imports: [
     BoardCanvasComponent,

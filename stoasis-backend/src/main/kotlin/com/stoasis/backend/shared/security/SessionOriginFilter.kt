@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import tools.jackson.databind.ObjectMapper
 
+internal const val STOASIS_CLIENT_HEADER = "X-Stoasis-Client"
+internal const val STOASIS_MCP_CLIENT = "mcp"
+
 /** Rejects cross-site state changes made with an authenticated browser session. */
 @Component
 @Profile("prod")
@@ -50,7 +53,8 @@ class SessionOriginFilter(
         val fetchSite = request.getHeader("Sec-Fetch-Site")
         if (fetchSite != null) return fetchSite != "same-origin"
 
-        // Server-to-server clients such as stoasis-mcp send neither browser header.
-        return false
+        // Browser requests carry Origin or Fetch Metadata. The explicit marker keeps the
+        // server-side MCP path available while requests with no provenance fail closed.
+        return request.getHeader(STOASIS_CLIENT_HEADER) != STOASIS_MCP_CLIENT
     }
 }

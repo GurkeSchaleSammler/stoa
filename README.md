@@ -69,6 +69,7 @@ docker compose up --build
 
 ## Architecture, debt, and design contracts
 
+- [ADR 0001: Shared HTTP sessions and origin-based CSRF protection](docs/adr/0001-shared-http-sessions-and-origin-csrf.md)
 - [Frontend technical debt](.github/ai-review/rules/frontend-technical-debt.md)
 - [Backend technical debt](.github/ai-review/rules/backend-technical-debt.md)
 - [Frontend principles and contracts](.github/ai-review/rules/frontend-principles-and-contracts.md)

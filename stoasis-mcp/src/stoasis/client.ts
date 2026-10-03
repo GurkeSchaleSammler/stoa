@@ -304,6 +304,7 @@ export class StoasisApiClient {
     const headers = new Headers(init.headers);
     headers.set("Accept", "application/json");
     headers.set("Cookie", this.sessionCookie);
+    headers.set("X-Stoasis-Client", "mcp");
     if (init.body && !headers.has("Content-Type"))
       headers.set("Content-Type", "application/json");
     const response = await this.fetch(path, { ...init, headers });

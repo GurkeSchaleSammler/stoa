@@ -58,12 +58,13 @@ class ApiExceptionHandler {
 
     @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException::class)
     fun unsupportedMediaType() = ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-        .body(ApiError("Dateiformat nicht unterstützt."))
+        .body(ApiError("Dateiformat nicht unterstützt.", "request.unsupported_media_type"))
 
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException::class,
         org.springframework.web.method.annotation.MethodArgumentTypeMismatchException::class,
         org.springframework.web.bind.MissingServletRequestParameterException::class)
-    fun malformedRequest() = ResponseEntity.badRequest().body(ApiError("Die Anfrage ist ungültig."))
+    fun malformedRequest() = ResponseEntity.badRequest()
+        .body(ApiError("Die Anfrage ist ungültig.", "request.malformed"))
 
     @ExceptionHandler(Exception::class)
     fun unexpected(exception: Exception): ResponseEntity<ApiError> {
