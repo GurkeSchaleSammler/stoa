@@ -12,6 +12,7 @@ The production browser and API share one public origin. The MCP service is a ser
 ## Decision
 
 1. Spring Session stores HTTP sessions in PostgreSQL tables managed by Flyway. Backend replicas use the same session store.
+   Successful login, registration, and magic-link verification invalidate the previous session and create a new session ID in `AuthController.startSession`. Previous attributes, including MCP authorization metadata, are discarded. This controller-managed replacement is the session-fixation protection; it does not depend on a Spring Security login filter. Failed authentication does not establish a session.
 2. The session cookie is `HttpOnly`, `Secure` in production, and `SameSite=Lax`. `SameSite` is defense in depth and is not the primary CSRF check.
 3. In production, an authenticated state-changing request from a browser is accepted only when:
    - its `Origin` is in `stoasis.cors.allowed-origins`, or

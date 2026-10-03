@@ -11,7 +11,6 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.validation.FieldError
 import org.slf4j.LoggerFactory
 
 @RestControllerAdvice
@@ -40,11 +39,11 @@ class ApiExceptionHandler {
             ?: "Die Eingaben sind ungültig."
         val fieldErrors = exception.bindingResult.fieldErrors
             .groupBy { it.field }
-            .mapValues { (_, errors) -> validationCode(errors.first()) }
+            .mapValues { (_, errors) -> selectValidationCode(errors.map { validationCode(it.code) }) }
         return ResponseEntity.badRequest().body(ApiError(message, "request.validation_failed", fieldErrors))
     }
 
-    private fun validationCode(error: FieldError): String = when (error.codes?.lastOrNull()) {
+    private fun validationCode(constraint: String?): String = when (constraint) {
         "NotBlank", "NotEmpty", "NotNull" -> "request.required"
         "Email" -> "request.invalid_email"
         "Size" -> "request.invalid_size"
@@ -54,11 +53,23 @@ class ApiExceptionHandler {
         else -> "request.invalid"
     }
 
+    // The contract has one code per field: prefer a missing-value error, then a stable order.
+    private fun selectValidationCode(codes: List<String>): String =
+        codes.minWith(compareBy<String> { it != "request.required" }.thenBy { it })
+
     @ExceptionHandler(ConstraintViolationException::class)
-    fun constraintViolation(exception: ConstraintViolationException) =
-        ResponseEntity.badRequest().body(
-            ApiError(exception.message ?: "Die Eingaben sind ungültig.", "request.validation_failed"),
+    fun constraintViolation(exception: ConstraintViolationException): ResponseEntity<ApiError> {
+        val fieldErrors = exception.constraintViolations
+            .groupBy { it.propertyPath.toString() }
+            .mapValues { (_, violations) ->
+                selectValidationCode(violations.map {
+                    validationCode(it.constraintDescriptor.annotation.annotationClass.simpleName)
+                })
+            }
+        return ResponseEntity.badRequest().body(
+            ApiError(exception.message ?: "Die Eingaben sind ungültig.", "request.validation_failed", fieldErrors),
         )
+    }
 
     @ExceptionHandler(AccessDeniedException::class)
     fun accessDenied() = ResponseEntity.status(HttpStatus.FORBIDDEN)

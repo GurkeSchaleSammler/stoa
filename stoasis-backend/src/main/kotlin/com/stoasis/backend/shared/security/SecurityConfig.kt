@@ -35,6 +35,8 @@ class SecurityConfig(
             .headers { headers -> headers.frameOptions { it.sameOrigin() } }
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                // AuthController replaces the entire session after successful login/register/verify.
+                // Authentication is controller-managed, so rotation does not rely on a login filter.
                 it.sessionFixation { fixation -> fixation.none() }
             }
             .authorizeHttpRequests {
