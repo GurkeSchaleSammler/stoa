@@ -49,10 +49,10 @@ class GroupService(
     @Transactional
     fun create(userId: String, request: CreateGroupRequest): GroupDetailDto {
         val group = GroupEntity(
-            id = "group-${UUID.randomUUID().toString().take(8)}",
+            id = "group-${UUID.randomUUID().toString()}",
             name = request.name.trim(),
             ownerId = userId,
-            inviteToken = "group-invite-${UUID.randomUUID().toString().take(16)}",
+            inviteToken = "group-invite-${UUID.randomUUID().toString()}",
         )
         group.members.add(
             GroupMemberEntity(

@@ -14,6 +14,7 @@ import { PinEditButtonComponent } from './pin-edit-button';
 
 @Component({
   selector: 'ui-board-canvas',
+  host: { class: 'stoa-board' },
   standalone: true,
   imports: [
     AppIconComponent,

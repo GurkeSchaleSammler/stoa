@@ -36,7 +36,7 @@ fun cleanOptionalBoardText(value: String?, maxLength: Int): String? =
         if (it.length > maxLength) badRequest("Text ist zu lang.")
     }
 
-fun boardElementId(prefix: String): String = "$prefix-${UUID.randomUUID().toString().take(8)}"
+fun boardElementId(prefix: String): String = "$prefix-${UUID.randomUUID().toString()}"
 
 fun touchCollection(collection: CollectionEntity) {
     collection.updatedAt = Instant.now()

@@ -22,6 +22,10 @@ spring:
       "[mail.smtp.connectiontimeout]": 5000
       "[mail.smtp.timeout]": 5000
       "[mail.smtp.writetimeout]": 5000
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: never
 
 stoasis:
   mcp:

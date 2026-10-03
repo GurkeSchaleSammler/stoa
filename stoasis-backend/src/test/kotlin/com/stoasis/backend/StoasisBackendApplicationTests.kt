@@ -4,6 +4,7 @@ import com.stoasis.backend.domains.auth.data.UserRepository
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.nullValue
+import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -30,6 +31,17 @@ class StoasisBackendApplicationTests {
         mvc.get("/api/collections").andExpect {
             status { isUnauthorized() }
             jsonPath("$.message", `is`("Nicht angemeldet."))
+            jsonPath("$.code", `is`("auth.required"))
+        }
+    }
+
+    @Test
+    fun `OpenAPI exposes the HTTP schema and session authentication contract`() {
+        mvc.get("/v3/api-docs").andExpect {
+            status { isOk() }
+            jsonPath("$.info.title", `is`("Stoasis HTTP API"))
+            jsonPath("$.components.securitySchemes.sessionCookie.name", `is`("stoasis_session"))
+            jsonPath("$.paths['/api/collections'].get", notNullValue())
         }
     }
 

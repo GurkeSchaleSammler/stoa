@@ -75,7 +75,7 @@ class SearchService(
         }
         val tag = tags.save(
             TagEntity(
-                id = "tag-${UUID.randomUUID().toString().take(8)}",
+                id = "tag-${UUID.randomUUID().toString()}",
                 owner = users.getReferenceById(userId),
                 name = name,
             ),

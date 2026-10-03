@@ -73,7 +73,7 @@ class StoaQlHistoryService(
         durationMs: Long? = null,
         errorCode: String? = null,
     ) = StoaQlQueryHistoryEntity(
-        id = "history-${UUID.randomUUID().toString().take(12)}",
+        id = "history-${UUID.randomUUID().toString()}",
         userId = userId,
         collectionId = resolveHistoryCollection(request.context?.collectionId, userId),
         queryId = queryId,

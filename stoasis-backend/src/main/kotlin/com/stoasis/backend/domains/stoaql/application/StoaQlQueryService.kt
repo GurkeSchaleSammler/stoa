@@ -113,7 +113,7 @@ class StoaQlQueryService(
         }
         if (request.dryRun) TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()
         val response = StoaQlQueryResponse(
-            queryId = "qry-${UUID.randomUUID().toString().take(8)}",
+            queryId = "qry-${UUID.randomUUID().toString()}",
             languageVersion = request.languageVersion,
             dryRun = request.dryRun,
             operations = state.operations,
@@ -125,7 +125,7 @@ class StoaQlQueryService(
         if (requestHash != null) {
             idempotency.save(
                 StoaQlQueryRequestEntity(
-                    id = "qryreq-${UUID.randomUUID().toString().take(12)}",
+                    id = "qryreq-${UUID.randomUUID().toString()}",
                     userId = userId,
                     idempotencyKey = request.idempotencyKey,
                     requestHash = requestHash,

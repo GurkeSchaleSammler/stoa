@@ -98,7 +98,7 @@ class PinService(
         }
         plans.requirePinCapacity(userId, request.type)
         val pin = PinEntity(
-            id = "pin-${UUID.randomUUID().toString().take(8)}",
+            id = "pin-${UUID.randomUUID().toString()}",
             collection = collection,
             type = request.type,
             createdBy = users.getReferenceById(userId),

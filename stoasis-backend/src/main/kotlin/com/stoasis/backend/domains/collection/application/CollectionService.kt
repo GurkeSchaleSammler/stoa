@@ -60,7 +60,7 @@ class CollectionService(
     @Transactional
     fun create(userId: String, request: CreateCollectionRequest): CollectionDetail {
         val user = users.getReferenceById(userId)
-        val id = "coll-${UUID.randomUUID().toString().take(8)}"
+        val id = "coll-${UUID.randomUUID().toString()}"
         val collection = CollectionEntity(
             id = id,
             name = request.name.trim(),

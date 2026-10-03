@@ -51,7 +51,7 @@ class AuthService(
         }
         val user = users.save(
             UserEntity(
-                id = "user-${UUID.randomUUID().toString().take(8)}",
+                id = "user-${UUID.randomUUID().toString()}",
                 email = email,
                 name = request.name.trim(),
                 passwordHash = passwordEncoder.encode(request.password),
@@ -95,7 +95,7 @@ class AuthService(
         val existingUser = users.findByEmailIgnoreCase(entry.email)
         val user = existingUser ?: users.save(
             UserEntity(
-                id = "user-${UUID.randomUUID().toString().take(8)}",
+                id = "user-${UUID.randomUUID().toString()}",
                 email = entry.email,
                 name = entry.email.substringBefore('@'),
             ),
