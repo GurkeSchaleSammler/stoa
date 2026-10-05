@@ -142,6 +142,7 @@
   },
   "errors": {
     "unexpected": "An unexpected error occurred.",
+    "copyShareLink": "The share link could not be copied.",
     "collection": "The collection could not be loaded.",
     "board": "The board could not be updated.",
     "linkPreview": "The preview could not be loaded. You can still save the link.",
@@ -169,6 +170,7 @@
     "stickerCreated": "Sticker added.",
     "collectionCreated": "Collection created.",
     "collectionUpdated": "Collection updated.",
+    "shareLinkCopied": "Share link copied.",
     "collectionDeleted": "Collection deleted.",
     "collectionJoined": "You joined the collection.",
     "pinCreated": "Pin saved.",

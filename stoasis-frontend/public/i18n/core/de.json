@@ -142,6 +142,7 @@
   },
   "errors": {
     "unexpected": "Ein unerwarteter Fehler ist aufgetreten.",
+    "copyShareLink": "Der Freigabelink konnte nicht kopiert werden.",
     "collection": "Die Sammlung konnte nicht geladen werden.",
     "board": "Die Pinnwand konnte nicht aktualisiert werden.",
     "linkPreview": "Die Vorschau konnte nicht geladen werden. Der Link kann trotzdem gespeichert werden.",
@@ -169,6 +170,7 @@
     "stickerCreated": "Sticker hinzugefügt.",
     "collectionCreated": "Sammlung erstellt.",
     "collectionUpdated": "Sammlung aktualisiert.",
+    "shareLinkCopied": "Freigabelink kopiert.",
     "collectionDeleted": "Sammlung gelöscht.",
     "collectionJoined": "Du bist der Sammlung beigetreten.",
     "pinCreated": "Pin gespeichert.",
