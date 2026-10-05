@@ -65,10 +65,10 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
                 <input [value]="shareUrl()" readonly />
               </label>
               <div class="share-actions">
-                <button type="button" class="button secondary" (click)="onCopyShare.emit()">
+                <button type="button" class="button secondary" (click)="copyShareRequested.emit()">
                   <ui-app-icon name="copy" /> {{ 'common.copy' | translate }}
                 </button>
-                <button type="button" class="button secondary" (click)="onOpenShare.emit()">
+                <button type="button" class="button secondary" (click)="openShareRequested.emit()">
                   <ui-app-icon name="external" /> {{ 'collection.openSharedView' | translate }}
                 </button>
               </div>
@@ -148,8 +148,8 @@ export class CollectionSettingsComponent {
   readonly onSave = output<void>();
   readonly onDelete = output<void>();
   readonly onCancel = output<void>();
-  readonly onCopyShare = output<void>();
-  readonly onOpenShare = output<void>();
+  readonly copyShareRequested = output<void>();
+  readonly openShareRequested = output<void>();
   readonly pinTypes: { value: PinType; labelKey: string }[] = [
     { value: 'link', labelKey: 'pin.types.links' },
     { value: 'note', labelKey: 'pin.types.notes' },

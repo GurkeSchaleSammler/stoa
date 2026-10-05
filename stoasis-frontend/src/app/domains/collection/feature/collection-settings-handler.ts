@@ -26,8 +26,8 @@ import { SnackbarService } from '../../../shared/application/snackbar.service';
       (onSave)="save()"
       (onDelete)="deleteCollection()"
       (onCancel)="back()"
-      (onCopyShare)="copyShare()"
-      (onOpenShare)="openShare()"
+      (copyShareRequested)="copyShare()"
+      (openShareRequested)="openShare()"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

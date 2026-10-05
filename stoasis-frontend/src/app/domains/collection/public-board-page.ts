@@ -54,7 +54,7 @@ import { map } from 'rxjs';
         </header>
 
         @if (board.pins().length) {
-          <board-public-presentation
+          <ui-board-public-presentation
             [pins]="board.pins()"
             [attr.aria-label]="'common.pins' | translate"
           />

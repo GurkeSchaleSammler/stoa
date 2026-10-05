@@ -8,7 +8,7 @@ import { PinDetailComponent } from './ui/pin-detail';
 
 /** Public, read-only presentation surface for consumers outside the board domain. */
 @Component({
-  selector: 'board-public-presentation',
+  selector: 'ui-board-public-presentation',
   standalone: true,
   imports: [PinCardComponent, PinDetailComponent, ImageFullViewComponent],
   template: `
