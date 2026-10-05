@@ -64,9 +64,9 @@ h1 {
 }
 .quick-actions a.primary,
 .empty-dashboard a {
-  border-color: var(--text);
-  background: var(--text);
-  color: var(--surface-raised);
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 .summary-grid {
   display: grid;

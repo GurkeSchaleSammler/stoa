@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CollectionService } from '../domains/collection/data/application/collection.service';
 import { CollectionSummary } from '../domains/collection/data/models/collection-summary';
 import { SessionContextStore } from '../shared/application/session-context.store';
+import { LanguageService } from '../shared/application/language-service';
 import { AppIconComponent } from '../shared/ui/app-icon';
 import { DashboardPreferencesStore } from './dashboard-preferences.store';
 
@@ -18,6 +19,7 @@ import { DashboardPreferencesStore } from './dashboard-preferences.store';
 export class HomeComponent {
   protected readonly collections = inject(CollectionService);
   protected readonly session = inject(SessionContextStore);
+  private readonly language = inject(LanguageService);
   private readonly preferences = inject(DashboardPreferencesStore);
 
   readonly recentCollections = computed(() =>
@@ -38,8 +40,10 @@ export class HomeComponent {
   );
 
   constructor() {
-    const userId = this.session.userId();
-    if (userId) this.preferences.load(userId);
+    effect(() => {
+      const userId = this.session.userId();
+      if (userId) this.preferences.load(userId);
+    });
   }
 
   isFavorite(collectionId: string): boolean {
@@ -48,5 +52,11 @@ export class HomeComponent {
 
   toggleFavorite(collection: CollectionSummary): void {
     this.preferences.toggle(collection.id);
+  }
+
+  formatDate(value: string): string {
+    return new Intl.DateTimeFormat(this.language.currentLanguageKey(), {
+      dateStyle: 'medium',
+    }).format(new Date(value));
   }
 }
