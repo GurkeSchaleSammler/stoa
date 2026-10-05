@@ -143,6 +143,8 @@
     "inviteLead": "Jede Person mit dem Link kann als Leserin oder Leser beitreten.",
     "revokeLink": "Link widerrufen",
     "privateCollection": "Die Sammlung ist privat.",
+    "publicCollection": "Die Sammlung ist öffentlich.",
+    "publicCollectionHint": "Den öffentlichen Link verwaltest du in den Sammlungseinstellungen.",
     "createInviteLink": "Einladungslink erstellen",
     "invitation": "Einladung",
     "checkingInvite": "Einladung wird geprüft …",

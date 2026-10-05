@@ -143,6 +143,8 @@
     "inviteLead": "Chiunque abbia il link può partecipare con accesso in lettura.",
     "revokeLink": "Revoca link",
     "privateCollection": "La raccolta è privata.",
+    "publicCollection": "La raccolta è pubblica.",
+    "publicCollectionHint": "Gestisci il link pubblico nelle impostazioni della raccolta.",
     "createInviteLink": "Crea link di invito",
     "invitation": "Invito",
     "checkingInvite": "Verifica dell’invito …",

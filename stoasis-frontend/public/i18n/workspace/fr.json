@@ -143,6 +143,8 @@
     "inviteLead": "Toute personne disposant du lien peut rejoindre la collection en lecture.",
     "revokeLink": "Révoquer le lien",
     "privateCollection": "La collection est privée.",
+    "publicCollection": "La collection est publique.",
+    "publicCollectionHint": "Gérez le lien public dans les paramètres de la collection.",
     "createInviteLink": "Créer un lien d’invitation",
     "invitation": "Invitation",
     "checkingInvite": "Vérification de l’invitation …",

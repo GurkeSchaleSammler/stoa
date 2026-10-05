@@ -143,6 +143,8 @@
     "inviteLead": "Anyone with the link can join as a viewer.",
     "revokeLink": "Revoke link",
     "privateCollection": "The collection is private.",
+    "publicCollection": "The collection is public.",
+    "publicCollectionHint": "Manage the public link in the collection settings.",
     "createInviteLink": "Create invitation link",
     "invitation": "Invitation",
     "checkingInvite": "Checking invitation …",
