@@ -15,12 +15,19 @@
     </div>
   </header>
 
-  @if (collections.isLoading() && collections.collections().length === 0) {
+  @if (dashboard.status() === 'loading') {
     <section class="dashboard-loading" aria-live="polite">
       <p>{{ 'home.dashboardLoading' | translate }}</p>
       <div class="skeleton-grid" aria-hidden="true"><span></span><span></span><span></span></div>
     </section>
-  } @else if (collections.collections().length === 0) {
+  } @else if (dashboard.status() === 'error') {
+    <section class="empty-dashboard" role="alert">
+      <span><ui-app-icon name="warning" /></span>
+      <p class="eyebrow">{{ 'home.dashboardErrorEyebrow' | translate }}</p>
+      <h2>{{ 'home.dashboardErrorTitle' | translate }}</h2>
+      <p>{{ 'home.dashboardErrorText' | translate }}</p>
+    </section>
+  } @else if (dashboard.collections().length === 0) {
     <section class="empty-dashboard">
       <span><ui-app-icon name="grid" /></span>
       <p class="eyebrow">{{ 'home.dashboardEmptyEyebrow' | translate }}</p>
@@ -34,7 +41,7 @@
     <section class="summary-grid" [attr.aria-label]="'home.dashboardSummary' | translate">
       <article>
         <small>{{ 'home.dashboardBoards' | translate }}</small
-        ><strong>{{ collections.collections().length }}</strong>
+        ><strong>{{ dashboard.collections().length }}</strong>
       </article>
       <article>
         <small>{{ 'home.dashboardPins' | translate }}</small

@@ -100,7 +100,10 @@
     "dashboardRemoveFavorite": "{{name}} aus Favoriten entfernen",
     "dashboardEmptyEyebrow": "Dein erster Schritt",
     "dashboardEmptyTitle": "Noch ist hier alles ruhig.",
-    "dashboardEmptyText": "Erstelle deine erste Sammlung und halte darin Links, Gedanken und Bilder fest."
+    "dashboardEmptyText": "Erstelle deine erste Sammlung und halte darin Links, Gedanken und Bilder fest.",
+    "dashboardErrorEyebrow": "Nicht erreichbar",
+    "dashboardErrorTitle": "Dein Überblick konnte nicht geladen werden.",
+    "dashboardErrorText": "Versuche es in einem Moment erneut."
   },
   "auth": {
     "tagline": "Dein kollaboratives Pinboard",

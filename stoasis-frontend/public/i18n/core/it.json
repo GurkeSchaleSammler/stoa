@@ -100,7 +100,10 @@
     "dashboardRemoveFavorite": "Rimuovi {{name}} dai preferiti",
     "dashboardEmptyEyebrow": "Il tuo primo passo",
     "dashboardEmptyTitle": "Qui è ancora tutto tranquillo.",
-    "dashboardEmptyText": "Crea la prima raccolta per riunire link, pensieri e immagini."
+    "dashboardEmptyText": "Crea la prima raccolta per riunire link, pensieri e immagini.",
+    "dashboardErrorEyebrow": "Non disponibile",
+    "dashboardErrorTitle": "Impossibile caricare la panoramica.",
+    "dashboardErrorText": "Riprova tra poco."
   },
   "auth": {
     "tagline": "La tua bacheca collaborativa",

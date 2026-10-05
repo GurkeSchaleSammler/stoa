@@ -100,7 +100,10 @@
     "dashboardRemoveFavorite": "Remove {{name}} from favorites",
     "dashboardEmptyEyebrow": "Your first step",
     "dashboardEmptyTitle": "It is still quiet here.",
-    "dashboardEmptyText": "Create your first collection and keep links, thoughts, and images together."
+    "dashboardEmptyText": "Create your first collection and keep links, thoughts, and images together.",
+    "dashboardErrorEyebrow": "Unavailable",
+    "dashboardErrorTitle": "Your overview could not be loaded.",
+    "dashboardErrorText": "Please try again in a moment."
   },
   "auth": {
     "tagline": "Your collaborative pinboard",

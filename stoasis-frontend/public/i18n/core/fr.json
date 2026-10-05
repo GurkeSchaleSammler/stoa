@@ -100,7 +100,10 @@
     "dashboardRemoveFavorite": "Retirer {{name}} des favoris",
     "dashboardEmptyEyebrow": "Votre premier pas",
     "dashboardEmptyTitle": "Tout est encore calme ici.",
-    "dashboardEmptyText": "Créez votre première collection pour réunir liens, idées et images."
+    "dashboardEmptyText": "Créez votre première collection pour réunir liens, idées et images.",
+    "dashboardErrorEyebrow": "Indisponible",
+    "dashboardErrorTitle": "Votre aperçu n’a pas pu être chargé.",
+    "dashboardErrorText": "Veuillez réessayer dans un instant."
   },
   "auth": {
     "tagline": "Votre tableau collaboratif",
