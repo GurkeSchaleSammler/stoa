@@ -10,11 +10,11 @@ import org.springframework.test.web.servlet.post
 /** Verifies anonymous read-only access for public and tokenized boards. */
 class PublicBoardFeatureTests : FeatureTestSupport() {
     @Test
-    fun `private board rejects anonymous viewers`() {
+    fun `private board is indistinguishable from a missing board for anonymous viewers`() {
         val id = board(user())
 
-        mvc.get("/api/public/collections/$id").andExpect { status { isForbidden() } }
-        mvc.get("/api/public/collections/$id/pins").andExpect { status { isForbidden() } }
+        mvc.get("/api/public/collections/$id").andExpect { status { isNotFound() } }
+        mvc.get("/api/public/collections/$id/pins").andExpect { status { isNotFound() } }
     }
 
     @Test
@@ -46,9 +46,9 @@ class PublicBoardFeatureTests : FeatureTestSupport() {
         collections.setVisibility(collection, Visibility.link)
         val token = collection.inviteToken!!
 
-        mvc.get("/api/public/collections/$id").andExpect { status { isForbidden() } }
+        mvc.get("/api/public/collections/$id").andExpect { status { isNotFound() } }
         mvc.get("/api/public/collections/$id") { param("token", "wrong") }
-            .andExpect { status { isForbidden() } }
+            .andExpect { status { isNotFound() } }
         mvc.get("/api/public/collections/$id") { param("token", token) }.andExpect {
             status { isOk() }
             jsonPath("$.visibility", `is`("link"))

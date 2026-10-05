@@ -172,7 +172,9 @@ class CollectionService(
         val isMember = viewerId != null && roleOf(collection, viewerId) != null
         val isPublic = collection.visibility == Visibility.public
         val hasLink = collection.visibility == Visibility.link && token != null && token == collection.inviteToken
-        if (!isMember && !isPublic && !hasLink) forbidden()
+        if (!isMember && !isPublic && !hasLink) {
+            throw ApiException(HttpStatus.NOT_FOUND, "Sammlung nicht gefunden.")
+        }
     }
 
     @Transactional(readOnly = true)

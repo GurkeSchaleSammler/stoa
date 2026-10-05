@@ -1,26 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../shared/ui/app-icon';
-import { PinDetailComponent } from '../board/ui/pin-detail';
-import { PinCardComponent } from '../board/ui/pin-card';
-import { ImageFullViewComponent } from '../board/ui/image-full-view';
-import { ImageFullView } from '../board/ui/models/image-full-view';
+import { PublicBoardPresentationComponent } from '../board/public-api';
 import { PublicBoardStore } from './data/application/public-board.store';
-import { Pin } from '../../shared/models/pin';
-import { PinEditValue } from '../board/data/models/pin-edit-value';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-public-board-page',
   standalone: true,
-  imports: [
-    RouterLink,
-    TranslatePipe,
-    AppIconComponent,
-    PinCardComponent,
-    PinDetailComponent,
-    ImageFullViewComponent,
-  ],
+  imports: [RouterLink, TranslatePipe, AppIconComponent, PublicBoardPresentationComponent],
   providers: [PublicBoardStore],
   template: `
     <main class="public-board-page">
@@ -38,9 +28,7 @@ import { PinEditValue } from '../board/data/models/pin-edit-value';
         </section>
       } @else if (board.status() !== 'ready') {
         <section class="public-state" role="alert">
-          <span
-            ><ui-app-icon [name]="board.status() === 'forbidden' ? 'eye-off' : 'warning'"
-          /></span>
+          <span><ui-app-icon name="warning" /></span>
           <h1>{{ errorTitleKey() | translate }}</h1>
           <p>{{ errorTextKey() | translate }}</p>
           <a routerLink="/auth/login">{{ 'auth.login' | translate }}</a>
@@ -66,16 +54,10 @@ import { PinEditValue } from '../board/data/models/pin-edit-value';
         </header>
 
         @if (board.pins().length) {
-          <section class="public-pin-grid" [attr.aria-label]="'common.pins' | translate">
-            @for (pin of board.pins(); track pin.id) {
-              <ui-pin-card
-                [pin]="pin"
-                [selected]="selectedPin()?.id === pin.id"
-                (onOpen)="selectPin($event)"
-                (onImageFullView)="imageFullView.set($event)"
-              />
-            }
-          </section>
+          <board-public-presentation
+            [pins]="board.pins()"
+            [attr.aria-label]="'common.pins' | translate"
+          />
         } @else {
           <section class="public-state compact">
             <span><ui-app-icon name="grid" /></span>
@@ -84,19 +66,6 @@ import { PinEditValue } from '../board/data/models/pin-edit-value';
         }
       }
     </main>
-
-    @if (selectedPin(); as pin) {
-      <ui-pin-detail
-        [pin]="pin"
-        [canEdit]="false"
-        [canComment]="false"
-        [editValue]="emptyEditValue"
-        (onClose)="selectedPin.set(null)"
-      />
-    }
-    @if (imageFullView(); as image) {
-      <ui-image-full-view [image]="image" (close)="imageFullView.set(null)" />
-    }
   `,
   styleUrl: './public-board-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -104,37 +73,25 @@ import { PinEditValue } from '../board/data/models/pin-edit-value';
 export class PublicBoardPageComponent {
   protected readonly board = inject(PublicBoardStore);
   private readonly route = inject(ActivatedRoute);
-  readonly selectedPin = signal<Pin | null>(null);
-  readonly imageFullView = signal<ImageFullView | null>(null);
-  readonly emptyEditValue: PinEditValue = {
-    title: '',
-    description: '',
-    content: '',
-    color: '',
-    pinColor: null,
-    caption: '',
-    tags: '',
-  };
+  private readonly collectionId = toSignal(
+    this.route.paramMap.pipe(map((params) => params.get('id') ?? '')),
+    { initialValue: this.route.snapshot.paramMap.get('id') ?? '' },
+  );
+  private readonly shareToken = toSignal(
+    this.route.queryParamMap.pipe(map((params) => params.get('token') ?? undefined)),
+    { initialValue: this.route.snapshot.queryParamMap.get('token') ?? undefined },
+  );
 
   constructor() {
-    this.board.load(
-      this.route.snapshot.paramMap.get('id') ?? '',
-      this.route.snapshot.queryParamMap.get('token') ?? undefined,
-    );
-  }
-
-  selectPin(id: string): void {
-    this.selectedPin.set(this.board.pins().find((pin) => pin.id === id) ?? null);
+    effect(() => this.board.load(this.collectionId(), this.shareToken()));
   }
 
   errorTitleKey(): string {
-    if (this.board.status() === 'forbidden') return 'collection.publicForbiddenTitle';
     if (this.board.status() === 'not-found') return 'collection.publicNotFoundTitle';
     return 'collection.publicErrorTitle';
   }
 
   errorTextKey(): string {
-    if (this.board.status() === 'forbidden') return 'collection.publicForbiddenText';
     if (this.board.status() === 'not-found') return 'collection.publicNotFoundText';
     return 'collection.publicErrorText';
   }

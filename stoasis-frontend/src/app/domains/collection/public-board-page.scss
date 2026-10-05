@@ -29,7 +29,7 @@
   height: 30px;
   padding: 4px;
   border-radius: var(--radius-control);
-  background: #16120d;
+  background: var(--text);
 }
 .public-nav > span {
   display: flex;
@@ -82,18 +82,6 @@
   border-radius: var(--radius-control);
   color: var(--muted);
   font-size: 0.75rem;
-}
-.public-pin-grid {
-  display: grid;
-  width: min(1120px, calc(100% - 40px));
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  align-items: start;
-  gap: 14px;
-  margin: 0 auto;
-  padding: 28px 0 72px;
-}
-.public-pin-grid ui-pin-card {
-  min-width: 0;
 }
 .public-state {
   display: flex;
@@ -156,13 +144,9 @@
     grid-column: 2;
     justify-self: start;
   }
-  .public-pin-grid {
-    width: calc(100% - 28px);
-    grid-template-columns: 1fr;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-spinner {
-    animation-duration: 2s;
+    animation: none;
   }
 }

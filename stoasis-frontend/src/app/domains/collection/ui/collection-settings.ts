@@ -46,7 +46,7 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
             }
           </div>
         </fieldset>
-        @if (item.visibility !== 'private') {
+        @if (item.visibility !== 'private' && item.currentUserRole === 'owner') {
           <section class="share-panel" aria-labelledby="share-panel-title">
             <div>
               <strong id="share-panel-title">{{ 'collection.shareBoard' | translate }}</strong>
