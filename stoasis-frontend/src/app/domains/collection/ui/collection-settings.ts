@@ -46,6 +46,39 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
             }
           </div>
         </fieldset>
+        @if (item.visibility !== 'private' && item.currentUserRole === 'owner') {
+          <section class="share-panel" aria-labelledby="share-panel-title">
+            <div>
+              <strong id="share-panel-title">{{ 'collection.shareBoard' | translate }}</strong>
+              <p>
+                {{
+                  (item.visibility === 'public'
+                    ? 'collection.publicShareHint'
+                    : 'collection.linkShareHint'
+                  ) | translate
+                }}
+              </p>
+            </div>
+            @if (shareUrl()) {
+              <label class="share-url">
+                <span>{{ 'collection.shareUrl' | translate }}</span>
+                <input [value]="shareUrl()" readonly />
+              </label>
+              <div class="share-actions">
+                <button type="button" class="button secondary" (click)="copyShareRequested.emit()">
+                  <ui-app-icon name="copy" /> {{ 'common.copy' | translate }}
+                </button>
+                <button type="button" class="button secondary" (click)="openShareRequested.emit()">
+                  <ui-app-icon name="external" /> {{ 'collection.openSharedView' | translate }}
+                </button>
+              </div>
+            } @else {
+              <p class="share-pending">
+                <ui-app-icon name="warning" /> {{ 'collection.saveToShare' | translate }}
+              </p>
+            }
+          </section>
+        }
         <fieldset>
           <legend>{{ 'collection.visibility' | translate }}</legend>
           <div class="segmented wide">
@@ -106,7 +139,7 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
 })
 export class CollectionSettingsComponent {
   readonly collection = input<CollectionDetail | null>(null);
-  readonly inviteUrl = input('');
+  readonly shareUrl = input('');
   readonly canSave = input(false);
   readonly isSaving = input(false);
   readonly error = input<string | null>(null);
@@ -115,7 +148,8 @@ export class CollectionSettingsComponent {
   readonly onSave = output<void>();
   readonly onDelete = output<void>();
   readonly onCancel = output<void>();
-  readonly onCopyInvite = output<void>();
+  readonly copyShareRequested = output<void>();
+  readonly openShareRequested = output<void>();
   readonly pinTypes: { value: PinType; labelKey: string }[] = [
     { value: 'link', labelKey: 'pin.types.links' },
     { value: 'note', labelKey: 'pin.types.notes' },

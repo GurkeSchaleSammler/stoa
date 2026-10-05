@@ -203,3 +203,37 @@
 .segmented.wide button {
   flex: 1;
 }
+.share-panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  background: var(--surface-sunken);
+}
+.share-panel strong {
+  font-family: var(--font-display);
+}
+.share-panel p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+.share-url {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.share-pending {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}

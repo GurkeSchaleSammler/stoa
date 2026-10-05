@@ -223,18 +223,24 @@ import { ImageFullView } from './models/image-full-view';
               } @empty {
                 <p class="helper">{{ 'pin.noComments' | translate }}</p>
               }
-              <div class="comment-form">
-                <label class="sr-only" for="new-comment">{{ 'pin.comment' | translate }}</label
-                ><textarea
-                  id="new-comment"
-                  rows="2"
-                  [placeholder]="'pin.replyPlaceholder' | translate"
-                  [(ngModel)]="commentDraft"
-                ></textarea
-                ><button type="button" [disabled]="!commentDraft.trim()" (click)="submitComment()">
-                  <ui-app-icon name="send" /> {{ 'common.send' | translate }}
-                </button>
-              </div>
+              @if (canComment()) {
+                <div class="comment-form">
+                  <label class="sr-only" for="new-comment">{{ 'pin.comment' | translate }}</label
+                  ><textarea
+                    id="new-comment"
+                    rows="2"
+                    [placeholder]="'pin.replyPlaceholder' | translate"
+                    [(ngModel)]="commentDraft"
+                  ></textarea
+                  ><button
+                    type="button"
+                    [disabled]="!commentDraft.trim()"
+                    (click)="submitComment()"
+                  >
+                    <ui-app-icon name="send" /> {{ 'common.send' | translate }}
+                  </button>
+                </div>
+              }
             </section>
           </div>
         </aside>
@@ -250,6 +256,7 @@ import { ImageFullView } from './models/image-full-view';
 export class PinDetailComponent {
   readonly pin = input<Pin | null>(null);
   readonly canEdit = input(false);
+  readonly canComment = input(true);
   readonly editMode = input(false);
   readonly editValue = input.required<PinEditValue>();
   readonly allowCustomColors = input(false);

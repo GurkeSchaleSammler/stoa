@@ -25,6 +25,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'shared/collections/:id',
+    loadComponent: () =>
+      import('./domains/collection/public-board-page').then((m) => m.PublicBoardPageComponent),
+  },
+  {
     path: 'stoaql-docs',
     loadChildren: () =>
       import('./domains/stoaql-docs/stoaql-docs.routes').then((m) => m.STOAQL_DOCS_ROUTES),

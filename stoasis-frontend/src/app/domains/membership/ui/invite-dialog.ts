@@ -58,6 +58,14 @@ import { InviteInfo } from '../data/models/invite-info';
               >
                 {{ 'membership.revokeLink' | translate }}
               </button>
+            } @else if (data.visibility === 'public') {
+              <div class="private-state public-state">
+                <span><ui-app-icon name="eye" /></span>
+                <div>
+                  <strong>{{ 'membership.publicCollection' | translate }}</strong>
+                  <p>{{ 'membership.publicCollectionHint' | translate }}</p>
+                </div>
+              </div>
             } @else {
               <div class="private-state">
                 <span><ui-app-icon name="warning" /></span

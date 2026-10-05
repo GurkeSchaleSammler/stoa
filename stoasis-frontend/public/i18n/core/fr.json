@@ -142,6 +142,7 @@
   },
   "errors": {
     "unexpected": "Une erreur inattendue s’est produite.",
+    "copyShareLink": "Impossible de copier le lien de partage.",
     "collection": "Impossible de charger la collection.",
     "board": "Impossible de mettre à jour le tableau.",
     "linkPreview": "Impossible de charger l’aperçu. Le lien peut tout de même être enregistré.",
@@ -169,6 +170,7 @@
     "stickerCreated": "Sticker ajouté.",
     "collectionCreated": "Collection créée.",
     "collectionUpdated": "Collection mise à jour.",
+    "shareLinkCopied": "Lien de partage copié.",
     "collectionDeleted": "Collection supprimée.",
     "collectionJoined": "Vous avez rejoint la collection.",
     "pinCreated": "Pin enregistré.",
