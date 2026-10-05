@@ -12,7 +12,9 @@ export class PublicBoardStore {
   private readonly destroyRef = inject(DestroyRef);
   private readonly collectionState = signal<PublicCollection | null>(null);
   private readonly pinState = signal<Pin[]>([]);
-  private readonly statusState = signal<'loading' | 'ready' | 'not-found' | 'error'>('loading');
+  private readonly statusState = signal<'loading' | 'ready' | 'forbidden' | 'not-found' | 'error'>(
+    'loading',
+  );
   private readonly requests = new Subject<{ id: string; token?: string }>();
 
   readonly collection = this.collectionState.asReadonly();
@@ -32,8 +34,11 @@ export class PublicBoardStore {
             map((result) => ({ kind: 'ready' as const, result })),
             catchError((error: HttpErrorResponse) =>
               of({
-                kind: (error.status === 403 || error.status === 404 ? 'not-found' : 'error') as
-                  'not-found' | 'error',
+                kind: (error.status === 403
+                  ? 'forbidden'
+                  : error.status === 404
+                    ? 'not-found'
+                    : 'error') as 'forbidden' | 'not-found' | 'error',
               }),
             ),
           ),

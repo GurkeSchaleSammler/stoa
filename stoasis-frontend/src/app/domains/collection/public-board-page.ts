@@ -87,11 +87,13 @@ export class PublicBoardPageComponent {
   }
 
   errorTitleKey(): string {
+    if (this.board.status() === 'forbidden') return 'collection.publicForbiddenTitle';
     if (this.board.status() === 'not-found') return 'collection.publicNotFoundTitle';
     return 'collection.publicErrorTitle';
   }
 
   errorTextKey(): string {
+    if (this.board.status() === 'forbidden') return 'collection.publicForbiddenText';
     if (this.board.status() === 'not-found') return 'collection.publicNotFoundText';
     return 'collection.publicErrorText';
   }
