@@ -46,5 +46,9 @@ class UserFlagFeatureTests : FeatureTestSupport() {
             .andExpect(status().isBadRequest)
         mvc.perform(put("/api/me/flags/tutorial.test.v1").session(sessionFor(user())).contentType(MediaType.APPLICATION_JSON).content("""{"outcome":"invalid"}"""))
             .andExpect(status().isBadRequest)
+        mvc.perform(put("/api/me/flags/tutorial.test.v1").session(sessionFor(user())).contentType(MediaType.APPLICATION_JSON).content("{}"))
+            .andExpect(status().isBadRequest)
+        mvc.perform(put("/api/me/flags/tutorial.test.v1").session(sessionFor(user())).contentType(MediaType.APPLICATION_JSON).content("""{"outcome":null}"""))
+            .andExpect(status().isBadRequest)
     }
 }

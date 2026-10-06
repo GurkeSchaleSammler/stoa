@@ -3,12 +3,13 @@ package com.stoasis.backend.domains.auth.api
 import com.stoasis.backend.domains.auth.application.UserFlagService
 import com.stoasis.backend.shared.security.CurrentUser
 import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 data class AcknowledgeFlagRequest(
-    @field:Pattern(regexp = "completed|skipped") val outcome: String,
+    @field:NotBlank @field:Pattern(regexp = "completed|skipped") val outcome: String,
 )
 
 @RestController

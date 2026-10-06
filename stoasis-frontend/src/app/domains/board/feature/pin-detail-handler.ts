@@ -60,7 +60,8 @@ export class PinDetailHandlerComponent {
     const current = this.draft();
     const hasPinColorDraft = Object.prototype.hasOwnProperty.call(current, 'pinColor');
     return {
-      title: current.title ?? (pin.type === 'link' ? pin.data.title : ''),
+      title:
+        current.title ?? (pin.type === 'link' || pin.type === 'note' ? (pin.data.title ?? '') : ''),
       description: current.description ?? (pin.type === 'link' ? (pin.data.description ?? '') : ''),
       content: current.content ?? (pin.type === 'note' ? pin.data.content : ''),
       color: current.color ?? (pin.type === 'note' ? pin.data.color : 'white'),
@@ -90,7 +91,7 @@ export class PinDetailHandlerComponent {
         pin.type === 'link'
           ? { title: values.title.trim(), description: values.description.trim() || null }
           : pin.type === 'note'
-            ? { content: values.content.trim(), color: values.color }
+            ? { title: values.title.trim(), content: values.content.trim(), color: values.color }
             : { caption: values.caption.trim() || null },
     };
     this.pins.updatePin(this.collectionId(), pin.id, request, () => {

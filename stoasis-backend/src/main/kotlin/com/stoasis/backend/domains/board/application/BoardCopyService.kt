@@ -32,24 +32,31 @@ class BoardCopyService(
         val result = collections.create(userId, CreateCollectionRequest(name, source.emoji, source.allowedTypes))
         val target = collections.get(result.id)
         val pinIds = pins.copyAll(sourceId, target.id, userId)
-        fun pin(id: String) = support.getPin(target.id, pinIds.getValue(id))
         stacks.findAllByCollectionIdOrderByLayer(sourceId).forEach { old ->
+            val copiedChildren = old.children.mapNotNull { child ->
+                pinIds[child.pin!!.id]?.let { copiedId ->
+                    PinStackChildEntity(
+                        pin = support.getPin(target.id, copiedId), position = child.position,
+                        originalX = child.originalX, originalY = child.originalY, originalLayer = child.originalLayer,
+                    )
+                }
+            }
+            if (copiedChildren.size < 2) return@forEach
             val stack = PinStackEntity(
                 id = "stack-${ids.newId()}", collection = target, gridX = old.gridX, gridY = old.gridY,
                 heightClips = old.heightClips, layer = old.layer, expanded = old.expanded,
             )
-            stack.children.addAll(old.children.map { child ->
-                PinStackChildEntity(
-                    stack = stack, pin = pin(child.pin!!.id), position = child.position,
-                    originalX = child.originalX, originalY = child.originalY, originalLayer = child.originalLayer,
-                )
-            })
+            copiedChildren.forEach { it.stack = stack }
+            stack.children.addAll(copiedChildren)
             stacks.save(stack)
         }
         connectors.findAllByCollectionId(sourceId).forEach { old ->
+            val sourcePinId = pinIds[old.sourcePin!!.id] ?: return@forEach
+            val targetPinId = pinIds[old.targetPin!!.id] ?: return@forEach
             connectors.save(BoardConnectorEntity(
                 id = "connector-${ids.newId()}", collection = target,
-                sourcePin = pin(old.sourcePin!!.id), targetPin = pin(old.targetPin!!.id), colorVariant = old.colorVariant,
+                sourcePin = support.getPin(target.id, sourcePinId),
+                targetPin = support.getPin(target.id, targetPinId), colorVariant = old.colorVariant,
             ))
         }
         zones.findAllByCollectionId(sourceId).forEach { old ->

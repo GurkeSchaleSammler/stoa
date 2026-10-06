@@ -93,6 +93,34 @@ class BoardReuseFeatureTests : FeatureTestSupport() {
     }
 
     @Test
+    fun `board duplication omits skill pins and graph elements that reference them`() {
+        val owner = user()
+        val source = board(owner)
+        mvc.perform(patch("/api/collections/$source").session(sessionFor(owner))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{"allowedTypes":["note","skill"]}"""))
+            .andExpect(status().isOk)
+        val note = create("/api/collections/$source/pins", owner,
+            """{"type":"note","data":{"content":"Keep me"}}""")
+        val skill = create("/api/collections/$source/pins", owner,
+            """{"type":"skill","data":{"skillName":"Do not copy","level":"BEGINNER"}}""")
+        create("/api/collections/$source/board-elements/stacks", owner,
+            """{"sourcePinId":"${note["id"].asString()}","targetPinId":"${skill["id"].asString()}"}""")
+        create("/api/collections/$source/board-elements/connectors", owner,
+            """{"sourcePinId":"${note["id"].asString()}","targetPinId":"${skill["id"].asString()}"}""")
+
+        val duplicated = create("/api/collections/$source/duplicate", owner, """{"name":"Filtered copy"}""")
+        val target = duplicated["id"].asString()
+        val copies = pins.findAllByCollectionIdOrderBySortOrder(target)
+        assertEquals(1, copies.size)
+        assertEquals("Keep me", copies.single().content)
+        val elements = mapper.readTree(mvc.perform(get("/api/collections/$target/board-elements").session(sessionFor(owner)))
+            .andExpect(status().isOk).andReturn().response.contentAsString)
+        assertEquals(0, elements["stacks"].size())
+        assertEquals(0, elements["connectors"].size())
+    }
+
+    @Test
     fun `invalid templates and unauthorized duplication do not create partial boards`() {
         val owner = user()
         val source = board(owner)

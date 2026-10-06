@@ -1,6 +1,7 @@
 package com.stoasis.backend.domains.pin.application
 
 import com.stoasis.backend.domains.collection.application.CollectionService
+import com.stoasis.backend.domains.collection.model.PinType
 import com.stoasis.backend.domains.pin.api.PinDto
 import com.stoasis.backend.domains.pin.data.PinEntity
 import com.stoasis.backend.domains.pin.data.PinRepository
@@ -52,6 +53,7 @@ class PinCopyService(
             throw ApiException(HttpStatus.CONFLICT, "Das Zielboard muss leer sein.")
         }
         val originals = pins.findAllByCollectionIdOrderBySortOrder(sourceId)
+            .filterNot { it.type == PinType.skill }
         if (originals.size > 1000) throw ApiException(HttpStatus.CONFLICT, "Zum Duplizieren sind maximal 1000 Kacheln erlaubt.")
         return originals.associate { original ->
             val copy = clone(original, targetId, userId)
@@ -74,7 +76,7 @@ class PinCopyService(
             caption = original.caption, imageWidth = original.imageWidth, imageHeight = original.imageHeight,
             tags = original.tags.toMutableSet(),
         ).also {
-            if (original.type == com.stoasis.backend.domains.collection.model.PinType.skill) {
+            if (original.type == PinType.skill) {
                 throw ApiException(HttpStatus.CONFLICT, "Skill-Kacheln gehören zum Profil und werden nicht kopiert.")
             }
         }

@@ -83,6 +83,12 @@ import { ImageFullView } from './models/image-full-view';
                 }
                 @case ('note') {
                   <label class="dialog-field"
+                    ><span>{{ 'common.title' | translate }}</span
+                    ><input
+                      [ngModel]="editValue().title"
+                      (ngModelChange)="onDraftChange.emit({ title: $event })"
+                  /></label>
+                  <label class="dialog-field"
                     ><span>{{ 'pin.note' | translate }}</span
                     ><textarea
                       rows="10"
