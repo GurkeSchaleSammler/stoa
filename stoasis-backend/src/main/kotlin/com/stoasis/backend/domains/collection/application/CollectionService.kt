@@ -20,6 +20,7 @@ import com.stoasis.backend.shared.web.ApiException
 import com.stoasis.backend.domains.membership.application.CollaborationPolicy
 import com.stoasis.backend.domains.plan.application.PlanService
 import com.stoasis.backend.shared.id.IdGenerator
+import java.time.Clock
 import java.time.Instant
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -35,6 +36,7 @@ class CollectionService(
     private val collaboration: CollaborationPolicy,
     private val plans: PlanService,
     private val idGenerator: IdGenerator,
+    private val clock: Clock,
 ) {
     @Transactional(readOnly = true)
     fun list(userId: String, filter: String): List<CollectionSummary> =
@@ -132,10 +134,11 @@ class CollectionService(
         return CollectionIdResponse(collection.id)
     }
 
+    @Transactional
     fun touch(id: String, userId: String) {
         val collection = get(id)
         requireEdit(collection, userId)
-        collection.updatedAt = Instant.now()
+        collection.updatedAt = clock.instant()
     }
 
     fun lock(id: String): CollectionEntity = collections.lockById(id)
