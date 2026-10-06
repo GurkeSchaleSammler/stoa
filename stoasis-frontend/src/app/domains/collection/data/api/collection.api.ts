@@ -7,6 +7,7 @@ import { CollectionFilter } from '../models/collection-filter';
 import { CollectionDetail } from '../models/collection-detail';
 import { CreateCollectionRequest } from '../models/create-collection-request';
 import { UpdateCollectionRequest } from '../models/update-collection-request';
+import { BoardTemplate } from '../models/board-template';
 
 @Injectable({ providedIn: 'root' })
 export class CollectionApi {
@@ -25,6 +26,18 @@ export class CollectionApi {
 
   create(body: CreateCollectionRequest): Observable<CollectionDetail> {
     return this.http.post<CollectionDetail>(this.base, body);
+  }
+
+  templates(language: string): Observable<BoardTemplate[]> {
+    return this.http.get<BoardTemplate[]>(`${this.base}/templates`, { params: { language } });
+  }
+
+  createTemplate(body: CreateCollectionRequest, language: string): Observable<CollectionDetail> {
+    return this.http.post<CollectionDetail>(`${this.base}/from-template`, { ...body, language });
+  }
+
+  duplicate(id: string, name: string): Observable<CollectionDetail> {
+    return this.http.post<CollectionDetail>(`${this.base}/${id}/duplicate`, { name });
   }
 
   update(id: string, body: UpdateCollectionRequest): Observable<CollectionDetail> {

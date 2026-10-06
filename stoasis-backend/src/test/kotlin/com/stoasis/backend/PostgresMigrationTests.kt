@@ -20,7 +20,7 @@ class PostgresMigrationTests {
         val flywayToPreviousRelease = Flyway.configure()
             .dataSource(postgres.jdbcUrl, postgres.username, postgres.password)
             .locations("classpath:db/migration")
-            .target(MigrationVersion.fromVersion("14"))
+            .target(MigrationVersion.fromVersion("15"))
             .load()
         flywayToPreviousRelease.migrate()
 
@@ -55,11 +55,17 @@ class PostgresMigrationTests {
             Int::class.java,
         )
 
-        assertEquals("15", latestVersion)
+        assertEquals("16", latestVersion)
         assertEquals(1, result.migrationsExecuted)
         assertTrue(foreignKeyCount != null && foreignKeyCount > 0, "Expected relational integrity constraints")
         assertEquals(2, sessionTableCount)
         assertEquals(1, preservedUsers)
+        val flagSql = "INSERT INTO user_flags (user_id, flag_key, outcome, seen_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP) ON CONFLICT DO NOTHING"
+        jdbc.update(flagSql, "user-preserved", "tutorial.test.v1", "skipped")
+        jdbc.update(flagSql, "user-preserved", "tutorial.test.v1", "completed")
+        assertEquals("skipped", jdbc.queryForObject("SELECT outcome FROM user_flags WHERE user_id = 'user-preserved'", String::class.java))
+        jdbc.update("DELETE FROM users WHERE id = 'user-preserved'")
+        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM user_flags", Int::class.java))
     }
 
     companion object {

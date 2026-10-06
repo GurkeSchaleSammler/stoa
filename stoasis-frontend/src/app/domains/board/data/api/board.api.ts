@@ -42,6 +42,13 @@ export class BoardApi {
     return this.http.post<Pin>(`${API_URL}/collections/${collectionId}/pins`, body);
   }
 
+  copyPin(collectionId: string, sourceCollectionId: string, pinId: string): Observable<Pin> {
+    return this.http.post<Pin>(`${API_URL}/collections/${collectionId}/pins/copy`, {
+      sourceCollectionId,
+      pinId,
+    });
+  }
+
   update(collectionId: string, pinId: string, body: UpdatePinRequest): Observable<Pin> {
     return this.http.patch<Pin>(`${API_URL}/collections/${collectionId}/pins/${pinId}`, body);
   }

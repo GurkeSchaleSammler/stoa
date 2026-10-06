@@ -1,4 +1,71 @@
 {
+  "templates": {
+    "choose": "Startpunkt wählen",
+    "lead": "Ein ruhiger Rahmen für deine Inhalte. Alles bleibt verschiebbar und editierbar.",
+    "blank": "Leeres Board",
+    "blankHint": "Dein freier Start.",
+    "loading": "Vorlagen werden geladen …",
+    "loadError": "Vorlagen sind gerade nicht verfügbar. Du kannst mit einem leeren Board starten.",
+    "editableHint": "Die Vorlage enthält editierbare Notizen, farbige Zonen, Überschriften und einen dezenten Sticker.",
+    "duplicate": "Board duplizieren",
+    "duplicateHint": "Inhalte, Layout und Verzierungen werden übernommen. Die Kopie ist privat; Mitglieder, Einladungen und Kommentare werden nicht übernommen.",
+    "createCopy": "Private Kopie erstellen",
+    "copyName": "{{name}} – Kopie",
+    "duplicated": "Board dupliziert.",
+    "newFromTemplate": "Neues Board aus Vorlage",
+    "paste": "Kachel einfügen",
+    "clipboard": "Kopiert: {{name}}",
+    "copyPin": "Kachel kopieren",
+    "duplicatePin": "Kachel duplizieren",
+    "pinCopied": "Kachel kopiert. Öffne ein Board und wähle Einfügen.",
+    "pinPasted": "Kachel eingefügt.",
+    "project": {
+      "title": "Projekt",
+      "hint": "Ideen → In Arbeit → Erledigt."
+    },
+    "week": {
+      "title": "Meine Woche",
+      "hint": "Fünf Tage, ein klarer Überblick."
+    },
+    "research": {
+      "title": "Recherche",
+      "hint": "Fragen, Quellen und Erkenntnisse."
+    },
+    "moodboard": {
+      "title": "Moodboard",
+      "hint": "Stimmung, Inspiration und Details."
+    },
+    "learning": {
+      "title": "Lernreise",
+      "hint": "Entdecken, üben, verstehen."
+    },
+    "tour": {
+      "title": "Dein Board hat einen Startpunkt",
+      "introduction": "Mit Vorlagen startest du mit einem fertigen, aber frei editierbaren Layout. Möchtest du die kurze Erklärung sehen?",
+      "chooseTitle": "Wähle deinen Rahmen",
+      "chooseText": "Wähle eine Vorlage oder starte leer. Die Vorschau zeigt Zonen und Kacheln. Farben, Texte und Verzierungen kannst du danach frei ändern.",
+      "nameTitle": "Mach es zu deinem Board",
+      "nameText": "Gib dem Board einen Namen. Beim Erstellen entstehen echte Notizen und Zonen, die du bewegen, ergänzen oder löschen kannst."
+    },
+    "copyTour": {
+      "title": "Gute Ideen wiederverwenden",
+      "introduction": "Du kannst ganze Boards duplizieren oder einzelne Kacheln zwischen Boards kopieren. Möchtest du die beiden Aktionen kennenlernen?",
+      "duplicateTitle": "Ein ganzes Board mitnehmen",
+      "duplicateText": "Duplizieren erstellt eine private Kopie mit Kacheln, Stapeln, Verbindungen, Farben und Verzierungen. Du wählst einen neuen Namen.",
+      "pinTitle": "Kacheln kopieren und einfügen",
+      "pinText": "Öffne eine Kachel und wähle Kopieren oder Duplizieren. Zum Kopieren zwischen Boards öffnest du danach das Zielboard und wählst Einfügen. Strg/⌘+C und Strg/⌘+V funktionieren ebenfalls, solange du keinen Text bearbeitest."
+    }
+  },
+  "onboarding": {
+    "show": "Erklärung anzeigen",
+    "skip": "Skip",
+    "start": "Zeig es mir",
+    "next": "Weiter",
+    "finish": "Verstanden",
+    "progress": "Schritt {{current}} von {{total}}",
+    "loadError": "Deine Tutorial-Einstellungen konnten nicht geladen werden.",
+    "saveError": "Deine Auswahl konnte nicht gespeichert werden. Bitte versuche es erneut."
+  },
   "board": {
     "title": "Pinnwand",
     "view": "Ansicht",
