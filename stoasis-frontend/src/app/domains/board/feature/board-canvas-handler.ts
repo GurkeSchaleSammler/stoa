@@ -5,6 +5,7 @@ import {
   inject,
   signal,
   untracked,
+  HostListener,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,6 +17,9 @@ import { AddPinDialogHandlerComponent } from './add-pin-dialog-handler';
 import { PinDetailHandlerComponent } from './pin-detail-handler';
 import { BoardViewMode } from '../../../shared/models/board-view-mode';
 import { BoardConsoleHandlerComponent } from './board-console-handler';
+import { BoardReuseHandlerComponent } from './board-reuse-handler';
+import { BoardClipboardService } from '../data/application/board-clipboard.service';
+import { boardShortcut } from '../data/models/board-shortcut';
 
 @Component({
   selector: 'feature-board-canvas-handler',
@@ -26,6 +30,7 @@ import { BoardConsoleHandlerComponent } from './board-console-handler';
     AddPinDialogHandlerComponent,
     PinDetailHandlerComponent,
     BoardConsoleHandlerComponent,
+    BoardReuseHandlerComponent,
   ],
   template: `
     <ui-board-canvas
@@ -71,7 +76,11 @@ import { BoardConsoleHandlerComponent } from './board-console-handler';
       (onMembersClick)="openMembers()"
       (onConsoleClick)="consoleOpen.set(true)"
       (onSettingsClick)="openSettings()"
-    />
+    >
+      @if (pins.context(); as context) {
+        <feature-board-reuse-handler board-reuse-controls [context]="context" />
+      }
+    </ui-board-canvas>
     @if (pins.context(); as context) {
       <feature-board-console-handler
         [isOpen]="consoleOpen()"
@@ -98,6 +107,7 @@ import { BoardConsoleHandlerComponent } from './board-console-handler';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardCanvasHandlerComponent {
+  private readonly clipboard = inject(BoardClipboardService);
   protected readonly pins = inject(PinService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -117,6 +127,26 @@ export class BoardCanvasHandlerComponent {
   );
   readonly addDialogOpen = signal(false);
   readonly consoleOpen = signal(false);
+
+  @HostListener('document:keydown', ['$event'])
+  reuseShortcut(event: KeyboardEvent): void {
+    if (this.pins.context()?.isSystem) return;
+    const command = boardShortcut(event, !!window.getSelection()?.toString());
+    const selected = this.pins.selectedPin();
+    if (
+      command === 'copy' &&
+      selected &&
+      selected.type !== 'skill' &&
+      this.pins.context()?.currentUserRole
+    ) {
+      event.preventDefault();
+      this.clipboard.copy(selected);
+    } else if (command === 'paste' && this.pins.canEdit() && this.clipboard.copied()) {
+      event.preventDefault();
+      const copy = this.clipboard.copied()!;
+      this.pins.pastePin(this.collectionId(), copy.sourceCollectionId, copy.pinId);
+    }
+  }
 
   constructor() {
     effect(() => {

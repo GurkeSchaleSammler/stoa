@@ -16,7 +16,16 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/collections/{collectionId}/pins")
-class PinController(private val pins: PinService, private val currentUser: CurrentUser) {
+class PinController(
+    private val pins: PinService,
+    private val copies: com.stoasis.backend.domains.pin.application.PinCopyService,
+    private val currentUser: CurrentUser,
+) {
+    @PostMapping("/copy")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun copy(@PathVariable collectionId: String, @Valid @RequestBody request: CopyPinRequest) =
+        copies.copy(request.sourceCollectionId, request.pinId, collectionId, currentUser.id())
+
     @GetMapping
     fun list(@PathVariable collectionId: String) = pins.list(collectionId, currentUser.id())
 

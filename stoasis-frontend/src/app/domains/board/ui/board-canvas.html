@@ -11,6 +11,7 @@
       (settingsClick)="onSettingsClick.emit()"
       (paletteToggle)="paletteOpen.update((open) => !open)"
     />
+    <ng-content select="[board-reuse-controls]" />
     @if (paletteOpen() && canEdit()) {
       <ui-board-palette
         [activeTool]="activeTool()"

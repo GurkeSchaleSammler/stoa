@@ -132,6 +132,12 @@ class CollectionService(
         return CollectionIdResponse(collection.id)
     }
 
+    fun touch(id: String, userId: String) {
+        val collection = get(id)
+        requireEdit(collection, userId)
+        collection.updatedAt = Instant.now()
+    }
+
     fun lock(id: String): CollectionEntity = collections.lockById(id)
         ?: throw ApiException(HttpStatus.NOT_FOUND, "Sammlung nicht gefunden.")
 

@@ -99,6 +99,31 @@ export class PinService {
       .subscribe();
   }
 
+  pastePin(
+    collectionId: string,
+    sourceCollectionId: string,
+    pinId: string,
+    onSuccess?: () => void,
+  ): void {
+    if (this.isMutating() || !this.canEdit()) return;
+    this.setMutating(true);
+    this.api
+      .copyPin(collectionId, sourceCollectionId, pinId)
+      .pipe(
+        tap((pin) => {
+          if (this.context()?.id === collectionId) {
+            this.state.update((state) => ({ ...state, pins: [...state.pins, pin], error: null }));
+            onSuccess?.();
+          }
+          this.snackbars.success('templates.pinPasted');
+        }),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setMutating(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
   updatePin(
     collectionId: string,
     pinId: string,

@@ -10,6 +10,7 @@ import { canEdit } from '../../../../shared/models/can-edit';
 import { CollectionFilter } from '../models/collection-filter';
 import { CreateCollectionRequest } from '../models/create-collection-request';
 import { UpdateCollectionRequest } from '../models/update-collection-request';
+import { LanguageService } from '../../../../shared/application/language-service';
 
 @Injectable({ providedIn: 'root' })
 export class CollectionService {
@@ -17,6 +18,7 @@ export class CollectionService {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly snackbars = inject(SnackbarService);
+  private readonly language = inject(LanguageService);
   private readonly state = signal<CollectionState>(initialCollectionState);
 
   readonly collections = computed(() => this.state().collections);
@@ -76,9 +78,12 @@ export class CollectionService {
   }
 
   create(request: CreateCollectionRequest, onSuccess?: () => void): void {
+    if (this.isSaving()) return;
     this.setSaving(true);
-    this.api
-      .create(request)
+    (request.templateId
+      ? this.api.createTemplate(request, this.language.currentLanguageKey())
+      : this.api.create(request)
+    )
       .pipe(
         tap((created) => {
           this.state.update((state) => ({
@@ -89,6 +94,30 @@ export class CollectionService {
           }));
           this.snackbars.success('snackbar.collectionCreated');
           onSuccess?.();
+          void this.router.navigate(['/collections', created.id]);
+        }),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setSaving(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
+  duplicate(id: string, name: string, onSuccess: () => void): void {
+    if (this.isSaving()) return;
+    this.setSaving(true);
+    this.api
+      .duplicate(id, name)
+      .pipe(
+        tap((created) => {
+          this.state.update((state) => ({
+            ...state,
+            collections: [created, ...state.collections],
+            activeCollection: created,
+            error: null,
+          }));
+          this.snackbars.success('templates.duplicated');
+          onSuccess();
           void this.router.navigate(['/collections', created.id]);
         }),
         catchError((error) => this.handleError(error)),

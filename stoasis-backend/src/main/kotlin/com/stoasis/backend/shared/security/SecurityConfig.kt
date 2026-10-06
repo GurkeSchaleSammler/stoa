@@ -84,7 +84,7 @@ class SecurityConfig(
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
             allowedOrigins = corsAllowedOrigins.split(',').map(String::trim).filter(String::isNotEmpty)
-            allowedMethods = listOf("GET", "POST", "PATCH", "DELETE", "OPTIONS")
+            allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             allowedHeaders = listOf("Content-Type", "X-File-Name", "Accept")
             allowCredentials = true
             maxAge = 3600

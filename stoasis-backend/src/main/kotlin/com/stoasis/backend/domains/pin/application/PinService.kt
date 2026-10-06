@@ -287,6 +287,9 @@ class PinService(
         pin.layer = grid.layer
     }
 
+    fun freeCopyPosition(collectionId: String, height: Int): Pair<Int, Int> =
+        findFreePinPosition(height, occupiedRects(collectionId, pins.findAllByCollectionIdOrderBySortOrder(collectionId)))
+
     private fun occupiedRects(collectionId: String, existing: List<PinEntity>): List<PinGridRect> {
         val allStacks = stacks.findAllByCollectionIdOrderByLayer(collectionId)
         val stackedIds = allStacks.flatMap { it.children }.mapNotNull { it.pin?.id }.toSet()

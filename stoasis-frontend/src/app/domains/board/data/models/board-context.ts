@@ -7,7 +7,8 @@ export interface BoardContext {
   name: string;
   emoji: string;
   allowedTypes: PinType[];
-  visibility: 'private' | 'link';
+  visibility: 'private' | 'link' | 'public';
+  isSystem?: boolean;
   currentUserRole: Role | null;
   members: BoardMemberSummary[];
 }

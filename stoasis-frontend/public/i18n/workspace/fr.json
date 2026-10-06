@@ -1,4 +1,71 @@
 {
+  "templates": {
+    "choose": "Choisir un point de départ",
+    "lead": "Un cadre calme pour vos contenus. Tout reste déplaçable et modifiable.",
+    "blank": "Tableau vide",
+    "blankHint": "Commencez librement.",
+    "loading": "Chargement des modèles …",
+    "loadError": "Les modèles sont indisponibles. Vous pouvez commencer avec un tableau vide.",
+    "editableHint": "Le modèle comprend des notes modifiables, des zones colorées, des titres et un autocollant discret.",
+    "duplicate": "Dupliquer le tableau",
+    "duplicateHint": "Le contenu, la disposition et les décorations sont copiés. La copie est privée ; les membres, invitations et commentaires ne sont pas copiés.",
+    "createCopy": "Créer une copie privée",
+    "copyName": "{{name}} – Copie",
+    "duplicated": "Tableau dupliqué.",
+    "newFromTemplate": "Nouveau tableau à partir d’un modèle",
+    "paste": "Coller une épingle",
+    "clipboard": "Copié : {{name}}",
+    "copyPin": "Copier l’épingle",
+    "duplicatePin": "Dupliquer l’épingle",
+    "pinCopied": "Épingle copiée. Ouvrez un tableau et choisissez Coller.",
+    "pinPasted": "Épingle collée.",
+    "project": {
+      "title": "Projet",
+      "hint": "Idées → En cours → Terminé."
+    },
+    "week": {
+      "title": "Ma semaine",
+      "hint": "Cinq jours, une vue claire."
+    },
+    "research": {
+      "title": "Recherche",
+      "hint": "Questions, sources et résultats."
+    },
+    "moodboard": {
+      "title": "Moodboard",
+      "hint": "Ambiance, inspiration et détails."
+    },
+    "learning": {
+      "title": "Parcours d’apprentissage",
+      "hint": "Découvrir, pratiquer, comprendre."
+    },
+    "tour": {
+      "title": "Un point de départ pour votre tableau",
+      "introduction": "Les modèles offrent une disposition prête à l’emploi et modifiable. Souhaitez-vous une brève visite ?",
+      "chooseTitle": "Choisissez votre cadre",
+      "chooseText": "Choisissez un modèle ou commencez avec un tableau vide. L’aperçu montre les zones et épingles. Les couleurs, textes et décorations restent modifiables.",
+      "nameTitle": "Personnalisez votre tableau",
+      "nameText": "Donnez un nom au tableau. Sa création ajoute des notes et des zones que vous pouvez déplacer, compléter ou supprimer."
+    },
+    "copyTour": {
+      "title": "Réutilisez les bonnes idées",
+      "introduction": "Dupliquez des tableaux entiers ou copiez des épingles entre tableaux. Souhaitez-vous découvrir ces actions ?",
+      "duplicateTitle": "Emportez tout un tableau",
+      "duplicateText": "Dupliquer crée une copie privée avec épingles, piles, connexions, couleurs et décorations. Vous choisissez un nouveau nom.",
+      "pinTitle": "Copier et coller des épingles",
+      "pinText": "Ouvrez une épingle et choisissez Copier ou Dupliquer. Pour copier entre tableaux, ouvrez le tableau cible et choisissez Coller. Ctrl/⌘+C et Ctrl/⌘+V fonctionnent aussi lorsque vous ne modifiez pas de texte."
+    }
+  },
+  "onboarding": {
+    "show": "Afficher l’explication",
+    "skip": "Passer",
+    "start": "Montrez-moi",
+    "next": "Suivant",
+    "finish": "Compris",
+    "progress": "Étape {{current}} sur {{total}}",
+    "loadError": "Impossible de charger vos préférences de tutoriel.",
+    "saveError": "Impossible d’enregistrer votre choix. Veuillez réessayer."
+  },
   "board": {
     "title": "Tableau",
     "view": "Vue",

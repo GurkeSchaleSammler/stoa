@@ -1,4 +1,71 @@
 {
+  "templates": {
+    "choose": "Scegli un punto di partenza",
+    "lead": "Una cornice tranquilla per i tuoi contenuti. Tutto resta spostabile e modificabile.",
+    "blank": "Bacheca vuota",
+    "blankHint": "Inizia a modo tuo.",
+    "loading": "Caricamento dei modelli …",
+    "loadError": "I modelli non sono disponibili. Puoi iniziare con una bacheca vuota.",
+    "editableHint": "Il modello include note modificabili, zone colorate, titoli e un adesivo discreto.",
+    "duplicate": "Duplica bacheca",
+    "duplicateHint": "Contenuti, disposizione e decorazioni vengono copiati. La copia è privata; membri, inviti e commenti non vengono copiati.",
+    "createCopy": "Crea copia privata",
+    "copyName": "{{name}} – Copia",
+    "duplicated": "Bacheca duplicata.",
+    "newFromTemplate": "Nuova bacheca da modello",
+    "paste": "Incolla scheda",
+    "clipboard": "Copiato: {{name}}",
+    "copyPin": "Copia scheda",
+    "duplicatePin": "Duplica scheda",
+    "pinCopied": "Scheda copiata. Apri una bacheca e scegli Incolla.",
+    "pinPasted": "Scheda incollata.",
+    "project": {
+      "title": "Progetto",
+      "hint": "Idee → In corso → Completato."
+    },
+    "week": {
+      "title": "La mia settimana",
+      "hint": "Cinque giorni, una vista chiara."
+    },
+    "research": {
+      "title": "Ricerca",
+      "hint": "Domande, fonti e risultati."
+    },
+    "moodboard": {
+      "title": "Moodboard",
+      "hint": "Atmosfera, ispirazione e dettagli."
+    },
+    "learning": {
+      "title": "Percorso di apprendimento",
+      "hint": "Scoprire, esercitarsi, capire."
+    },
+    "tour": {
+      "title": "Un punto di partenza per la tua bacheca",
+      "introduction": "I modelli offrono una disposizione pronta e modificabile. Vuoi una breve spiegazione?",
+      "chooseTitle": "Scegli la tua cornice",
+      "chooseText": "Scegli un modello o inizia da zero. L’anteprima mostra zone e schede. Puoi cambiare colori, testi e decorazioni liberamente.",
+      "nameTitle": "Rendila la tua bacheca",
+      "nameText": "Dai un nome alla bacheca. Verranno create note e zone che puoi spostare, arricchire o eliminare."
+    },
+    "copyTour": {
+      "title": "Riutilizza le buone idee",
+      "introduction": "Puoi duplicare bacheche intere o copiare singole schede tra bacheche. Vuoi scoprire come?",
+      "duplicateTitle": "Porta con te un’intera bacheca",
+      "duplicateText": "Duplica crea una copia privata con schede, pile, connessioni, colori e decorazioni. Scegli un nuovo nome.",
+      "pinTitle": "Copia e incolla schede",
+      "pinText": "Apri una scheda e scegli Copia o Duplica. Per copiare tra bacheche, apri la bacheca di destinazione e scegli Incolla. Funzionano anche Ctrl/⌘+C e Ctrl/⌘+V se non stai modificando del testo."
+    }
+  },
+  "onboarding": {
+    "show": "Mostra spiegazione",
+    "skip": "Salta",
+    "start": "Mostrami",
+    "next": "Avanti",
+    "finish": "Capito",
+    "progress": "Passo {{current}} di {{total}}",
+    "loadError": "Impossibile caricare le preferenze dei tutorial.",
+    "saveError": "Impossibile salvare la scelta. Riprova."
+  },
   "board": {
     "title": "Bacheca",
     "view": "Vista",

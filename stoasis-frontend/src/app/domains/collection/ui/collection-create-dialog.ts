@@ -4,11 +4,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
 import { PinType } from '../../../shared/models/pin-type';
 import { CreateCollectionRequest } from '../data/models/create-collection-request';
+import { BoardTemplatePickerComponent } from './board-template-picker';
+import { BoardTemplate } from '../data/models/board-template';
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'ui-collection-create',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, AppIconComponent],
+  imports: [FormsModule, TranslatePipe, AppIconComponent, BoardTemplatePickerComponent],
   template: `
     <section class="panel-card create-card" aria-labelledby="create-title">
       <div class="eyebrow">{{ 'collection.newBoard' | translate }}</div>
@@ -17,7 +20,18 @@ import { CreateCollectionRequest } from '../data/models/create-collection-reques
       @if (error()) {
         <p class="error-banner" role="alert">{{ error() | translate }}</p>
       }
-      <div class="form-grid">
+      @if (templatesLoading()) {
+        <p role="status">{{ 'templates.loading' | translate }}</p>
+      }
+      @if (templatesError()) {
+        <p role="alert">{{ 'templates.loadError' | translate }}</p>
+      }
+      <ui-board-template-picker
+        [templates]="templates()"
+        [selected]="templateId()"
+        (selectedChanged)="selectTemplate($event)"
+      />
+      <div class="form-grid" data-tour="board-name">
         <label class="emoji-field">
           <span>{{ 'common.emoji' | translate }}</span>
           <input type="text" maxlength="4" [(ngModel)]="emoji" (ngModelChange)="emitDraft()" />
@@ -33,26 +47,30 @@ import { CreateCollectionRequest } from '../data/models/create-collection-reques
           />
         </label>
       </div>
-      <fieldset>
-        <legend>{{ 'collection.allowedPinTypes' | translate }}</legend>
-        <div class="type-picker">
-          <label
-            ><input type="checkbox" [(ngModel)]="link" (ngModelChange)="emitDraft()" />
-            <span><ui-app-icon name="link" /></span
-            ><strong>{{ 'pin.types.links' | translate }}</strong></label
-          >
-          <label
-            ><input type="checkbox" [(ngModel)]="note" (ngModelChange)="emitDraft()" />
-            <span><ui-app-icon name="note" /></span
-            ><strong>{{ 'pin.types.notes' | translate }}</strong></label
-          >
-          <label
-            ><input type="checkbox" [(ngModel)]="photo" (ngModelChange)="emitDraft()" />
-            <span><ui-app-icon name="image" /></span
-            ><strong>{{ 'pin.types.photos' | translate }}</strong></label
-          >
-        </div>
-      </fieldset>
+      @if (!templateId()) {
+        <fieldset>
+          <legend>{{ 'collection.allowedPinTypes' | translate }}</legend>
+          <div class="type-picker">
+            <label
+              ><input type="checkbox" [(ngModel)]="link" (ngModelChange)="emitDraft()" />
+              <span><ui-app-icon name="link" /></span
+              ><strong>{{ 'pin.types.links' | translate }}</strong></label
+            >
+            <label
+              ><input type="checkbox" [(ngModel)]="note" (ngModelChange)="emitDraft()" />
+              <span><ui-app-icon name="note" /></span
+              ><strong>{{ 'pin.types.notes' | translate }}</strong></label
+            >
+            <label
+              ><input type="checkbox" [(ngModel)]="photo" (ngModelChange)="emitDraft()" />
+              <span><ui-app-icon name="image" /></span
+              ><strong>{{ 'pin.types.photos' | translate }}</strong></label
+            >
+          </div>
+        </fieldset>
+      } @else {
+        <p class="lead">{{ 'templates.editableHint' | translate }}</p>
+      }
       <div class="panel-actions">
         <button type="button" class="button secondary" (click)="onCancel.emit()">
           {{ 'common.cancel' | translate }}
@@ -72,6 +90,14 @@ import { CreateCollectionRequest } from '../data/models/create-collection-reques
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionCreateDialogComponent {
+  readonly templates = input<BoardTemplate[]>([]);
+  readonly templatesLoading = input(false);
+  readonly templatesError = input(false);
+  readonly templateId = signal('');
+  selectTemplate(id: string): void {
+    this.templateId.set(id);
+    this.emitDraft();
+  }
   readonly isOpen = input(true);
   readonly canSubmit = input(false);
   readonly isSaving = input(false);
@@ -98,6 +124,11 @@ export class CollectionCreateDialogComponent {
     if (this.link) allowedTypes.push('link');
     if (this.note) allowedTypes.push('note');
     if (this.photo) allowedTypes.push('photo');
-    return { name: this.name, emoji: this.emoji || '📌', allowedTypes };
+    return {
+      name: this.name,
+      emoji: this.emoji || '📌',
+      allowedTypes: this.templateId() ? ['link', 'note', 'photo'] : allowedTypes,
+      templateId: this.templateId() || undefined,
+    };
   }
 }

@@ -14,6 +14,7 @@ import { PinEditValue } from '../data/models/pin-edit-value';
 import { Pin } from '../../../shared/models/pin';
 import { UpdatePinRequest } from '../data/models/update-pin-request';
 import { SessionContextStore } from '../../../shared/application/session-context.store';
+import { BoardClipboardService } from '../data/application/board-clipboard.service';
 
 @Component({
   selector: 'feature-pin-detail-handler',
@@ -23,6 +24,10 @@ import { SessionContextStore } from '../../../shared/application/session-context
     <ui-pin-detail
       [pin]="pin()"
       [canEdit]="pins.canEdit()"
+      [canCopy]="
+        !pins.context()?.isSystem && !!pins.context()?.currentUserRole && pin().type !== 'skill'
+      "
+      [isMutating]="pins.isMutating()"
       [editMode]="editMode()"
       [editValue]="editValue()"
       [allowCustomColors]="allowCustomColors()"
@@ -33,11 +38,14 @@ import { SessionContextStore } from '../../../shared/application/session-context
       (onDelete)="deletePin()"
       (onCommentSubmit)="addComment($event)"
       (onClose)="onClose.emit()"
+      (copyRequested)="clipboard.copy(pin())"
+      (duplicateRequested)="duplicate()"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PinDetailHandlerComponent {
+  protected readonly clipboard = inject(BoardClipboardService);
   protected readonly pins = inject(PinService);
   private readonly confirmation = inject(ConfirmationDialogService);
   private readonly session = inject(SessionContextStore);
@@ -103,5 +111,10 @@ export class PinDetailHandlerComponent {
   }
   addComment(body: string): void {
     if (body.trim()) this.pins.addComment(this.collectionId(), this.pin().id, body.trim());
+  }
+  duplicate(): void {
+    this.pins.pastePin(this.collectionId(), this.collectionId(), this.pin().id, () =>
+      this.onClose.emit(),
+    );
   }
 }

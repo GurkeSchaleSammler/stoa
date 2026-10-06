@@ -37,6 +37,21 @@ import { ImageFullView } from './models/image-full-view';
           (click)="$event.stopPropagation()"
         >
           <header>
+            @if (canCopy() && !editMode()) {
+              <button type="button" class="button secondary" (click)="copyRequested.emit()">
+                <ui-app-icon name="copy" />{{ 'templates.copyPin' | translate }}
+              </button>
+              @if (canEdit()) {
+                <button
+                  type="button"
+                  class="button secondary"
+                  [disabled]="isMutating()"
+                  (click)="duplicateRequested.emit()"
+                >
+                  <ui-app-icon name="layers" />{{ 'templates.duplicatePin' | translate }}
+                </button>
+              }
+            }
             <span class="detail-type">{{ 'pin.type.' + item.type | translate }}</span
             ><button
               type="button"
@@ -256,6 +271,10 @@ import { ImageFullView } from './models/image-full-view';
 export class PinDetailComponent {
   readonly pin = input<Pin | null>(null);
   readonly canEdit = input(false);
+  readonly canCopy = input(false);
+  readonly isMutating = input(false);
+  readonly copyRequested = output<void>();
+  readonly duplicateRequested = output<void>();
   readonly canComment = input(true);
   readonly editMode = input(false);
   readonly editValue = input.required<PinEditValue>();

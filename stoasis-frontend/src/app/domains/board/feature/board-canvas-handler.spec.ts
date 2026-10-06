@@ -7,6 +7,7 @@ import { vi } from 'vitest';
 import { PinService } from '../data/application/pin.service';
 import { BoardContext } from '../data/models/board-context';
 import { BoardCanvasHandlerComponent } from './board-canvas-handler';
+import { BoardClipboardService } from '../data/application/board-clipboard.service';
 
 describe('BoardCanvasHandlerComponent', () => {
   const params = new BehaviorSubject(convertToParamMap({ id: 'coll-japan' }));
@@ -63,6 +64,7 @@ describe('BoardCanvasHandlerComponent', () => {
       providers: [
         provideTranslateService({ fallbackLang: 'de', lang: 'de' }),
         { provide: PinService, useValue: pins },
+        { provide: BoardClipboardService, useValue: { copied: signal(null), copy: vi.fn() } },
         {
           provide: ActivatedRoute,
           useValue: {
