@@ -10,9 +10,9 @@ INSERT INTO collections (id, name, emoji, owner_id, visibility, invite_token, cr
 ('coll-rezepte', 'Rezepte mit Sara', '<>', 'user-du', 'link', 'invite-rezepte-c3d4', TIMESTAMP WITH TIME ZONE '2026-07-08 17:00:00+00', TIMESTAMP WITH TIME ZONE '2026-07-10 19:00:00+00');
 
 INSERT INTO collection_allowed_types (collection_id, pin_type) VALUES
-('coll-japan', 'link'), ('coll-japan', 'note'), ('coll-japan', 'photo'),
-('coll-dev', 'link'), ('coll-dev', 'note'),
-('coll-rezepte', 'link'), ('coll-rezepte', 'note'), ('coll-rezepte', 'photo');
+('coll-japan', 'link'), ('coll-japan', 'note'), ('coll-japan', 'photo'), ('coll-japan', 'portal'),
+('coll-dev', 'link'), ('coll-dev', 'note'), ('coll-dev', 'portal'),
+('coll-rezepte', 'link'), ('coll-rezepte', 'note'), ('coll-rezepte', 'photo'), ('coll-rezepte', 'portal');
 
 INSERT INTO collection_members (collection_id, user_id, role) VALUES
 ('coll-japan', 'user-du', 'owner'), ('coll-japan', 'user-anna', 'editor'), ('coll-japan', 'user-marco', 'viewer'),

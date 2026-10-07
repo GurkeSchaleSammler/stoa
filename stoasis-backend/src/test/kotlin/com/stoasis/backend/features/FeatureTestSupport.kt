@@ -38,7 +38,8 @@ abstract class FeatureTestSupport {
     protected fun sessionFor(user: UserEntity) = MockHttpSession().also { it.setAttribute(SESSION_USER_ID, user.id) }
 
     protected fun board(user: UserEntity, name: String = "Test board") = collections.create(
-        user.id, CreateCollectionRequest(name, "📌", setOf(PinType.link, PinType.note, PinType.photo)),
+        user.id,
+        CreateCollectionRequest(name, "📌", setOf(PinType.link, PinType.note, PinType.photo, PinType.portal)),
     ).id
 
     protected fun json(value: String): JsonNode = mapper.readTree(value)

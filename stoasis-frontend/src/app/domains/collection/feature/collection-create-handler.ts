@@ -52,7 +52,7 @@ export class CollectionCreateHandlerComponent {
   };
   protected readonly collections = inject(CollectionService);
   private readonly router = inject(Router);
-  readonly availableTypes: PinType[] = ['link', 'note', 'photo'];
+  readonly availableTypes: PinType[] = ['link', 'note', 'photo', 'portal'];
   private readonly model = signal<CreateCollectionRequest>({
     name: '',
     emoji: '📌',

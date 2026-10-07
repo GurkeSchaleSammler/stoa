@@ -20,6 +20,8 @@ import { BoardConsoleHandlerComponent } from './board-console-handler';
 import { BoardReuseHandlerComponent } from './board-reuse-handler';
 import { BoardClipboardService } from '../data/application/board-clipboard.service';
 import { boardShortcut } from '../data/models/board-shortcut';
+import { PortalPinData } from '../../../shared/models/portal-pin-data';
+import { WorldTrailComponent } from '../../world/world-trail';
 
 @Component({
   selector: 'feature-board-canvas-handler',
@@ -31,6 +33,7 @@ import { boardShortcut } from '../data/models/board-shortcut';
     PinDetailHandlerComponent,
     BoardConsoleHandlerComponent,
     BoardReuseHandlerComponent,
+    WorldTrailComponent,
   ],
   template: `
     <ui-board-canvas
@@ -43,6 +46,7 @@ import { boardShortcut } from '../data/models/board-shortcut';
       [isLoading]="pins.isLoading()"
       [error]="pins.error() || pins.elementsError()"
       (onSelectPin)="selectPin($event)"
+      (onNavigatePortal)="navigatePortal($event)"
       (onAddPinClick)="addDialogOpen.set(true)"
       (onViewModeChange)="changeView($event)"
       (onGridChange)="pins.updateGrid(collectionId(), $event.pinId, $event.grid)"
@@ -77,6 +81,13 @@ import { boardShortcut } from '../data/models/board-shortcut';
       (onConsoleClick)="consoleOpen.set(true)"
       (onSettingsClick)="openSettings()"
     >
+      @if (worldId(); as activeWorldId) {
+        <ui-world-trail
+          world-navigation
+          [worldId]="activeWorldId"
+          [collectionId]="collectionId()"
+        />
+      }
       @if (pins.context(); as context) {
         <feature-board-reuse-handler board-reuse-controls [context]="context" />
       }
@@ -124,6 +135,13 @@ export class BoardCanvasHandlerComponent {
       distinctUntilChanged(),
     ),
     { initialValue: this.route.snapshot.queryParamMap.get('pin') },
+  );
+  readonly worldId = toSignal(
+    this.route.queryParamMap.pipe(
+      map((params) => params.get('world')),
+      distinctUntilChanged(),
+    ),
+    { initialValue: this.route.snapshot.queryParamMap.get('world') },
   );
   readonly addDialogOpen = signal(false);
   readonly consoleOpen = signal(false);
@@ -193,6 +211,14 @@ export class BoardCanvasHandlerComponent {
     void this.router.navigate(['/collections', this.collectionId(), 'members']);
   }
   openSettings(): void {
-    void this.router.navigate(['/collections', this.collectionId(), 'settings']);
+    void this.router.navigate(['/collections', this.collectionId(), 'settings'], {
+      queryParams: this.worldId() ? { world: this.worldId() } : undefined,
+    });
+  }
+  navigatePortal(portal: PortalPinData): void {
+    if (!portal.available || !portal.targetCollectionId) return;
+    void this.router.navigate(['/collections', portal.targetCollectionId], {
+      queryParams: portal.worldId ? { world: portal.worldId } : undefined,
+    });
   }
 }

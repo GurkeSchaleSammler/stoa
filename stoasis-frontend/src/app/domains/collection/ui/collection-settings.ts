@@ -154,6 +154,7 @@ export class CollectionSettingsComponent {
     { value: 'link', labelKey: 'pin.types.links' },
     { value: 'note', labelKey: 'pin.types.notes' },
     { value: 'photo', labelKey: 'pin.types.photos' },
+    { value: 'portal', labelKey: 'pin.types.portals' },
   ];
 
   isVisibilityOptionDisabled(_value: 'private' | 'link' | 'public'): boolean {

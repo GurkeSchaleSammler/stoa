@@ -1,1 +1,1 @@
-export type PinType = 'link' | 'note' | 'photo' | 'skill';
+export type PinType = 'link' | 'note' | 'photo' | 'portal' | 'skill';

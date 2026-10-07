@@ -192,6 +192,18 @@ import { ImageFullView } from './models/image-full-view';
                     {{ item.data.caption || ('pin.photo' | translate) }}
                   </h1>
                 }
+                @case ('portal') {
+                  <p class="eyebrow">{{ 'pin.portal' | translate }}</p>
+                  <div class="detail-portal-symbol" aria-hidden="true">{{ item.data.emoji }}</div>
+                  <h1 id="pin-detail-title">{{ item.data.label }}</h1>
+                  <p class="detail-lead">
+                    {{
+                      item.data.available
+                        ? item.data.targetName
+                        : ('pin.portalUnavailable' | translate)
+                    }}
+                  </p>
+                }
               }
               @if (item.tags.length) {
                 <div class="tag-row">
@@ -214,10 +226,13 @@ import { ImageFullView } from './models/image-full-view';
               @if (canEdit()) {
                 <div class="detail-actions">
                   <button type="button" class="button danger-ghost" (click)="onDelete.emit()">
-                    <ui-app-icon name="trash" /> {{ 'common.delete' | translate }}</button
-                  ><button type="button" class="button secondary" (click)="onEdit.emit()">
-                    <ui-app-icon name="edit" /> {{ 'common.edit' | translate }}
+                    <ui-app-icon name="trash" /> {{ 'common.delete' | translate }}
                   </button>
+                  @if (item.type !== 'portal') {
+                    <button type="button" class="button secondary" (click)="onEdit.emit()">
+                      <ui-app-icon name="edit" /> {{ 'common.edit' | translate }}
+                    </button>
+                  }
                 </div>
               }
             }

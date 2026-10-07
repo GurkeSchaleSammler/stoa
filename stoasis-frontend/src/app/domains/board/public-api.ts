@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { Pin } from '../../shared/models/pin';
 import { PinEditValue } from './data/models/pin-edit-value';
 import { ImageFullViewComponent } from './ui/image-full-view';
 import { ImageFullView } from './ui/models/image-full-view';
 import { PinCardComponent } from './ui/pin-card';
 import { PinDetailComponent } from './ui/pin-detail';
+import { PortalPinData } from '../../shared/models/portal-pin-data';
 
 /** Public, read-only presentation surface for consumers outside the board domain. */
 @Component({
@@ -17,6 +18,7 @@ import { PinDetailComponent } from './ui/pin-detail';
         [pin]="pin"
         [selected]="selectedPin()?.id === pin.id"
         (onOpen)="selectPin($event)"
+        (onPortalNavigate)="portalNavigate.emit($event)"
         (onImageFullView)="imageFullView.set($event)"
       />
     }
@@ -57,6 +59,7 @@ import { PinDetailComponent } from './ui/pin-detail';
 })
 export class PublicBoardPresentationComponent {
   readonly pins = input.required<Pin[]>();
+  readonly portalNavigate = output<PortalPinData>();
   readonly selectedPin = signal<Pin | null>(null);
   readonly imageFullView = signal<ImageFullView | null>(null);
   readonly emptyEditValue: PinEditValue = {

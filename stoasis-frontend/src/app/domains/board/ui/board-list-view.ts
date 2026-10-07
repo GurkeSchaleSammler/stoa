@@ -13,7 +13,15 @@ import { Pin } from '../../../shared/models/pin';
         <button type="button" class="pin-row" (click)="onSelectPin.emit(pin.id)">
           <span class="row-type">
             <ui-app-icon
-              [name]="pin.type === 'link' ? 'link' : pin.type === 'note' ? 'note' : 'image'"
+              [name]="
+                pin.type === 'link'
+                  ? 'link'
+                  : pin.type === 'note'
+                    ? 'note'
+                    : pin.type === 'portal'
+                      ? 'door'
+                      : 'image'
+              "
             />
           </span>
           <span class="row-content">
@@ -27,6 +35,9 @@ import { Pin } from '../../../shared/models/pin';
                 }
                 @case ('photo') {
                   {{ pin.data.caption || ('pin.photo' | translate) }}
+                }
+                @case ('portal') {
+                  {{ pin.data.label }}
                 }
               }
             </strong>

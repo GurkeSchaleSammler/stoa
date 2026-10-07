@@ -2,6 +2,10 @@
   <aside class="workspace-sidebar"><feature-collection-list-handler /></aside>
   <section class="workspace-main">
     <nav class="utility-nav" [attr.aria-label]="'shell.accountMenu' | translate">
+      <a routerLink="/worlds" routerLinkActive="active"
+        ><ui-app-icon name="map" />
+        <span class="search-label">{{ 'worlds.nav' | translate }}</span></a
+      >
       @if (features.skillsEnabled()) {
         <a routerLink="/skills" routerLinkActive="active"
           ><ui-app-icon name="sparkles" />

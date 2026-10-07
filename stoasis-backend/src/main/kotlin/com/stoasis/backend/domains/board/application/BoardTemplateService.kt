@@ -26,7 +26,7 @@ class BoardTemplateService(
         val template = BoardTemplateCatalog.templates.find { it.id == request.templateId }
             ?: throw ApiException(HttpStatus.BAD_REQUEST, "Unbekannte Board-Vorlage.")
         val board = collections.create(userId, CreateCollectionRequest(
-            request.name, request.emoji, setOf(PinType.note, PinType.link, PinType.photo),
+            request.name, request.emoji, setOf(PinType.note, PinType.link, PinType.photo, PinType.portal),
         ))
         template.sections.forEachIndexed { index, section ->
             val x = 2 + index * 22

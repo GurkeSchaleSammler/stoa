@@ -39,6 +39,7 @@ export class CollectionSettingsHandlerComponent {
   private readonly confirmation = inject(ConfirmationDialogService);
   private readonly snackbars = inject(SnackbarService);
   private readonly collectionId = this.route.snapshot.paramMap.get('id') ?? '';
+  private readonly worldId = this.route.snapshot.queryParamMap.get('world');
   private readonly pendingModel = signal<UpdateCollectionRequest>({});
   readonly draftCollection = computed(() => {
     const board = this.collections.activeCollection();
@@ -106,7 +107,9 @@ export class CollectionSettingsHandlerComponent {
     if (confirmed) this.collections.delete(this.collectionId);
   }
   back(): void {
-    void this.router.navigate(['/collections', this.collectionId]);
+    void this.router.navigate(['/collections', this.collectionId], {
+      queryParams: this.worldId ? { world: this.worldId } : undefined,
+    });
   }
   async copyShare(): Promise<void> {
     if (!this.shareUrl()) return;

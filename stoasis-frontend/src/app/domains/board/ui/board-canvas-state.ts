@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { BoardViewMode } from '../../../shared/models/board-view-mode';
 import { Pin } from '../../../shared/models/pin';
+import { PortalPinData } from '../../../shared/models/portal-pin-data';
 import { BOARD_HEIGHT_CLIPS } from '../data/models/board-height-clips';
 import { BOARD_WIDTH_CLIPS } from '../data/models/board-width-clips';
 import { BoardColorVariant } from '../data/models/board-color-variant';
@@ -51,6 +52,7 @@ export abstract class BoardCanvasState {
   readonly isLoading = input(false);
   readonly error = input<string | null>(null);
   readonly onSelectPin = output<string>();
+  readonly onNavigatePortal = output<PortalPinData>();
   readonly onAddPinClick = output<void>();
   readonly onGridChange = output<PinGridChange>();
   readonly onStackDrop = output<StackDrop>();
