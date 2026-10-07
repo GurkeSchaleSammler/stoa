@@ -55,8 +55,8 @@ class PostgresMigrationTests {
             Int::class.java,
         )
 
-        assertEquals("16", latestVersion)
-        assertEquals(1, result.migrationsExecuted)
+        assertEquals("17", latestVersion)
+        assertEquals(2, result.migrationsExecuted)
         assertTrue(foreignKeyCount != null && foreignKeyCount > 0, "Expected relational integrity constraints")
         assertEquals(2, sessionTableCount)
         assertEquals(1, preservedUsers)
