@@ -11,6 +11,7 @@ import {
   viewChildren,
 } from '@angular/core';
 import { BoardViewMode } from '../../../shared/models/board-view-mode';
+import { BoardCursorPosition, BoardParticipant } from '../data/models/board-presence';
 import { Pin } from '../../../shared/models/pin';
 import { PortalPinData } from '../../../shared/models/portal-pin-data';
 import { BOARD_HEIGHT_CLIPS } from '../data/models/board-height-clips';
@@ -44,6 +45,8 @@ import { ZonePointerState } from './models/zone-pointer-state';
 @Directive()
 export abstract class BoardCanvasState {
   readonly pins = input.required<Pin[]>();
+  readonly participants = input<BoardParticipant[]>([]);
+  readonly cursorMoved = output<BoardCursorPosition | null>();
   readonly elements = input.required<BoardElements>();
   readonly context = input<BoardContext | null>(null);
   readonly viewMode = input<BoardViewMode>('board');
