@@ -11,6 +11,7 @@
       (settingsClick)="onSettingsClick.emit()"
       (paletteToggle)="paletteOpen.update((open) => !open)"
     />
+    <ng-content select="[world-navigation]" />
     <ng-content select="[board-reuse-controls]" />
     @if (paletteOpen() && canEdit()) {
       <ui-board-palette
@@ -266,6 +267,7 @@
                         <ui-pin-card
                           [pin]="child"
                           (onOpen)="openPin($event)"
+                          (onPortalNavigate)="onNavigatePortal.emit($event)"
                           (onImageFullView)="openImageFullView($event)"
                         />
                       </div>
@@ -276,6 +278,7 @@
                     <ui-pin-card
                       [pin]="top"
                       (onOpen)="openPin($event)"
+                      (onPortalNavigate)="onNavigatePortal.emit($event)"
                       (onImageFullView)="openImageFullView($event)"
                     />
                   </div>
@@ -332,6 +335,7 @@
                   [pin]="pin"
                   [selected]="selectedPinId() === pin.id"
                   (onOpen)="openPin($event)"
+                  (onPortalNavigate)="onNavigatePortal.emit($event)"
                   (onImageFullView)="openImageFullView($event)"
                 />
                 @if (canEdit()) {

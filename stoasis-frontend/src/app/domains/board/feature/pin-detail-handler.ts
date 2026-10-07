@@ -92,7 +92,9 @@ export class PinDetailHandlerComponent {
           ? { title: values.title.trim(), description: values.description.trim() || null }
           : pin.type === 'note'
             ? { title: values.title.trim(), content: values.content.trim(), color: values.color }
-            : { caption: values.caption.trim() || null },
+            : pin.type === 'photo'
+              ? { caption: values.caption.trim() || null }
+              : {},
     };
     this.pins.updatePin(this.collectionId(), pin.id, request, () => {
       this.cancelEdit();

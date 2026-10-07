@@ -88,6 +88,14 @@ import { AppIconName } from '../models/app-icon-name';
         @case ('minus') {
           <path d="M5 12h14" />
         }
+        @case ('door') {
+          <path d="M4 21h16M6 21V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v17" />
+          <path d="M13 12h.01" />
+        }
+        @case ('map') {
+          <path d="m3 6 5-2 8 3 5-2v13l-5 2-8-3-5 2Z" />
+          <path d="M8 4v13M16 7v13" />
+        }
         @case ('monitor') {
           <rect x="3" y="4" width="18" height="13" rx="2" />
           <path d="M8 21h8M12 17v4" />

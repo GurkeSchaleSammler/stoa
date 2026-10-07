@@ -23,6 +23,7 @@ fun estimatedPinHeight(pin: PinEntity): Int = when (pin.type) {
         (8 + (CARD_WIDTH_CLIPS * ratio).toInt()).coerceIn(12, 30)
     }
     PinType.skill -> 12
+    PinType.portal -> 13
 }
 
 fun findFreePinPosition(heightClips: Int, occupied: List<PinGridRect>): Pair<Int, Int> {

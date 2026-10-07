@@ -60,6 +60,7 @@ export class FilterBarComponent {
     { value: 'link', labelKey: 'pin.types.links' },
     { value: 'note', labelKey: 'pin.types.notes' },
     { value: 'photo', labelKey: 'pin.types.photos' },
+    { value: 'portal', labelKey: 'pin.types.portals' },
     { value: 'skill', labelKey: 'skills.nav' },
   ];
 }

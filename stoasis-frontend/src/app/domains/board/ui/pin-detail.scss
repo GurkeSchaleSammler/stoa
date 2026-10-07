@@ -69,6 +69,18 @@
   gap: 8px;
 }
 
+.detail-portal-symbol {
+  display: grid;
+  width: 74px;
+  height: 74px;
+  margin-bottom: 18px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--accent-soft);
+  font-size: 2rem;
+}
+
 .detail-author-avatar,
 .comment-avatar {
   display: grid;

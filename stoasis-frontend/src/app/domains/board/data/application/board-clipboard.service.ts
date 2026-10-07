@@ -34,7 +34,9 @@ export class BoardClipboardService {
         ? pin.data.title
         : pin.type === 'note'
           ? pin.data.title || pin.data.content
-          : pin.data.caption || this.translate.instant('pin.type.photo');
+          : pin.type === 'photo'
+            ? pin.data.caption || this.translate.instant('pin.type.photo')
+            : pin.data.label;
     this.copiedState.set({
       sourceCollectionId: pin.collectionId,
       pinId: pin.id,

@@ -54,6 +54,7 @@ class SecurityConfig(
                 it.requestMatchers(HttpMethod.GET, "/api/uploads/**").permitAll()
                 it.requestMatchers(HttpMethod.GET, "/api/public/profile-boards/**").permitAll()
                 it.requestMatchers(HttpMethod.GET, "/api/public/collections/**").permitAll()
+                it.requestMatchers(HttpMethod.GET, "/api/public/worlds/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .exceptionHandling {

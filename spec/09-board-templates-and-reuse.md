@@ -13,7 +13,7 @@ The new board is private and has only the copying user as owner. It gets new boa
 pin and decoration IDs. Content, tags, colours, positions, heights, layers, stacks,
 stack-child order/original positions, connectors, zones, labels and stickers survive.
 Memberships, invite tokens, discussions and original authorship do not. Profile/skill
-boards are deliberately excluded. At most 1000 pins are duplicated in one transaction.
+boards and World-bound portal pins are deliberately excluded. At most 1000 pins are duplicated in one transaction.
 Capacity failures roll back the entire copy; existing source data remains intact.
 
 Pin details offer Copy and, for editors, Duplicate. Paste is available on editable boards.
@@ -43,14 +43,14 @@ features can add optional tours without changing the reusable UI or database sch
 
 All routes require a session and use the existing Origin/CSRF protection.
 
-| Method/path | Request | Result |
-| --- | --- | --- |
-| GET `/api/collections/templates?language=de` | `de`, `en`, `fr`, `it` | 200: catalog IDs, motifs and localized section titles/colours |
-| POST `/api/collections/from-template` | `templateId`, `name` (1–180 chars), optional `emoji` (≤32), `language` | 201: standard `CollectionDetail` |
-| POST `/api/collections/{id}/duplicate` | `name` (1–180 chars) | 201: standard private `CollectionDetail` |
-| POST `/api/collections/{id}/pins/copy` | `sourceCollectionId`, `pinId` (≤64 chars) | 201: standard independent `PinDto` |
-| GET `/api/me/flags` | no user ID accepted | 200: `{key, outcome, seenAt}[]` for the current user |
-| PUT `/api/me/flags/{key}` | `outcome`: `completed` or `skipped` | 204: first acknowledgement saved idempotently |
+| Method/path                                  | Request                                                                | Result                                                        |
+| -------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------- |
+| GET `/api/collections/templates?language=de` | `de`, `en`, `fr`, `it`                                                 | 200: catalog IDs, motifs and localized section titles/colours |
+| POST `/api/collections/from-template`        | `templateId`, `name` (1–180 chars), optional `emoji` (≤32), `language` | 201: standard `CollectionDetail`                              |
+| POST `/api/collections/{id}/duplicate`       | `name` (1–180 chars)                                                   | 201: standard private `CollectionDetail`                      |
+| POST `/api/collections/{id}/pins/copy`       | `sourceCollectionId`, `pinId` (≤64 chars)                              | 201: standard independent `PinDto`                            |
+| GET `/api/me/flags`                          | no user ID accepted                                                    | 200: `{key, outcome, seenAt}[]` for the current user          |
+| PUT `/api/me/flags/{key}`                    | `outcome`: `completed` or `skipped`                                    | 204: first acknowledgement saved idempotently                 |
 
 Tutorial keys match `tutorial.[a-z0-9.-]{1,80}`. The server resolves the user exclusively
 from the session. Invisible source boards/pins produce 404; missing target write

@@ -10,6 +10,10 @@
     pointer-events: none;
   }
 
+  .board-shell:has(ui-world-trail) .board-zoom-controls {
+    top: calc(env(safe-area-inset-top) + 186px);
+  }
+
   .board-zoom-panel {
     display: inline-flex;
     align-items: center;
@@ -109,6 +113,10 @@
     .board-zoom-controls {
       top: calc(env(safe-area-inset-top) + 104px);
       right: calc(env(safe-area-inset-right) + 13px);
+    }
+
+    .board-shell:has(ui-world-trail) .board-zoom-controls {
+      top: calc(env(safe-area-inset-top) + 158px);
     }
   }
 }

@@ -3,6 +3,7 @@ package com.stoasis.backend.domains.pin.data
 import com.stoasis.backend.domains.auth.data.UserEntity
 import com.stoasis.backend.domains.collection.data.CollectionEntity
 import com.stoasis.backend.domains.collection.model.PinType
+import com.stoasis.backend.domains.world.data.WorldEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
@@ -48,6 +49,12 @@ class PinEntity(
     var caption: String? = null,
     @Column(name = "image_width") var imageWidth: Int? = null,
     @Column(name = "image_height") var imageHeight: Int? = null,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "portal_world_id")
+    var portalWorld: WorldEntity? = null,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "portal_target_collection_id")
+    var portalTargetCollection: CollectionEntity? = null,
+    @Column(name = "portal_label", length = 180) var portalLabel: String? = null,
+    @Column(name = "portal_emoji", length = 32) var portalEmoji: String? = null,
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "pin_tags", joinColumns = [JoinColumn(name = "pin_id")])
     @Column(name = "tag")

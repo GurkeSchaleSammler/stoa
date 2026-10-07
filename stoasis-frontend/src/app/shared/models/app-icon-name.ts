@@ -18,6 +18,8 @@ export type AppIconName =
   | 'mail'
   | 'maximize'
   | 'minus'
+  | 'door'
+  | 'map'
   | 'monitor'
   | 'moon'
   | 'note'

@@ -1,0 +1,68 @@
+.portal-appearance {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.portal-appearance .emoji input {
+  text-align: center;
+  font-size: 1.15rem;
+}
+
+.portal-return {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface-sunken);
+  cursor: pointer;
+}
+
+.portal-return input {
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  accent-color: var(--accent);
+}
+
+.portal-return strong,
+.portal-return small {
+  display: block;
+}
+
+.portal-return strong {
+  font-size: 0.8rem;
+}
+
+.portal-return small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.dialog-empty {
+  display: grid;
+  place-items: center;
+  gap: 7px;
+  padding: 24px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-card);
+  color: var(--muted);
+  text-align: center;
+}
+
+.dialog-empty ui-app-icon {
+  color: var(--accent-strong);
+  font-size: 1.4rem;
+}
+
+.dialog-empty p {
+  max-width: 380px;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}

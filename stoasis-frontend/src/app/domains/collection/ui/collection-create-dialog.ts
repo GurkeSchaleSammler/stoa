@@ -66,6 +66,11 @@ import { signal } from '@angular/core';
               <span><ui-app-icon name="image" /></span
               ><strong>{{ 'pin.types.photos' | translate }}</strong></label
             >
+            <label
+              ><input type="checkbox" [(ngModel)]="portal" (ngModelChange)="emitDraft()" />
+              <span><ui-app-icon name="door" /></span
+              ><strong>{{ 'pin.types.portals' | translate }}</strong></label
+            >
           </div>
         </fieldset>
       } @else {
@@ -111,6 +116,7 @@ export class CollectionCreateDialogComponent {
   link = true;
   note = true;
   photo = true;
+  portal = true;
 
   emitDraft(): void {
     this.onDraftChange.emit(this.draft());
@@ -124,10 +130,11 @@ export class CollectionCreateDialogComponent {
     if (this.link) allowedTypes.push('link');
     if (this.note) allowedTypes.push('note');
     if (this.photo) allowedTypes.push('photo');
+    if (this.portal) allowedTypes.push('portal');
     return {
       name: this.name,
       emoji: this.emoji || '📌',
-      allowedTypes: this.templateId() ? ['link', 'note', 'photo'] : allowedTypes,
+      allowedTypes: this.templateId() ? ['link', 'note', 'photo', 'portal'] : allowedTypes,
       templateId: this.templateId() || undefined,
     };
   }

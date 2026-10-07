@@ -8,6 +8,7 @@ import com.stoasis.backend.domains.pin.data.PinRepository
 import com.stoasis.backend.domains.plan.application.PlanService
 import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
+import com.stoasis.backend.domains.world.application.WorldService
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,6 +20,7 @@ class PinCopyService(
     private val collections: CollectionService,
     private val plans: PlanService,
     private val pinService: PinService,
+    private val worlds: WorldService,
     private val ids: IdGenerator,
 ) {
     @Transactional
@@ -32,6 +34,11 @@ class PinCopyService(
         val original = pins.findDetailed(sourceId, pinId) ?: unavailable()
         if (original.type !in target.allowedTypes) {
             throw ApiException(HttpStatus.CONFLICT, "Dieser Pin-Typ ist im Zielboard nicht erlaubt.")
+        }
+        if (original.type == PinType.portal) {
+            val worldId = original.portalWorld?.id ?: unavailable()
+            val portalTargetId = original.portalTargetCollection?.id ?: unavailable()
+            worlds.requirePortalMembership(worldId, targetId, portalTargetId, userId)
         }
         val copy = clone(original, targetId, userId)
         val position = pinService.freeCopyPosition(targetId, copy.heightClips)
@@ -53,7 +60,7 @@ class PinCopyService(
             throw ApiException(HttpStatus.CONFLICT, "Das Zielboard muss leer sein.")
         }
         val originals = pins.findAllByCollectionIdOrderBySortOrder(sourceId)
-            .filterNot { it.type == PinType.skill }
+            .filterNot { it.type == PinType.skill || it.type == PinType.portal }
         if (originals.size > 1000) throw ApiException(HttpStatus.CONFLICT, "Zum Duplizieren sind maximal 1000 Kacheln erlaubt.")
         return originals.associate { original ->
             val copy = clone(original, targetId, userId)
@@ -74,6 +81,8 @@ class PinCopyService(
             readingTimeMin = original.readingTimeMin, parseStatus = original.parseStatus,
             content = original.content, noteColor = original.noteColor, fileKey = original.fileKey,
             caption = original.caption, imageWidth = original.imageWidth, imageHeight = original.imageHeight,
+            portalWorld = original.portalWorld, portalTargetCollection = original.portalTargetCollection,
+            portalLabel = original.portalLabel, portalEmoji = original.portalEmoji,
             tags = original.tags.toMutableSet(),
         ).also {
             if (original.type == PinType.skill) {
