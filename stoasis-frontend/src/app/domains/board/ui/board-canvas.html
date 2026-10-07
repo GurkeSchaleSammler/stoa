@@ -12,6 +12,7 @@
       (paletteToggle)="paletteOpen.update((open) => !open)"
     />
     <ng-content select="[world-navigation]" />
+    <ng-content select="[board-presence]" />
     <ng-content select="[board-reuse-controls]" />
     @if (paletteOpen() && canEdit()) {
       <ui-board-palette
@@ -73,6 +74,11 @@
         >
           <div
             #clipBoard
+            uiBoardCursorTracker
+            [cursorZoom]="zoomLevel()"
+            [cursorWidth]="boardWidthPx"
+            [cursorHeight]="boardHeightPx"
+            (cursorMoved)="cursorMoved.emit($event)"
             class="clip-board"
             [style.width.px]="boardWidthPx"
             [style.height.px]="boardHeightPx"
@@ -85,6 +91,7 @@
             (dragover)="$event.preventDefault()"
             (drop)="dropPaletteSticker($event)"
           >
+            <ui-board-live-cursors [participants]="participants()" [zoom]="zoomLevel()" />
             @for (zone of elements().zones; track zone.id) {
               <section
                 class="soft-zone"

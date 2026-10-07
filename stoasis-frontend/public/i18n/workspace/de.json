@@ -67,6 +67,11 @@
     "saveError": "Deine Auswahl konnte nicht gespeichert werden. Bitte versuche es erneut."
   },
   "board": {
+    "presence": {
+      "unavailable": "Live-Cursor nicht verfügbar. Bitte lade das Board neu.",
+      "here": "Ebenfalls hier: {{count}}",
+      "reconnecting": "Live-Cursor werden neu verbunden …"
+    },
     "title": "Pinnwand",
     "view": "Ansicht",
     "boardView": "Board-Ansicht",

@@ -11,6 +11,8 @@ import { BoardColorPickerComponent } from './board-color-picker';
 import { ImageFullViewComponent } from './image-full-view';
 import { PinCardComponent } from './pin-card';
 import { PinEditButtonComponent } from './pin-edit-button';
+import { BoardCursorTrackerDirective } from './board-cursor-tracker';
+import { BoardLiveCursorsComponent } from './board-live-cursors';
 
 @Component({
   selector: 'ui-board-canvas',
@@ -27,6 +29,8 @@ import { PinEditButtonComponent } from './pin-edit-button';
     ImageFullViewComponent,
     PinCardComponent,
     PinEditButtonComponent,
+    BoardCursorTrackerDirective,
+    BoardLiveCursorsComponent,
     TranslatePipe,
   ],
   templateUrl: './board-canvas.html',

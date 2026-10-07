@@ -67,6 +67,11 @@
     "saveError": "Impossibile salvare la scelta. Riprova."
   },
   "board": {
+    "presence": {
+      "unavailable": "Cursori in tempo reale non disponibili. Ricarica la bacheca.",
+      "here": "{{count}} altre persone presenti",
+      "reconnecting": "Riconnessione dei cursori in tempo reale …"
+    },
     "title": "Bacheca",
     "view": "Vista",
     "boardView": "Vista bacheca",

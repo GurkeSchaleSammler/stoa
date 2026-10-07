@@ -67,6 +67,11 @@
     "saveError": "Impossible d’enregistrer votre choix. Veuillez réessayer."
   },
   "board": {
+    "presence": {
+      "unavailable": "Curseurs en direct indisponibles. Rechargez le tableau.",
+      "here": "{{count}} autres personnes présentes",
+      "reconnecting": "Reconnexion des curseurs en direct …"
+    },
     "title": "Tableau",
     "view": "Vue",
     "boardView": "Vue tableau",

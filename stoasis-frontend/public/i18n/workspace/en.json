@@ -67,6 +67,11 @@
     "saveError": "Your choice could not be saved. Please try again."
   },
   "board": {
+    "presence": {
+      "unavailable": "Live cursors unavailable. Please reload the board.",
+      "here": "{{count}} others here now",
+      "reconnecting": "Reconnecting live cursors …"
+    },
     "title": "Board",
     "view": "View",
     "boardView": "Board view",
