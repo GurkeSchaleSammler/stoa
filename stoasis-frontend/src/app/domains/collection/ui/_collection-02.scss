@@ -109,6 +109,13 @@
   border: 1px solid var(--border);
   border-radius: 11px;
   cursor: pointer;
+  transition:
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease;
+}
+.type-picker label:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 .type-picker input {
   position: absolute;
