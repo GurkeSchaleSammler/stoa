@@ -1,22 +1,68 @@
 <div class="workspace-shell">
-  <aside class="workspace-sidebar"><feature-collection-list-handler /></aside>
+  @if (!viewport.compact()) {
+    <aside class="workspace-sidebar"><feature-collection-list-handler /></aside>
+  }
   <section class="workspace-main">
+    @if (viewport.compact()) {
+      <header class="mobile-header">
+        <a class="mobile-brand" routerLink="/" [attr.aria-label]="'shell.home' | translate">
+          <img src="/android-chrome-192x192.png" alt="" /> <span>Stoasis</span>
+        </a>
+        <div class="mobile-header-actions">
+          <a routerLink="/collections/new" [attr.aria-label]="'collection.new' | translate"
+            ><ui-app-icon name="plus"
+          /></a>
+          <button
+            type="button"
+            (click)="mobilePanel.set('account')"
+            [attr.aria-label]="'shell.accountMenu' | translate"
+            aria-haspopup="dialog"
+            [attr.aria-expanded]="mobilePanel() === 'account'"
+          >
+            <span class="user-avatar">
+              @if (session.user()?.avatarUrl; as avatarUrl) {
+                <img [src]="avatarUrl" alt="" />
+              } @else {
+                {{ session.user()?.name?.slice(0, 1) || 'S' }}
+              }
+            </span>
+          </button>
+        </div>
+      </header>
+    }
     <nav class="utility-nav" [attr.aria-label]="'shell.accountMenu' | translate">
-      <a routerLink="/worlds" routerLinkActive="active"
+      <a
+        routerLink="/worlds"
+        routerLinkActive="active"
+        [attr.aria-label]="'worlds.nav' | translate"
+        [attr.title]="'worlds.nav' | translate"
         ><ui-app-icon name="map" />
         <span class="search-label">{{ 'worlds.nav' | translate }}</span></a
       >
       @if (features.skillsEnabled()) {
-        <a routerLink="/skills" routerLinkActive="active"
-          ><ui-app-icon name="sparkles" />
+        <a
+          routerLink="/skills"
+          routerLinkActive="active"
+          [attr.aria-label]="'skills.nav' | translate"
+          [attr.title]="'skills.nav' | translate"
+          ><ui-app-icon name="graduation-cap" />
           <span class="search-label">{{ 'skills.nav' | translate }}</span></a
         >
-        <a routerLink="/groups" routerLinkActive="active"
-          ><ui-app-icon name="layers" />
+        <a
+          routerLink="/groups"
+          routerLinkActive="active"
+          [attr.aria-label]="'groups.nav' | translate"
+          [attr.title]="'groups.nav' | translate"
+          ><ui-app-icon name="users" />
           <span class="search-label">{{ 'groups.nav' | translate }}</span></a
         >
       }
-      <a class="search-link" routerLink="/search" routerLinkActive="active"
+      <a
+        class="search-link"
+        routerLink="/search"
+        routerLinkActive="active"
+        [attr.aria-label]="'common.search' | translate"
+        [attr.title]="'common.search' | translate"
         ><ui-app-icon name="search" />
         <span class="search-label">{{ 'common.search' | translate }}</span></a
       >
@@ -36,7 +82,11 @@
         }
       </div>
 
-      <a routerLink="/profile" routerLinkActive="active"
+      <a
+        routerLink="/profile"
+        routerLinkActive="active"
+        [attr.aria-label]="'common.profile' | translate"
+        [attr.title]="session.user()?.name || ('common.profile' | translate)"
         ><span class="user-avatar">
           @if (session.user()?.avatarUrl; as avatarUrl) {
             <img [src]="avatarUrl" alt="" />
@@ -57,5 +107,109 @@
       </button>
     </nav>
     <div class="route-stage"><router-outlet /></div>
+    @if (viewport.compact()) {
+      <nav class="mobile-nav" [attr.aria-label]="'shell.navigation' | translate">
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          ><ui-app-icon name="home" /><span>{{ 'shell.overview' | translate }}</span></a
+        >
+        <button
+          type="button"
+          (click)="mobilePanel.set('collections')"
+          [class.active]="mobilePanel() === 'collections'"
+          aria-haspopup="dialog"
+          [attr.aria-expanded]="mobilePanel() === 'collections'"
+        >
+          <ui-app-icon name="layers" /><span>{{ 'collection.plural' | translate }}</span>
+        </button>
+        <a routerLink="/search" routerLinkActive="active" ariaCurrentWhenActive="page"
+          ><ui-app-icon name="search" /><span>{{ 'common.search' | translate }}</span></a
+        >
+        <a routerLink="/worlds" routerLinkActive="active" ariaCurrentWhenActive="page"
+          ><ui-app-icon name="map" /><span>{{ 'worlds.nav' | translate }}</span></a
+        >
+      </nav>
+    }
   </section>
+  @if (viewport.compact()) {
+    <dialog
+      #mobileSheet
+      class="mobile-sheet"
+      [class.collections-sheet]="mobilePanel() === 'collections'"
+      [attr.aria-label]="
+        (mobilePanel() === 'collections' ? 'collection.plural' : 'shell.accountMenu') | translate
+      "
+      (cancel)="$event.preventDefault(); mobilePanel.set(null)"
+      (click)="closeFromBackdrop($event)"
+    >
+      <header class="sheet-header">
+        <h2>
+          {{
+            (mobilePanel() === 'collections' ? 'collection.plural' : 'shell.accountMenu')
+              | translate
+          }}
+        </h2>
+        <button
+          type="button"
+          autofocus
+          (click)="mobilePanel.set(null)"
+          [attr.aria-label]="'common.close' | translate"
+        >
+          <ui-app-icon name="close" />
+        </button>
+      </header>
+      @if (mobilePanel() === 'collections') {
+        <div class="sheet-collections">
+          <feature-collection-list-handler (navigated)="mobilePanel.set(null)" />
+        </div>
+      } @else if (mobilePanel() === 'account') {
+        <div class="account-sheet-content">
+          <p class="account-name">{{ session.user()?.name }}</p>
+          <a routerLink="/profile" (click)="mobilePanel.set(null)"
+            ><span class="user-avatar">{{ session.user()?.name?.slice(0, 1) || 'S' }}</span
+            >{{ 'common.profile' | translate }}<ui-app-icon name="chevron-right"
+          /></a>
+          @if (features.skillsEnabled()) {
+            <a routerLink="/skills" (click)="mobilePanel.set(null)"
+              ><ui-app-icon name="graduation-cap" />{{ 'skills.nav' | translate
+              }}<ui-app-icon name="chevron-right"
+            /></a>
+            <a routerLink="/groups" (click)="mobilePanel.set(null)"
+              ><ui-app-icon name="users" />{{ 'groups.nav' | translate
+              }}<ui-app-icon name="chevron-right"
+            /></a>
+          }
+          <p class="sheet-label">{{ 'language.label' | translate }}</p>
+          <div
+            class="language-switcher"
+            role="group"
+            [attr.aria-label]="'language.label' | translate"
+          >
+            @for (languageOption of languages; track languageOption.code) {
+              <button
+                type="button"
+                [class.active]="language.currentLanguageKey() === languageOption.code"
+                [attr.aria-pressed]="language.currentLanguageKey() === languageOption.code"
+                [attr.aria-label]="languageOption.label"
+                [attr.lang]="languageOption.code"
+                (click)="language.switchLanguage(languageOption.code)"
+              >
+                {{ languageOption.code.toUpperCase() }}
+              </button>
+            }
+          </div>
+          <button
+            class="mobile-logout"
+            type="button"
+            (click)="mobilePanel.set(null); auth.logout()"
+          >
+            <ui-app-icon name="logout" />{{ 'common.logout' | translate }}
+          </button>
+        </div>
+      }
+    </dialog>
+  }
 </div>

@@ -24,3 +24,51 @@
   height: 100%;
   object-fit: cover;
 }
+
+@media (max-width: 760px) {
+  .list-view {
+    gap: 12px;
+  }
+  .pin-row {
+    grid-template-columns: 30px minmax(0, 1fr) 16px;
+    align-items: start;
+    padding: 18px 14px;
+    gap: 10px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    animation: stoa-content-enter 220ms var(--ease-soft);
+  }
+  .pin-row:active {
+    transform: scale(0.98);
+  }
+  .row-type {
+    width: 30px;
+    height: 30px;
+  }
+  .row-content {
+    gap: 12px;
+  }
+  .row-content strong {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.55;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .row-content small {
+    display: block;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
+  .row-author-avatar {
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  .pin-row > ui-app-icon {
+    margin-top: 6px;
+    color: var(--muted);
+  }
+}

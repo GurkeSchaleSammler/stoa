@@ -1,5 +1,6 @@
 {
   "templates": {
+    "actions": "Azioni della bacheca",
     "choose": "Scegli un punto di partenza",
     "lead": "Una cornice tranquilla per i tuoi contenuti. Tutto resta spostabile e modificabile.",
     "blank": "Bacheca vuota",
@@ -246,6 +247,7 @@
     "returnPortalLead": "Sulla bacheca di destinazione viene creato un secondo portale verso questa bacheca.",
     "webLink": "Link web",
     "photoPin": "Pin foto",
+    "imageUnavailable": "Immagine non disponibile",
     "imagePreview": "Anteprima immagine",
     "imageFullView": "Vista completa immagine",
     "openFullView": "Apri immagine a schermo intero",
@@ -381,7 +383,8 @@
     "copyLink": "Copia il link del profilo",
     "accent": "Colore del profilo",
     "capacity": "{{count}} / {{limit}} competenze",
-    "limitReached": "Limite raggiunto. Le competenze esistenti restano visibili e modificabili."
+    "limitReached": "Limite raggiunto. Le competenze esistenti restano visibili e modificabili.",
+    "mobileBoardLead": "Le tue competenze in schede leggibili."
   },
   "groups": {
     "nav": "Gruppi",

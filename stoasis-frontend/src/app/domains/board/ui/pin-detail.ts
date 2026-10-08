@@ -1,14 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  input,
-  output,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
+import { NativeModalDirective } from '../../../shared/ui/native-modal';
 import { Pin } from '../../../shared/models/pin';
 import { NOTE_BACKGROUND_PRESETS } from '../data/models/board-color';
 import { PinEditValue } from '../data/models/pin-edit-value';
@@ -25,17 +19,18 @@ import { ImageFullView } from './models/image-full-view';
     AppIconComponent,
     BoardColorPickerComponent,
     ImageFullViewComponent,
+    NativeModalDirective,
   ],
   template: `
     @if (pin(); as item) {
-      <div class="detail-backdrop" (click)="onClose.emit()">
-        <aside
-          class="detail-panel"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="pin-detail-title"
-          (click)="$event.stopPropagation()"
-        >
+      <dialog
+        class="detail-backdrop"
+        uiNativeModal
+        aria-labelledby="pin-detail-title"
+        (dismissed)="onClose.emit()"
+        (click)="onClose.emit()"
+      >
+        <aside class="detail-panel" (click)="$event.stopPropagation()">
           <header>
             @if (canCopy() && !editMode()) {
               <button type="button" class="button secondary" (click)="copyRequested.emit()">
@@ -280,7 +275,7 @@ import { ImageFullView } from './models/image-full-view';
             </section>
           </div>
         </aside>
-      </div>
+      </dialog>
     }
     @if (imageFullView(); as image) {
       <ui-image-full-view [image]="image" (close)="closeImageFullView()" />
@@ -310,11 +305,6 @@ export class PinDetailComponent {
   readonly backgroundColors = NOTE_BACKGROUND_PRESETS;
   readonly imageFullView = signal<ImageFullView | null>(null);
   commentDraft = '';
-
-  @HostListener('document:keydown.escape')
-  closeImageFullViewFromKeyboard(): void {
-    if (this.imageFullView()) this.closeImageFullView();
-  }
 
   openPinImage(pin: Pin): void {
     if (pin.type === 'photo' && pin.data.imageUrl) {

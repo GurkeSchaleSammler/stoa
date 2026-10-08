@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ViewportService } from '../../../shared/application/viewport.service';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
@@ -40,7 +41,7 @@ import { signal } from '@angular/core';
           <span>{{ 'common.name' | translate }}</span>
           <input
             type="text"
-            autofocus
+            [attr.autofocus]="viewport.compact() ? null : ''"
             [placeholder]="'collection.namePlaceholder' | translate"
             [(ngModel)]="name"
             (ngModelChange)="emitDraft()"
@@ -95,6 +96,7 @@ import { signal } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionCreateDialogComponent {
+  protected readonly viewport = inject(ViewportService);
   readonly templates = input<BoardTemplate[]>([]);
   readonly templatesLoading = input(false);
   readonly templatesError = input(false);

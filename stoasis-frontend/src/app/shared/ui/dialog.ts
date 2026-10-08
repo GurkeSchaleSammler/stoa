@@ -7,9 +7,11 @@ import {
   output,
   signal,
   viewChild,
+  inject,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from './app-icon';
+import { ViewportService } from '../application/viewport.service';
 
 /** Native modal semantics provide focus trapping, Escape and focus restoration. */
 @Component({
@@ -19,7 +21,7 @@ import { AppIconComponent } from './app-icon';
   template: `
     <dialog
       #dialog
-      [class.anchored]="anchor()"
+      [class.anchored]="anchor() && !viewport.compact()"
       [style.left.px]="position()?.left"
       [style.top.px]="position()?.top"
       [attr.aria-label]="title() | translate"
@@ -44,6 +46,7 @@ import { AppIconComponent } from './app-icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogComponent {
+  protected readonly viewport = inject(ViewportService);
   readonly open = input(false);
   readonly title = input.required<string>();
   readonly busy = input(false);
@@ -60,7 +63,7 @@ export class DialogComponent {
         if (dialog.open) dialog.close();
         return;
       }
-      const anchor = this.anchor();
+      const anchor = this.viewport.compact() ? null : this.anchor();
       const reposition = () => {
         if (!dialog.isConnected || !dialog.open) return;
         if (!anchor) {

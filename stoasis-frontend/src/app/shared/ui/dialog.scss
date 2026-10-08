@@ -2,6 +2,13 @@
   display: contents;
 }
 dialog {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transition:
+    opacity var(--motion-fast) ease,
+    transform var(--motion-enter) var(--ease-soft),
+    display var(--motion-fast) allow-discrete,
+    overlay var(--motion-fast) allow-discrete;
   width: min(520px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
   box-sizing: border-box;
@@ -13,8 +20,31 @@ dialog {
   color: var(--text);
   box-shadow: var(--shadow-lg);
 }
+dialog[open] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+@starting-style {
+  dialog[open] {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
 dialog::backdrop {
+  opacity: 0;
+  transition:
+    opacity var(--motion-fast) ease,
+    display var(--motion-fast) allow-discrete,
+    overlay var(--motion-fast) allow-discrete;
   background: color-mix(in srgb, var(--text) 25%, transparent);
+}
+dialog[open]::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  dialog[open]::backdrop {
+    opacity: 0;
+  }
 }
 dialog.anchored {
   position: fixed;
@@ -48,8 +78,21 @@ button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
-@media (max-width: 480px) {
+@media (max-width: 760px) {
   dialog {
-    padding: 16px;
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - env(safe-area-inset-top) - 16px);
+    margin: 0;
+    border-radius: 22px 22px 0 0;
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+    transform: translateY(24px);
+  }
+  @starting-style {
+    dialog[open] {
+      transform: translateY(24px);
+    }
   }
 }

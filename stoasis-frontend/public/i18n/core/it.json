@@ -4,7 +4,10 @@
   },
   "shell": {
     "accountMenu": "Menu account",
-    "home": "Home di Stoasis"
+    "home": "Home di Stoasis",
+    "navigation": "Navigazione",
+    "overview": "Home",
+    "boardTools": "Strumenti della bacheca"
   },
   "common": {
     "add": "Aggiungi",

@@ -1,5 +1,6 @@
 {
   "templates": {
+    "actions": "Board actions",
     "choose": "Choose a starting point",
     "lead": "A calm frame for your content. Everything stays movable and editable.",
     "blank": "Blank board",
@@ -246,6 +247,7 @@
     "returnPortalLead": "A second portal back to this board is created on the destination board.",
     "webLink": "Web link",
     "photoPin": "Photo pin",
+    "imageUnavailable": "Image unavailable",
     "imagePreview": "Image preview",
     "imageFullView": "Image full view",
     "openFullView": "Open image full view",
@@ -381,7 +383,8 @@
     "copyLink": "Copy profile link",
     "accent": "Profile accent",
     "capacity": "{{count}} / {{limit}} skills",
-    "limitReached": "Skill limit reached. Existing skills remain visible and editable."
+    "limitReached": "Skill limit reached. Existing skills remain visible and editable.",
+    "mobileBoardLead": "Your skills in easy-to-read cards."
   },
   "groups": {
     "nav": "Groups",

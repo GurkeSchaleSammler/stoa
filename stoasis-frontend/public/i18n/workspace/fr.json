@@ -1,5 +1,6 @@
 {
   "templates": {
+    "actions": "Actions du tableau",
     "choose": "Choisir un point de départ",
     "lead": "Un cadre calme pour vos contenus. Tout reste déplaçable et modifiable.",
     "blank": "Tableau vide",
@@ -246,6 +247,7 @@
     "returnPortalLead": "Un second portail vers ce tableau est créé sur le tableau cible.",
     "webLink": "Lien web",
     "photoPin": "Pin photo",
+    "imageUnavailable": "Image indisponible",
     "imagePreview": "Aperçu de l’image",
     "imageFullView": "Vue complète de l’image",
     "openFullView": "Ouvrir l’image en vue complète",
@@ -381,7 +383,8 @@
     "copyLink": "Copier le lien du profil",
     "accent": "Couleur du profil",
     "capacity": "{{count}} / {{limit}} compétences",
-    "limitReached": "Limite atteinte. Les compétences existantes restent visibles et modifiables."
+    "limitReached": "Limite atteinte. Les compétences existantes restent visibles et modifiables.",
+    "mobileBoardLead": "Vos compétences dans des cartes lisibles."
   },
   "groups": {
     "nav": "Groupes",

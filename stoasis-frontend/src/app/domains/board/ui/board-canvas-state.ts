@@ -2,7 +2,6 @@ import {
   DestroyRef,
   Directive,
   ElementRef,
-  HostListener,
   computed,
   inject,
   input,
@@ -143,11 +142,6 @@ export abstract class BoardCanvasState {
   protected resizeObserver?: ResizeObserver;
   protected suppressedOpenPinId: string | null = null;
   protected rejectedTimer?: ReturnType<typeof setTimeout>;
-
-  @HostListener('document:keydown.escape')
-  closeImageFullViewFromKeyboard(): void {
-    if (this.imageFullView()) this.closeImageFullView();
-  }
 
   openImageFullView(image: ImageFullView): void {
     if (image.src) this.imageFullView.set(image);

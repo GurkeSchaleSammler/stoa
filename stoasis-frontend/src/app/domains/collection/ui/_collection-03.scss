@@ -46,41 +46,76 @@
   font-size: 1.1rem;
 }
 @media (max-width: 760px) {
+  .sidebar-brand {
+    display: none;
+  }
   .collection-sidebar {
     border-right: 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 0;
+    padding-top: 16px;
   }
   .collection-list {
-    display: flex;
-    overflow: auto;
+    display: block;
     padding: 0 10px 10px;
   }
   .collection-item {
-    min-width: 210px;
+    min-width: 0;
+    min-height: 64px;
   }
   .sidebar-search {
-    display: none;
+    min-height: 44px;
   }
   .new-collection {
-    position: absolute;
-    top: 10px;
-    right: 56px;
-    width: 40px;
-    min-height: 36px;
-    margin: 0;
-    overflow: hidden;
-  }
-  .new-collection span {
-    display: none;
+    flex-shrink: 0;
+    min-height: 48px;
+    border-style: solid;
+    background: var(--accent);
+    color: var(--on-accent);
   }
   .new-collection ui-app-icon {
-    color: var(--text);
+    color: currentColor;
+  }
+  .collection-tabs button {
+    min-height: 44px;
+  }
+  .sidebar-search input {
+    font-size: 1rem;
   }
   .form-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 10px;
   }
   .type-picker {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .type-picker label {
+    min-height: 66px;
+    padding: 10px;
+    gap: 6px;
+    font-size: 0.8rem;
+  }
+  .type-picker label > span {
+    width: 26px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+  .panel-card {
+    width: calc(100% - 24px);
+    margin: 16px 12px 24px;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: none;
+  }
+  .lead {
+    margin-bottom: 20px;
+  }
+  .panel-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .panel-actions button {
+    min-height: 48px;
   }
   .panel-actions.split {
     align-items: stretch;

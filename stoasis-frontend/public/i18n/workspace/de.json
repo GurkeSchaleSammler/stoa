@@ -1,5 +1,6 @@
 {
   "templates": {
+    "actions": "Board-Aktionen",
     "choose": "Startpunkt wählen",
     "lead": "Ein ruhiger Rahmen für deine Inhalte. Alles bleibt verschiebbar und editierbar.",
     "blank": "Leeres Board",
@@ -246,6 +247,7 @@
     "returnPortalLead": "Auf dem Zielboard entsteht ein zweites Portal zurück zu diesem Board.",
     "webLink": "Web-Link",
     "photoPin": "Foto-Pin",
+    "imageUnavailable": "Bild nicht verfügbar",
     "imagePreview": "Bildvorschau",
     "imageFullView": "Bild-Vollansicht",
     "openFullView": "Bild in Vollansicht öffnen",
@@ -381,7 +383,8 @@
     "copyLink": "Profil-Link kopieren",
     "accent": "Profilfarbe",
     "capacity": "{{count}} / {{limit}} Skills",
-    "limitReached": "Skill-Limit erreicht. Bestehende Skills bleiben sichtbar und bearbeitbar."
+    "limitReached": "Skill-Limit erreicht. Bestehende Skills bleiben sichtbar und bearbeitbar.",
+    "mobileBoardLead": "Deine Fähigkeiten als übersichtliche Karten."
   },
   "groups": {
     "nav": "Gruppen",
