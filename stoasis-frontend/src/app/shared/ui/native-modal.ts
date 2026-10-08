@@ -22,7 +22,8 @@ export class NativeModalDirective {
       if (this.dialog.open) this.dialog.close();
       // Conditional Angular views can detach the dialog before native close restores focus.
       window.requestAnimationFrame(() => {
-        if (this.opener?.isConnected && !document.querySelector('dialog:modal'))
+        const remainingModal = this.dialog.ownerDocument.querySelector('dialog:modal');
+        if (this.opener?.isConnected && (!remainingModal || remainingModal.contains(this.opener)))
           this.opener.focus();
       });
     });
