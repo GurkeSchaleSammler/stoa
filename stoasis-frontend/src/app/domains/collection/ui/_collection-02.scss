@@ -28,13 +28,13 @@
   }
 }
 .panel-card {
-  width: min(720px, calc(100% - 2 * clamp(16px, 3vw, 40px)));
-  margin: 24px clamp(16px, 3vw, 40px) 40px;
-  padding: clamp(24px, 5vw, 48px);
+  width: min(760px, calc(100% - 2 * var(--page-gutter)));
+  margin: clamp(24px, 4vw, 48px) auto 48px;
+  padding: clamp(24px, 4vw, 40px);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--radius-panel);
   background: var(--surface-raised);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-sm);
 }
 .eyebrow {
   margin-bottom: 10px;
@@ -48,7 +48,9 @@
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(1.7rem, 4vw, 2.5rem);
-  letter-spacing: -0.035em;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
 }
 .lead {
   margin: 10px 0 30px;
@@ -70,7 +72,7 @@
 .form-grid label > span,
 .panel-card legend {
   color: var(--muted);
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 .form-grid input,
@@ -80,7 +82,7 @@
   min-height: 44px;
   padding: 0 12px;
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   background: var(--surface-sunken);
   color: var(--text);
   font: inherit;
@@ -160,12 +162,12 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 15px;
   border: 1px solid transparent;
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   font: inherit;
-  font-size: 0.82rem;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -174,13 +176,21 @@
   cursor: not-allowed;
 }
 .button.primary {
-  background: var(--text);
-  color: var(--surface-raised);
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.button.primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 88%, var(--text));
 }
 .button.secondary {
   border-color: var(--border);
   background: var(--surface-raised);
   color: var(--text);
+}
+.button.secondary:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--surface-sunken);
 }
 .button.danger-ghost {
   border-color: var(--danger-soft);

@@ -5,12 +5,16 @@
   --motion-enter: 240ms;
   --ease-soft: cubic-bezier(0.25, 0.8, 0.25, 1);
   --ease-spring: cubic-bezier(0.22, 1.08, 0.36, 1);
-  --radius-control: 7px;
-  --radius-card: 7px;
-  --radius-panel: 8px;
-  --shadow-sm: 0 2px 0 color-mix(in srgb, var(--border-strong) 22%, transparent);
-  --shadow-md: 0 6px 18px rgb(20 13 8 / 18%);
-  --shadow-lg: 0 14px 38px rgb(20 13 8 / 24%);
+  --page-max: 1120px;
+  --page-gutter: clamp(20px, 3vw, 40px);
+  --page-padding: clamp(32px, 4vw, 56px) 0 64px;
+  --heading-size: clamp(2rem, 3.5vw, 3.15rem);
+  --radius-control: 10px;
+  --radius-card: 12px;
+  --radius-panel: 16px;
+  --shadow-sm: 0 1px 2px color-mix(in srgb, var(--text) 5%, transparent);
+  --shadow-md: 0 4px 16px color-mix(in srgb, var(--text) 7%, transparent);
+  --shadow-lg: 0 16px 48px rgb(0 0 0 / 16%);
   --font-sans: 'Candara', 'Trebuchet MS', sans-serif;
   --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
   --surface-0: var(--surface-sunken);
@@ -113,6 +117,20 @@ app-shell .route-stage > :not(router-outlet) {
   min-width: 0;
   animation: stoa-fade-in 180ms ease;
 }
+// Reserve equal space for classic scrollbars; overlay scrollbars need no gutter.
+app-home,
+feature-profile-page-handler,
+feature-search-results-handler,
+app-worlds-page,
+app-profile-skills-page,
+app-group-list-page,
+app-group-detail-page,
+app-shell
+  .route-stage:has(> feature-collection-create-handler, > feature-collection-settings-handler) {
+  scrollbar-gutter: stable both-edges;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
 dialog[uiNativeModal] {
   width: 100%;
   height: 100dvh;
@@ -197,6 +215,11 @@ dialog[uiNativeModal]:not([open]) {
 }
 
 @media (max-width: 760px) {
+  :root {
+    --page-gutter: 16px;
+    --page-padding: 24px 0 40px;
+    --heading-size: clamp(1.85rem, 8vw, 2.6rem);
+  }
   // 16px prevents iOS from zooming into form fields and hiding the surrounding UI.
   input:not([type='checkbox']):not([type='radio']),
   textarea,

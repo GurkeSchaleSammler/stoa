@@ -4,10 +4,11 @@
 }
 .profile-card,
 .settings-section {
-  padding: 26px;
+  padding: 28px;
   border: 1px solid var(--border);
-  border-radius: 15px;
+  border-radius: var(--radius-panel);
   background: var(--surface-raised);
+  box-shadow: var(--shadow-sm);
 }
 .profile-card > header {
   display: flex;
@@ -71,15 +72,15 @@
   gap: 7px;
   margin-top: 14px;
   color: var(--muted);
-  font-size: 0.72rem;
   font-weight: 700;
+  font-size: 0.8125rem;
 }
 .profile-card input,
 .danger-zone input {
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 11px;
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   background: var(--surface-sunken);
   color: var(--text);
   font: inherit;
@@ -100,12 +101,12 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  min-height: 39px;
+  min-height: 44px;
   padding: 0 14px;
   border: 1px solid transparent;
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   font: inherit;
-  font-size: 0.76rem;
+  font-size: 0.875rem;
   font-weight: 750;
   white-space: nowrap;
   cursor: pointer;
@@ -120,13 +121,21 @@
   pointer-events: none;
 }
 .button.primary {
-  background: var(--text);
-  color: var(--surface-raised);
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.button.primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 88%, var(--text));
 }
 .button.secondary {
   border-color: var(--border);
   background: var(--surface-raised);
   color: var(--text);
+}
+.button.secondary:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--surface-sunken);
 }
 .button.danger {
   margin-top: 10px;
@@ -163,8 +172,8 @@
 .settings-section p:not(.eyebrow) {
   margin: 0;
   color: var(--muted);
-  font-size: 0.76rem;
-  line-height: 1.5;
+  font-size: 0.875rem;
+  line-height: 1.6;
 }
 .data-actions,
 .theme-options,

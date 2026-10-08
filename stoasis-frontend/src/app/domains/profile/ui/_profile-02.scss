@@ -4,11 +4,11 @@
   gap: 3px;
 }
 .appearance-control strong {
-  font-size: 0.78rem;
+  font-size: 0.875rem;
 }
 .appearance-control small {
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   line-height: 1.4;
 }
 .theme-options,
@@ -28,13 +28,13 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  min-height: 35px;
+  min-height: 40px;
   border: 0;
   border-radius: 7px;
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   cursor: pointer;
 }
 .theme-options ui-app-icon {
@@ -135,6 +135,10 @@
   cursor: pointer;
 }
 @media (max-width: 680px) {
+  .profile-card,
+  .settings-section {
+    padding: 20px;
+  }
   .settings-section {
     align-items: stretch;
     flex-direction: column;
@@ -169,5 +173,6 @@
   .palette-options button {
     flex: 1;
     justify-content: center;
+    min-height: 44px;
   }
 }

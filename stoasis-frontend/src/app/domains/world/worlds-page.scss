@@ -4,9 +4,9 @@
   overflow: auto;
 }
 .worlds-page {
-  width: min(1240px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 42px 0 72px;
+  width: min(var(--page-max), calc(100% - 2 * var(--page-gutter)));
+  margin-inline: auto;
+  padding: var(--page-padding);
 }
 .worlds-header,
 .world-detail-header,
@@ -21,10 +21,12 @@
   margin-bottom: 28px;
 }
 .worlds-header h1 {
-  margin: 3px 0 8px;
+  margin: 10px 0 12px;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3.3rem);
-  line-height: 1;
+  font-size: var(--heading-size);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
 }
 .worlds-header > div > p:last-child {
   max-width: 640px;
@@ -41,7 +43,7 @@
 }
 .button {
   display: inline-flex;
-  min-height: 40px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -76,7 +78,7 @@
   align-content: center;
   gap: 9px;
   border: 1px dashed var(--border-strong);
-  border-radius: 12px;
+  border-radius: var(--radius-panel);
   text-align: center;
 }
 .world-empty > span {
@@ -438,9 +440,7 @@ label {
 }
 @media (max-width: 620px) {
   .worlds-page {
-    width: calc(100% - 24px);
-    padding-top: 24px;
-    padding-bottom: 32px;
+    padding-bottom: 40px;
   }
   .worlds-header,
   .world-detail-header {

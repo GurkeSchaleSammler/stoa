@@ -3,12 +3,12 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  min-height: 40px;
-  padding: 0 15px;
+  min-height: 44px;
+  padding: 0 16px;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: var(--radius-control);
   font: inherit;
-  font-size: 0.82rem;
+  font-size: 0.875rem;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
@@ -22,11 +22,19 @@
   outline-offset: 3px;
 }
 .button.primary {
-  background: var(--text);
-  color: var(--surface-raised);
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.button.primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 88%, var(--text));
 }
 .button.secondary {
   border-color: var(--border);
   background: var(--surface-raised);
   color: var(--text);
+}
+.button.secondary:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--surface-sunken);
 }
