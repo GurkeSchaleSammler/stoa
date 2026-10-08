@@ -59,12 +59,16 @@ describe('Mobile board reuse menu', () => {
   });
 
   it('restores focus before a duplicate action opens its modal', () => {
-    const { menu, summary, action } = render();
+    const { fixture, menu, summary, action } = render();
     menu.open = true;
     action.focus();
     action.click();
     expect(menu.open).toBe(false);
     expect(document.activeElement).toBe(summary);
+    fixture.detectChanges();
+    const dialog = fixture.nativeElement.querySelector('feature-collection-duplicate dialog');
+    expect(dialog.closest('details')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('[data-tour="duplicate"]')).toHaveLength(1);
   });
 
   it('keeps desktop actions visible after Escape', () => {

@@ -45,7 +45,15 @@ import { ViewportService } from '../../../shared/application/viewport.service';
             <a routerLink="/collections/new" class="button secondary"
               ><ui-app-icon name="grid" />{{ 'templates.newFromTemplate' | translate }}</a
             >
-            <feature-collection-duplicate [collectionId]="context().id" [name]="context().name" />
+            <button
+              type="button"
+              class="button secondary"
+              data-tour="duplicate"
+              [disabled]="duplicate.isSaving()"
+              (click)="duplicate.open()"
+            >
+              <ui-app-icon name="copy" /> {{ 'templates.duplicate' | translate }}
+            </button>
             @if (pins.canEdit()) {
               <button
                 type="button"
@@ -64,6 +72,12 @@ import { ViewportService } from '../../../shared/application/viewport.service';
             }
           </div>
         </details>
+        <feature-collection-duplicate
+          #duplicate
+          [collectionId]="context().id"
+          [name]="context().name"
+          [showTrigger]="false"
+        />
         <feature-onboarding [tutorial]="tutorial" [available]="!pins.selectedPin()" />
       </div>
     }

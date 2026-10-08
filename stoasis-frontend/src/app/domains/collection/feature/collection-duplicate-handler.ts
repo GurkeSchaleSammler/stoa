@@ -9,15 +9,17 @@ import { AppIconComponent } from '../../../shared/ui/app-icon';
   standalone: true,
   imports: [DialogComponent, TranslatePipe, AppIconComponent],
   template: `
-    <button
-      type="button"
-      class="button secondary"
-      data-tour="duplicate"
-      [disabled]="collections.isSaving()"
-      (click)="open()"
-    >
-      <ui-app-icon name="copy" /> {{ 'templates.duplicate' | translate }}
-    </button>
+    @if (showTrigger()) {
+      <button
+        type="button"
+        class="button secondary"
+        data-tour="duplicate"
+        [disabled]="collections.isSaving()"
+        (click)="open()"
+      >
+        <ui-app-icon name="copy" /> {{ 'templates.duplicate' | translate }}
+      </button>
+    }
     <ui-dialog
       [open]="isOpen()"
       title="templates.duplicate"
@@ -92,7 +94,9 @@ import { AppIconComponent } from '../../../shared/ui/app-icon';
 export class CollectionDuplicateHandlerComponent {
   readonly collectionId = input.required<string>();
   readonly name = input.required<string>();
+  readonly showTrigger = input(true);
   protected readonly collections = inject(CollectionService);
+  readonly isSaving = this.collections.isSaving;
   private readonly translate = inject(TranslateService);
   readonly copyName = signal('');
   readonly isOpen = signal(false);
