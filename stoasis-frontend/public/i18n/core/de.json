@@ -4,7 +4,10 @@
   },
   "shell": {
     "accountMenu": "Kontomenü",
-    "home": "Stoasis Startseite"
+    "home": "Stoasis Startseite",
+    "navigation": "Navigation",
+    "overview": "Übersicht",
+    "boardTools": "Board-Werkzeuge"
   },
   "common": {
     "add": "Hinzufügen",

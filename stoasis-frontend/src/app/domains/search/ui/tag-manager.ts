@@ -30,7 +30,7 @@ import { Tag } from '../data/models/tag';
             [attr.aria-label]="'search.deleteTag' | translate: { tag: tag.name }"
             (click)="onDeleteTag.emit(tag.id)"
           >
-            <ui-app-icon name="close" /></button
+            <ui-app-icon name="trash" /></button
         ></span>
       }
     </div>

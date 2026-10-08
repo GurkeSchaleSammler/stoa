@@ -59,13 +59,14 @@ import { SearchResult } from '../data/models/search-result';
   styles: `
     :host {
       display: block;
-      min-height: 100%;
+      height: 100%;
+      min-height: 0;
       overflow: auto;
     }
     .search-page {
-      width: min(820px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: clamp(28px, 6vw, 70px) 0;
+      width: min(820px, calc(100% - 2 * clamp(16px, 3vw, 40px)));
+      margin: 0 clamp(16px, 3vw, 40px);
+      padding: 32px 0 48px;
     }
     .search-page header p {
       margin: 0;

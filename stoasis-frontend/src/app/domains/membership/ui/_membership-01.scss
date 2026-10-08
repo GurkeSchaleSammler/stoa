@@ -111,18 +111,6 @@
   align-items: center;
   color: var(--muted);
 }
-.role-select::after {
-  position: absolute;
-  right: 13px;
-  top: 50%;
-  width: 7px;
-  height: 7px;
-  border-right: 1.7px solid currentColor;
-  border-bottom: 1.7px solid currentColor;
-  transform: translateY(-65%) rotate(45deg);
-  content: '';
-  pointer-events: none;
-}
 .role-select select {
   min-width: 116px;
   min-height: 36px;

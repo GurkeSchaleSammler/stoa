@@ -1,17 +1,18 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
+import { NativeModalDirective } from '../../../shared/ui/native-modal';
 import { ImageFullView } from './models/image-full-view';
 
 @Component({
   selector: 'ui-image-full-view',
   standalone: true,
-  imports: [AppIconComponent, TranslatePipe],
+  imports: [AppIconComponent, TranslatePipe, NativeModalDirective],
   template: `
-    <div
+    <dialog
+      uiNativeModal
       class="image-fullview"
-      role="dialog"
-      aria-modal="true"
+      (dismissed)="close.emit()"
       [attr.aria-label]="'pin.imageFullView' | translate"
       (click)="close.emit()"
     >
@@ -29,7 +30,7 @@ import { ImageFullView } from './models/image-full-view';
           <figcaption>{{ image().caption }}</figcaption>
         }
       </figure>
-    </div>
+    </dialog>
   `,
   styleUrl: './image-full-view.scss',
   host: { style: 'display: contents' },

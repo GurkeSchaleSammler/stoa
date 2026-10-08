@@ -53,9 +53,9 @@ import { ProfileFormValue } from '../data/models/profile-form-value';
       overflow: auto;
     }
     .profile-page {
-      width: min(820px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: clamp(28px, 6vw, 68px) 0;
+      width: min(820px, calc(100% - 2 * clamp(16px, 3vw, 40px)));
+      margin: 0 clamp(16px, 3vw, 40px);
+      padding: 32px 0 48px;
     }
     .page-heading p {
       margin: 0;

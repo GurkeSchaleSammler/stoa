@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
 import { CollectionFilter } from '../data/models/collection-filter';
@@ -8,14 +9,18 @@ import { CollectionSummary } from '../data/models/collection-summary';
 @Component({
   selector: 'ui-collection-list',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, AppIconComponent],
+  host: { style: 'display: block; height: 100%; min-height: 0' },
+  imports: [FormsModule, RouterLink, TranslatePipe, AppIconComponent],
   template: `
     <nav class="collection-sidebar" [attr.aria-label]="'collection.plural' | translate">
       <div class="sidebar-brand">
-        <a class="brand" href="/" [attr.aria-label]="'shell.home' | translate"
+        <a class="brand" routerLink="/" [attr.aria-label]="'shell.home' | translate"
           ><span><img src="/android-chrome-192x192.png" alt="" /></span> Stoasis</a
         >
-        <a class="icon-button" href="/search" [attr.aria-label]="'home.searchPins' | translate"
+        <a
+          class="icon-button"
+          routerLink="/search"
+          [attr.aria-label]="'home.searchPins' | translate"
           ><ui-app-icon name="search"
         /></a>
       </div>
@@ -61,6 +66,7 @@ import { CollectionSummary } from '../data/models/collection-summary';
             <button
               type="button"
               class="collection-item"
+              [attr.title]="collection.name"
               [class.active]="activeId() === collection.id"
               (click)="onSelect.emit(collection.id)"
             >
@@ -98,7 +104,13 @@ import { CollectionSummary } from '../data/models/collection-summary';
         }
       </div>
 
-      <button type="button" class="new-collection" (click)="onCreateClick.emit()">
+      <button
+        type="button"
+        class="new-collection"
+        [attr.aria-label]="'collection.new' | translate"
+        [attr.title]="'collection.new' | translate"
+        (click)="onCreateClick.emit()"
+      >
         <ui-app-icon name="plus" /> <span>{{ 'collection.new' | translate }}</span>
       </button>
     </nav>

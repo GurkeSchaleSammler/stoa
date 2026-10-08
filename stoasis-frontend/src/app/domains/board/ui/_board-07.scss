@@ -70,32 +70,13 @@
   }
 
   @media (max-width: 760px) {
-    .board-toolbar {
-      align-items: flex-start;
-      padding: 13px;
-    }
-    .member-count,
-    .toolbar-button:not(.decorate-button) {
+    .member-count {
       display: none;
-    }
-    .decorate-button {
-      width: 36px;
-      padding: 0;
-      font-size: 0;
-    }
-    .decorate-button ui-app-icon {
-      font-size: 1rem;
     }
     .board-palette {
       top: 64px;
       right: 8px;
       width: calc(100% - 16px);
-    }
-    .board-heading h1 {
-      max-width: 160px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
     .board-hint {
       padding: 7px 13px;
@@ -108,6 +89,10 @@
     }
     .dialog-card {
       padding: 19px;
+      width: 100%;
+      max-height: calc(100dvh - env(safe-area-inset-top) - 12px);
+      border-radius: 22px 22px 0 0;
+      padding-bottom: calc(20px + env(safe-area-inset-bottom));
     }
     .pin-type-picker {
       grid-template-columns: 1fr;
@@ -116,7 +101,8 @@
       width: 100%;
     }
     .dialog-backdrop {
-      padding: 8px;
+      place-items: end stretch;
+      padding: 0;
     }
   }
 }

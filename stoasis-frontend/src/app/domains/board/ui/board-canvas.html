@@ -10,6 +10,7 @@
       (consoleClick)="onConsoleClick.emit()"
       (settingsClick)="onSettingsClick.emit()"
       (paletteToggle)="paletteOpen.update((open) => !open)"
+      (addPinClick)="onAddPinClick.emit()"
     />
     <ng-content select="[world-navigation]" />
     <ng-content select="[board-presence]" />
@@ -32,6 +33,36 @@
     }
   }
   <ui-board-status [context]="context()" [error]="error()" />
+  @if (viewMode() === 'board' && !isLoading()) {
+    <div class="board-zoom-controls">
+      <div class="board-zoom-panel" role="group" [attr.aria-label]="'board.zoom' | translate">
+        <button
+          type="button"
+          [disabled]="zoomLevel() <= minZoomLevel"
+          [attr.aria-label]="'board.zoomOut' | translate"
+          (click)="zoomOut()"
+        >
+          <ui-app-icon name="minus" />
+        </button>
+        <span class="board-zoom-value">{{ zoomPercent() }}%</span>
+        <button
+          type="button"
+          [disabled]="zoomLevel() >= maxZoomLevel"
+          [attr.aria-label]="'board.zoomIn' | translate"
+          (click)="zoomIn()"
+        >
+          <ui-app-icon name="plus" />
+        </button>
+        <button
+          type="button"
+          [attr.aria-label]="'board.resetZoom' | translate"
+          (click)="resetZoom()"
+        >
+          100%
+        </button>
+      </div>
+    </div>
+  }
   @if (isLoading()) {
     <div class="board-loading" [attr.aria-label]="'board.loading' | translate">
       <span></span><span></span><span></span>
@@ -39,34 +70,6 @@
   } @else {
     <div class="board-canvas">
       @if (viewMode() === 'board') {
-        <div class="board-zoom-controls">
-          <div class="board-zoom-panel" role="group" [attr.aria-label]="'board.zoom' | translate">
-            <button
-              type="button"
-              [disabled]="zoomLevel() <= minZoomLevel"
-              [attr.aria-label]="'board.zoomOut' | translate"
-              (click)="zoomOut()"
-            >
-              <ui-app-icon name="minus" />
-            </button>
-            <span class="board-zoom-value">{{ zoomPercent() }}%</span>
-            <button
-              type="button"
-              [disabled]="zoomLevel() >= maxZoomLevel"
-              [attr.aria-label]="'board.zoomIn' | translate"
-              (click)="zoomIn()"
-            >
-              <ui-app-icon name="plus" />
-            </button>
-            <button
-              type="button"
-              [attr.aria-label]="'board.resetZoom' | translate"
-              (click)="resetZoom()"
-            >
-              100%
-            </button>
-          </div>
-        </div>
         <div
           class="board-zoom-stage"
           [style.width.px]="scaledBoardWidthPx()"
@@ -116,7 +119,7 @@
                     (pointerdown)="$event.stopPropagation()"
                     (click)="onDeleteZone.emit(zone.id)"
                   >
-                    <ui-app-icon name="close" />
+                    <ui-app-icon name="trash" />
                   </button>
                   <button
                     type="button"
@@ -233,7 +236,7 @@
                     (pointerdown)="$event.stopPropagation()"
                     (click)="onDeleteLabel.emit(label.id)"
                   >
-                    <ui-app-icon name="close" />
+                    <ui-app-icon name="trash" />
                   </button>
                 }
               </div>
@@ -309,7 +312,7 @@
                     (pointerdown)="$event.stopPropagation()"
                     (click)="onDissolveStack.emit(stack.id)"
                   >
-                    <ui-app-icon name="close" />
+                    <ui-app-icon name="unstack" />
                   </button>
                 }
               </div>
@@ -359,7 +362,7 @@
                 }
               </div>
             }
-            @if (canEdit()) {
+            @if (canEdit() && pins().length === 0) {
               <button
                 type="button"
                 class="add-pin-card"
@@ -378,7 +381,7 @@
       } @else {
         <ui-board-list-view [pins]="pins()" (onSelectPin)="onSelectPin.emit($event)" />
       }
-      @if (pins().length === 0 && !canEdit()) {
+      @if (pins().length === 0 && (!canEdit() || viewMode() === 'list')) {
         <p class="empty-board">{{ 'board.empty' | translate }}</p>
       }
     </div>

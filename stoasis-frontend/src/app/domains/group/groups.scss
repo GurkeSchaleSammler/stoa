@@ -284,6 +284,7 @@
   .groups-page {
     width: min(100% - 24px, 1120px);
     padding-top: 24px;
+    padding-bottom: 32px;
   }
   .groups-header,
   .detail-header,
@@ -293,6 +294,30 @@
   }
   .create-group {
     flex-direction: column;
+  }
+  .group-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .group-card {
+    min-width: 0;
+    animation: stoa-content-enter var(--motion-enter) var(--ease-soft);
+  }
+  .group-card h2,
+  .detail-header h1 {
+    overflow-wrap: anywhere;
+  }
+  .group-card > div {
+    min-width: 0;
+  }
+  .create-group button,
+  .create-group input,
+  .invite-button {
+    min-height: 48px;
+  }
+  .create-group button {
+    justify-content: center;
   }
   .matrix-row {
     grid-template-columns: 1fr;

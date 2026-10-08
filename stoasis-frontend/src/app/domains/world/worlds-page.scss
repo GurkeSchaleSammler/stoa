@@ -440,6 +440,7 @@ label {
   .worlds-page {
     width: calc(100% - 24px);
     padding-top: 24px;
+    padding-bottom: 32px;
   }
   .worlds-header,
   .world-detail-header {
@@ -447,7 +448,8 @@ label {
     flex-direction: column;
   }
   .worlds-header .button {
-    align-self: flex-start;
+    align-self: stretch;
+    min-height: 48px;
   }
   .world-actions {
     display: grid;
@@ -455,6 +457,7 @@ label {
   }
   .world-actions .button {
     padding: 0 8px;
+    min-height: 44px;
   }
   .world-limit {
     flex-wrap: wrap;
@@ -477,5 +480,11 @@ label {
   }
   .inline-form {
     flex-direction: column;
+  }
+  .world-detail-header h2 {
+    overflow-wrap: anywhere;
+  }
+  .world-list {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  output,
+  signal,
+} from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
 import { CollectionService } from '../data/application/collection.service';
 import { CollectionListComponent } from '../ui/collection-list';
 import { CollectionFilter } from '../data/models/collection-filter';
@@ -7,6 +16,13 @@ import { CollectionFilter } from '../data/models/collection-filter';
 @Component({
   selector: 'feature-collection-list-handler',
   standalone: true,
+  styles: `
+    :host {
+      display: block;
+      height: 100%;
+      min-height: 0;
+    }
+  `,
   imports: [CollectionListComponent],
   template: `
     <ui-collection-list
@@ -23,10 +39,17 @@ import { CollectionFilter } from '../data/models/collection-filter';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionListHandlerComponent {
+  readonly navigated = output<void>();
   protected readonly collections = inject(CollectionService);
   private readonly router = inject(Router);
   readonly activeTab = signal<CollectionFilter>('all');
-  readonly activeId = signal<string | null>(this.collectionIdFromUrl());
+  readonly activeId = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.collectionIdFromUrl()),
+    ),
+    { initialValue: this.collectionIdFromUrl() },
+  );
   readonly query = signal('');
   readonly visibleCollections = computed(() => {
     const query = this.query().trim().toLocaleLowerCase('de');
@@ -46,11 +69,12 @@ export class CollectionListHandlerComponent {
   }
 
   selectCollection(id: string): void {
-    this.activeId.set(id);
+    this.navigated.emit();
     void this.router.navigate(['/collections', id]);
   }
 
   createCollection(): void {
+    this.navigated.emit();
     void this.router.navigate(['/collections/new']);
   }
 

@@ -7,9 +7,12 @@ import { AppIconComponent } from '../../../shared/ui/app-icon';
   selector: 'ui-search-bar',
   standalone: true,
   imports: [FormsModule, TranslatePipe, AppIconComponent],
-  template: `<label class="search-input"
-    ><ui-app-icon name="search" /><span class="sr-only">{{ 'search.allPins' | translate }}</span
-    ><input
+  template: `<div class="search-input" role="search">
+    <ui-app-icon name="search" />
+    <label for="pin-search" class="sr-only">{{ 'search.allPins' | translate }}</label>
+    <input
+      #searchField
+      id="pin-search"
       type="search"
       autofocus
       [placeholder]="'search.placeholder' | translate"
@@ -18,12 +21,17 @@ import { AppIconComponent } from '../../../shared/ui/app-icon';
     />
     @if (isSearching()) {
       <span class="mini-loader" [attr.aria-label]="'search.searching' | translate"></span>
-    } @else if (query()) {
-      <button type="button" [attr.aria-label]="'search.clear' | translate" (click)="onClear.emit()">
+    }
+    @if (query()) {
+      <button
+        type="button"
+        [attr.aria-label]="'search.clear' | translate"
+        (click)="onClear.emit(); searchField.focus()"
+      >
         <ui-app-icon name="close" />
       </button>
     }
-  </label>`,
+  </div>`,
   styleUrl: './search.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

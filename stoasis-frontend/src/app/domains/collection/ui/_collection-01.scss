@@ -10,6 +10,8 @@
   clip: rect(0, 0, 0, 0);
 }
 .collection-sidebar {
+  position: relative;
+  min-height: 0;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -111,6 +113,7 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 .sidebar-search input {
+  min-width: 0;
   width: 100%;
   border: 0;
   outline: 0;

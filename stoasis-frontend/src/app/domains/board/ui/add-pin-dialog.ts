@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
+import { NativeModalDirective } from '../../../shared/ui/native-modal';
 import { AppIconName } from '../../../shared/models/app-icon-name';
 import { PinType } from '../../../shared/models/pin-type';
 import { AddPinDraft } from '../data/models/add-pin-draft';
@@ -15,17 +16,23 @@ import { WorldDetail } from '../../world/data/world.models';
 @Component({
   selector: 'ui-add-pin-dialog',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, AppIconComponent, BoardColorPickerComponent],
+  imports: [
+    FormsModule,
+    TranslatePipe,
+    AppIconComponent,
+    BoardColorPickerComponent,
+    NativeModalDirective,
+  ],
   template: `
     @if (isOpen()) {
-      <div class="dialog-backdrop" (click)="onCancel.emit()">
-        <section
-          class="dialog-card"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="add-pin-title"
-          (click)="$event.stopPropagation()"
-        >
+      <dialog
+        class="dialog-backdrop"
+        uiNativeModal
+        aria-labelledby="add-pin-title"
+        (dismissed)="onCancel.emit()"
+        (click)="onCancel.emit()"
+      >
+        <section class="dialog-card" (click)="$event.stopPropagation()">
           <header>
             <div>
               <p class="eyebrow">{{ 'pin.new' | translate }}</p>
@@ -259,7 +266,7 @@ import { WorldDetail } from '../../world/data/world.models';
             </button>
           </footer>
         </section>
-      </div>
+      </dialog>
     }
   `,
   styleUrls: ['./board.scss', './add-pin-dialog.scss'],

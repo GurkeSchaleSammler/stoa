@@ -29,6 +29,14 @@ import { BoardPresenceComponent } from '../ui/board-presence';
   selector: 'feature-board-canvas-handler',
   host: { class: 'stoa-board' },
   standalone: true,
+  styles: `
+    :host {
+      display: block;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+  `,
   providers: [BoardPresenceStore],
   imports: [
     BoardCanvasComponent,

@@ -44,7 +44,7 @@ import { SearchResult } from '../data/models/search-result';
                         ? 'image'
                         : result.type === 'portal'
                           ? 'door'
-                          : 'sparkles'
+                          : 'graduation-cap'
                 "
               />
             </span>

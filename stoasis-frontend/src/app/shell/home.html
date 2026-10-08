@@ -80,7 +80,7 @@
                 [attr.title]="'home.dashboardRemoveFavorite' | translate: { name: collection.name }"
                 (click)="toggleFavorite(collection)"
               >
-                <ui-app-icon name="sparkles" />
+                <ui-app-icon name="star" [filled]="true" />
               </button>
             </article>
           }
@@ -135,7 +135,7 @@
               "
               (click)="toggleFavorite(collection)"
             >
-              <ui-app-icon name="sparkles" />
+              <ui-app-icon name="star" [filled]="isFavorite(collection.id)" />
             </button>
           </article>
         }
