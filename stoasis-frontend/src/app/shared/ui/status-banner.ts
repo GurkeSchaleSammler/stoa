@@ -9,7 +9,12 @@ import { AppIconComponent } from './app-icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (message()) {
-      <div class="status-banner" [class]="'status-banner ' + tone()" role="status">
+      <div
+        class="status-banner"
+        [class]="'status-banner ' + tone()"
+        role="status"
+        animate.leave="status-banner-leave"
+      >
         <span>{{ message() | translate }}</span>
         @if (dismissible()) {
           <button
@@ -28,6 +33,7 @@ import { AppIconComponent } from './app-icon';
       display: contents;
     }
     .status-banner {
+      animation: stoa-content-enter var(--motion-fast) var(--ease-soft);
       display: flex;
       align-items: center;
       gap: 0.75rem;
@@ -44,6 +50,10 @@ import { AppIconComponent } from './app-icon';
     .status-banner.success {
       background: var(--success-soft);
       color: var(--success);
+    }
+    .status-banner.status-banner-leave {
+      animation: stoa-fade-out var(--motion-fast) ease both;
+      pointer-events: none;
     }
     span {
       flex: 1;

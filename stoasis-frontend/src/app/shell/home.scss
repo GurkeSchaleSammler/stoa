@@ -206,6 +206,9 @@ h1 {
   color: var(--muted);
   cursor: pointer;
 }
+.favorite.active ui-app-icon {
+  animation: stoa-selection-enter var(--motion-enter) var(--ease-soft);
+}
 .favorite:hover,
 .favorite.active {
   background: var(--accent-soft);

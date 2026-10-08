@@ -131,6 +131,7 @@
   gap: 8px;
 }
 .result-card {
+  animation: stoa-content-enter var(--motion-enter) var(--ease-soft) backwards;
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr) 20px;
   align-items: center;
@@ -143,6 +144,18 @@
   color: var(--text);
   text-align: left;
   cursor: pointer;
+}
+@for $item from 2 through 5 {
+  .result-card:nth-child(#{$item}) {
+    animation-delay: ($item - 1) * 20ms;
+  }
+}
+.result-card:nth-child(n + 6) {
+  animation-delay: 100ms;
+}
+.result-count,
+.search-empty {
+  animation: stoa-fade-in var(--motion-fast) ease;
 }
 .result-card:hover {
   border-color: var(--border-strong);
@@ -315,7 +328,6 @@
   .result-card {
     padding: 16px 12px;
     border-radius: 16px;
-    animation: stoa-content-enter var(--motion-enter) var(--ease-soft);
   }
   .filter-bar {
     align-items: stretch;

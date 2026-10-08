@@ -40,6 +40,14 @@ legend {
 .template-card.selected {
   outline: 2px solid var(--accent);
   outline-offset: 0;
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 30%, var(--surface-raised));
+}
+@media (hover: hover) and (pointer: fine) {
+  .template-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+  }
 }
 .template-card > span {
   font-size: 0.75rem;
@@ -51,6 +59,7 @@ legend {
   bottom: 12px;
   right: 12px;
   color: var(--accent-strong);
+  animation: stoa-selection-enter var(--motion-enter) var(--ease-soft);
 }
 .template-card strong {
   font-size: 0.85rem;

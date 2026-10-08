@@ -1,4 +1,8 @@
 .stoa-board {
+  .board-zoom-stage {
+    // Only opacity: animating a canvas transform would disturb drag geometry.
+    animation: stoa-fade-in var(--motion-fast) ease;
+  }
   .board-shell > :not(.board-canvas):not(.board-loading) {
     flex-shrink: 0;
   }
@@ -243,6 +247,7 @@
       background: var(--surface-raised);
       box-shadow: var(--shadow-lg);
       animation: stoa-menu-enter 160ms var(--ease-soft);
+      transform-origin: top right;
     }
     .board-tool-options .toolbar-button,
     .board-tool-options .toolbar-icon {

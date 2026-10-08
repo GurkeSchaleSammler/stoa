@@ -144,6 +144,13 @@
   color: var(--text);
   text-align: left;
   cursor: pointer;
+  transition:
+    background-color var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-soft);
+}
+.collection-item:active {
+  transform: scale(0.99);
 }
 .collection-item:hover,
 .collection-item.active {

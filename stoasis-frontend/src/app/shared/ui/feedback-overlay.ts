@@ -15,7 +15,12 @@ import { AppIconComponent } from './app-icon';
       [attr.aria-label]="'feedback.notifications' | translate"
     >
       @for (message of snackbars.messages(); track message.id) {
-        <article class="snackbar" [class]="'snackbar ' + message.tone" role="status">
+        <article
+          class="snackbar"
+          [class]="'snackbar ' + message.tone"
+          role="status"
+          animate.leave="snackbar-leave"
+        >
           <ui-app-icon
             [name]="
               message.tone === 'success' ? 'check' : message.tone === 'error' ? 'warning' : 'note'

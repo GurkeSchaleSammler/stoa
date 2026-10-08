@@ -144,6 +144,9 @@ import { ViewportService } from '../../../shared/application/viewport.service';
       .reuse-menu[open] summary ui-app-icon {
         transform: rotate(90deg);
       }
+      .reuse-menu summary ui-app-icon {
+        transition: transform var(--motion-fast) var(--ease-soft);
+      }
       .reuse-actions {
         position: absolute;
         top: calc(100% - 1px);
@@ -157,6 +160,10 @@ import { ViewportService } from '../../../shared/application/viewport.service';
         box-shadow: var(--shadow-lg);
         flex-direction: column;
         align-items: stretch;
+      }
+      .reuse-menu[open] .reuse-actions {
+        transform-origin: top left;
+        animation: stoa-menu-enter var(--motion-fast) var(--ease-soft);
       }
     }
   `,
