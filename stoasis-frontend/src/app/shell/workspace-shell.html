@@ -168,16 +168,16 @@
       } @else if (mobilePanel() === 'account') {
         <div class="account-sheet-content">
           <p class="account-name">{{ session.user()?.name }}</p>
-          <a routerLink="/profile"
+          <a routerLink="/profile" (click)="mobilePanel.set(null)"
             ><span class="user-avatar">{{ session.user()?.name?.slice(0, 1) || 'S' }}</span
             >{{ 'common.profile' | translate }}<ui-app-icon name="chevron-right"
           /></a>
           @if (features.skillsEnabled()) {
-            <a routerLink="/skills"
+            <a routerLink="/skills" (click)="mobilePanel.set(null)"
               ><ui-app-icon name="graduation-cap" />{{ 'skills.nav' | translate
               }}<ui-app-icon name="chevron-right"
             /></a>
-            <a routerLink="/groups"
+            <a routerLink="/groups" (click)="mobilePanel.set(null)"
               ><ui-app-icon name="users" />{{ 'groups.nav' | translate
               }}<ui-app-icon name="chevron-right"
             /></a>

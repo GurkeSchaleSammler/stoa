@@ -1,12 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   ElementRef,
   HostListener,
   inject,
   input,
-  signal,
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -18,6 +16,7 @@ import { AppIconComponent } from '../../../shared/ui/app-icon';
 import { OnboardingComponent } from '../../../shared/ui/onboarding';
 import { Tutorial } from '../../../shared/models/tutorial';
 import { BoardContext } from '../data/models/board-context';
+import { ViewportService } from '../../../shared/application/viewport.service';
 
 @Component({
   selector: 'feature-board-reuse-handler',
@@ -36,8 +35,8 @@ import { BoardContext } from '../data/models/board-context';
           #reuseMenu
           class="reuse-menu"
           [open]="!compact()"
-          (keydown.escape)="compact() && (reuseMenu.open = false)"
-          (click)="closeAfterAction($event, reuseMenu)"
+          (keydown.escape)="closeMenu()"
+          (click)="closeAfterAction($event)"
         >
           <summary>
             {{ 'templates.actions' | translate }} <ui-app-icon name="chevron-right" />
@@ -153,25 +152,24 @@ export class BoardReuseHandlerComponent {
   readonly context = input.required<BoardContext>();
   protected readonly clipboard = inject(BoardClipboardService);
   protected readonly pins = inject(PinService);
-  private readonly compactMedia =
-    typeof window.matchMedia === 'function' ? window.matchMedia('(max-width: 760px)') : null;
-  readonly compact = signal(this.compactMedia?.matches ?? false);
+  readonly compact = inject(ViewportService).compact;
   private readonly menu = viewChild<ElementRef<HTMLDetailsElement>>('reuseMenu');
 
   @HostListener('document:pointerdown', ['$event'])
   closeOutside(event: PointerEvent): void {
     const menu = this.menu()?.nativeElement;
-    if (this.compact() && menu?.open && !menu.contains(event.target as Node)) menu.open = false;
+    if (menu && !menu.contains(event.target as Node)) this.closeMenu();
   }
 
-  closeAfterAction(event: MouseEvent, menu: HTMLDetailsElement): void {
-    if (this.compact() && (event.target as HTMLElement).closest('button, a')) menu.open = false;
+  closeAfterAction(event: MouseEvent): void {
+    if ((event.target as HTMLElement).closest('button, a')) this.closeMenu();
   }
 
-  constructor() {
-    const update = (event: MediaQueryListEvent) => this.compact.set(event.matches);
-    this.compactMedia?.addEventListener('change', update);
-    inject(DestroyRef).onDestroy(() => this.compactMedia?.removeEventListener('change', update));
+  closeMenu(): void {
+    const menu = this.menu()?.nativeElement;
+    if (!this.compact() || !menu?.open) return;
+    if (menu.contains(document.activeElement)) menu.querySelector('summary')?.focus();
+    menu.open = false;
   }
   readonly tutorial: Tutorial = {
     key: 'tutorial.board-copy.v1',
