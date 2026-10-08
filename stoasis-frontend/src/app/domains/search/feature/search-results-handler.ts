@@ -64,9 +64,9 @@ import { SearchResult } from '../data/models/search-result';
       overflow: auto;
     }
     .search-page {
-      width: min(820px, calc(100% - 2 * clamp(16px, 3vw, 40px)));
-      margin: 0 clamp(16px, 3vw, 40px);
-      padding: 32px 0 48px;
+      width: min(820px, calc(100% - 2 * var(--page-gutter)));
+      margin-inline: auto;
+      padding: var(--page-padding);
     }
     .search-page header p {
       margin: 0;
@@ -77,10 +77,12 @@ import { SearchResult } from '../data/models/search-result';
       text-transform: uppercase;
     }
     .search-page h1 {
-      margin: 4px 0 25px;
+      margin: 10px 0 28px;
       font-family: var(--font-display);
-      font-size: clamp(2rem, 6vw, 3.5rem);
-      letter-spacing: -0.05em;
+      font-size: var(--heading-size);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
     }
     .search-error {
       padding: 10px 12px;

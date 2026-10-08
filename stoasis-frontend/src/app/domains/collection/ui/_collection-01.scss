@@ -53,8 +53,8 @@
 .icon-button {
   display: grid;
   place-items: center;
-  min-width: 36px;
-  min-height: 36px;
+  min-width: 40px;
+  min-height: 40px;
   border: 0;
   border-radius: var(--radius-control);
   background: transparent;
@@ -102,7 +102,7 @@
   gap: 8px;
   margin: 0 18px 14px;
   padding: 0 10px;
-  min-height: 36px;
+  min-height: 40px;
   border: 1px solid var(--border);
   border-radius: var(--radius-control);
   color: var(--muted);
@@ -129,6 +129,8 @@
   flex: 1;
   min-height: 0;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
   padding: 0 10px 12px;
 }
 .collection-item {
@@ -179,12 +181,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   font-weight: 650;
 }
 .collection-copy small {
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
 }
 .visibility {
   padding: 2px 5px;
@@ -222,8 +224,8 @@
   justify-content: center;
   gap: 7px;
   margin: 10px 18px 16px;
-  min-height: 40px;
   border: 1px dashed var(--border-strong);
+  min-height: 44px;
   border-radius: var(--radius-control);
   background: transparent;
   color: var(--muted);

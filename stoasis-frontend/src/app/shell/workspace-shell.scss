@@ -28,7 +28,7 @@
 .utility-nav {
   position: relative;
   z-index: 20;
-  flex: 0 0 50px;
+  flex: 0 0 56px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -41,17 +41,19 @@
 .utility-nav a,
 .utility-nav button {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 7px;
-  min-height: 32px;
+  min-height: 36px;
   padding: 0 9px;
   border: 1px solid transparent;
   border-radius: var(--radius-control);
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
 }
 .utility-nav ui-app-icon {
@@ -72,7 +74,7 @@
   padding: 0 6px;
   border: 0;
   background: transparent;
-  font-size: 0.64rem;
+  font-size: 0.6875rem;
   font-weight: 750;
 }
 .language-switcher button.active {
@@ -91,6 +93,7 @@
   place-items: center;
   width: 22px;
   height: 22px;
+  flex-shrink: 0;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--sage-soft);
@@ -102,6 +105,21 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.user-name {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 1200px) {
+  .utility-nav .user-name {
+    display: none;
+  }
+}
+@media (max-width: 1000px) {
+  .utility-nav .search-label {
+    display: none;
+  }
 }
 .route-stage {
   flex: 1;

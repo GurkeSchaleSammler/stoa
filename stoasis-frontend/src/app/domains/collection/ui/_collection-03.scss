@@ -101,8 +101,8 @@
     flex-shrink: 0;
   }
   .panel-card {
-    width: calc(100% - 24px);
-    margin: 16px 12px 24px;
+    width: calc(100% - 2 * var(--page-gutter));
+    margin: 20px auto 32px;
     padding: 16px;
     border-radius: 16px;
     box-shadow: none;
