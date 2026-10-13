@@ -6,8 +6,11 @@ import {
   inject,
   OnInit,
   signal,
+  ElementRef,
+  viewChild,
 } from '@angular/core';
 import { SessionContextStore } from '../../shared/application/session-context.store';
+import { ViewportService } from '../../shared/application/viewport.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -106,54 +109,69 @@ interface SkillDragState {
           <p role="status">{{ 'skills.limitReached' | translate }}</p>
         }
         <section class="skill-layout">
-          <form class="skill-form" (ngSubmit)="saveSkill()">
-            <h2>{{ (editingId() ? 'skills.edit' : 'skills.add') | translate }}</h2>
-            <label>
-              <span>{{ 'skills.name' | translate }}</span>
-              <input
-                name="skillName"
-                maxlength="120"
-                required
-                [(ngModel)]="skillName"
-                [placeholder]="'skills.namePlaceholder' | translate"
-              />
-            </label>
-            <label>
-              <span>{{ 'skills.level' | translate }}</span>
-              <select name="level" [(ngModel)]="level">
-                @for (option of levels; track option) {
-                  <option [ngValue]="option">
-                    {{ 'skills.levelValue.' + option | translate }}
-                  </option>
+          <details
+            #skillForm
+            class="skill-form-disclosure"
+            [open]="!viewport.compact() || editingId() !== null"
+          >
+            <summary>
+              <ui-app-icon name="plus" />{{
+                (editingId() ? 'skills.edit' : 'skills.add') | translate
+              }}
+            </summary>
+            <form class="skill-form" (ngSubmit)="saveSkill()">
+              <h2>{{ (editingId() ? 'skills.edit' : 'skills.add') | translate }}</h2>
+              <label>
+                <span>{{ 'skills.name' | translate }}</span>
+                <input
+                  name="skillName"
+                  maxlength="120"
+                  required
+                  [(ngModel)]="skillName"
+                  [placeholder]="'skills.namePlaceholder' | translate"
+                />
+              </label>
+              <label>
+                <span>{{ 'skills.level' | translate }}</span>
+                <select name="level" [(ngModel)]="level">
+                  @for (option of levels; track option) {
+                    <option [ngValue]="option">
+                      {{ 'skills.levelValue.' + option | translate }}
+                    </option>
+                  }
+                </select>
+              </label>
+              <label>
+                <span>{{ 'skills.years' | translate }}</span>
+                <input name="years" type="number" min="0" max="80" [(ngModel)]="yearsExperience" />
+              </label>
+              <div class="form-actions">
+                @if (editingId()) {
+                  <button type="button" class="secondary" (click)="resetForm()">
+                    {{ 'common.cancel' | translate }}
+                  </button>
                 }
-              </select>
-            </label>
-            <label>
-              <span>{{ 'skills.years' | translate }}</span>
-              <input name="years" type="number" min="0" max="80" [(ngModel)]="yearsExperience" />
-            </label>
-            <div class="form-actions">
-              @if (editingId()) {
-                <button type="button" class="secondary" (click)="resetForm()">
-                  {{ 'common.cancel' | translate }}
+                <button
+                  type="submit"
+                  class="primary"
+                  [disabled]="!skillName().trim() || isSaving() || (!editingId() && !canAdd())"
+                >
+                  <ui-app-icon name="plus" />
+                  {{ (isSaving() ? 'common.saving' : 'common.save') | translate }}
                 </button>
-              }
-              <button
-                type="submit"
-                class="primary"
-                [disabled]="!skillName().trim() || isSaving() || (!editingId() && !canAdd())"
-              >
-                <ui-app-icon name="plus" />
-                {{ (isSaving() ? 'common.saving' : 'common.save') | translate }}
-              </button>
-            </div>
-          </form>
+              </div>
+            </form>
+          </details>
 
           <section class="skill-board-panel" [attr.aria-label]="'skills.board' | translate">
             <header class="skill-board-header">
               <div>
                 <h2>{{ board.name }}</h2>
-                <p>{{ 'skills.boardLead' | translate }}</p>
+                <p>
+                  {{
+                    (viewport.compact() ? 'skills.mobileBoardLead' : 'skills.boardLead') | translate
+                  }}
+                </p>
               </div>
               <span>{{ board.skills.length }} {{ 'skills.nav' | translate }}</span>
             </header>
@@ -167,7 +185,7 @@ interface SkillDragState {
               >
                 @if (board.skills.length === 0) {
                   <div class="empty-state">
-                    <span aria-hidden="true">✦</span>
+                    <span aria-hidden="true"><ui-app-icon name="graduation-cap" /></span>
                     <h2>{{ 'skills.emptyTitle' | translate }}</h2>
                     <p>{{ 'skills.emptyLead' | translate }}</p>
                   </div>
@@ -183,7 +201,9 @@ interface SkillDragState {
                     [style.z-index]="skill.grid.layer"
                     (pointerdown)="startDrag($event, skill)"
                   >
-                    <span class="skill-pin-type" aria-hidden="true">✦</span>
+                    <span class="skill-pin-type" aria-hidden="true"
+                      ><ui-app-icon name="graduation-cap"
+                    /></span>
                     <strong>{{ skill.skillName }}</strong>
                     <span class="level-pill level-{{ skill.level.toLowerCase() }}">
                       {{ 'skills.levelValue.' + skill.level | translate }}
@@ -225,6 +245,8 @@ interface SkillDragState {
 })
 export class ProfileSkillsPageComponent implements OnInit {
   private readonly session = inject(SessionContextStore);
+  protected readonly viewport = inject(ViewportService);
+  private readonly skillForm = viewChild<ElementRef<HTMLDetailsElement>>('skillForm');
   readonly premium = computed(() => this.session.user()?.plan === 'premium');
   readonly skillLimit = computed(() => (this.premium() ? 10000 : 12));
   readonly skillCount = computed(() =>
@@ -292,6 +314,14 @@ export class ProfileSkillsPageComponent implements OnInit {
     this.skillName.set(skill.skillName);
     this.level.set(skill.level);
     this.yearsExperience.set(skill.yearsExperience);
+    if (this.viewport.compact())
+      window.requestAnimationFrame(() => {
+        const form = this.skillForm()?.nativeElement;
+        if (!form?.isConnected) return;
+        form.open = true;
+        form.scrollIntoView({ block: 'start' });
+        form.querySelector('input')?.focus({ preventScroll: true });
+      });
   }
 
   deleteSkill(id: string): void {
@@ -310,7 +340,7 @@ export class ProfileSkillsPageComponent implements OnInit {
   }
 
   startDrag(event: PointerEvent, skill: ProfileSkill): void {
-    if (event.button !== 0 || this.isSaving()) return;
+    if (this.viewport.compact() || event.button !== 0 || this.isSaving()) return;
     event.preventDefault();
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
     this.dragState.set({

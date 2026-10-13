@@ -18,6 +18,7 @@ import { BoardElementsStore } from './board-elements.store';
 import { ConnectorActionsService } from './connector-actions.service';
 import { DecorationActionsService } from './decoration-actions.service';
 import { StackActionsService } from './stack-actions.service';
+import { ViewportService } from '../../../../shared/application/viewport.service';
 
 @Injectable({ providedIn: 'root' })
 export class PinService {
@@ -29,7 +30,10 @@ export class PinService {
   readonly stackActions = inject(StackActionsService);
   readonly connectorActions = inject(ConnectorActionsService);
   readonly decorationActions = inject(DecorationActionsService);
-  private readonly state = signal<BoardState>(initialBoardState);
+  private readonly state = signal<BoardState>({
+    ...initialBoardState,
+    viewMode: inject(ViewportService).compact() ? 'list' : 'board',
+  });
   private boardLoad?: Subscription;
   private readonly gridUpdateVersions = new Map<string, number>();
 
@@ -91,6 +95,31 @@ export class PinService {
           this.state.update((state) => ({ ...state, pins: [...state.pins, pin], error: null }));
           this.snackbars.success('snackbar.pinCreated');
           onSuccess?.();
+        }),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setMutating(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
+  pastePin(
+    collectionId: string,
+    sourceCollectionId: string,
+    pinId: string,
+    onSuccess?: () => void,
+  ): void {
+    if (this.isMutating() || !this.canEdit()) return;
+    this.setMutating(true);
+    this.api
+      .copyPin(collectionId, sourceCollectionId, pinId)
+      .pipe(
+        tap((pin) => {
+          if (this.context()?.id === collectionId) {
+            this.state.update((state) => ({ ...state, pins: [...state.pins, pin], error: null }));
+            onSuccess?.();
+          }
+          this.snackbars.success('templates.pinPasted');
         }),
         catchError((error) => this.handleError(error)),
         finalize(() => this.setMutating(false)),

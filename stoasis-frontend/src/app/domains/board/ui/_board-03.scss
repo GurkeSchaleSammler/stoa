@@ -89,7 +89,8 @@
     font-weight: 700;
   }
   .dialog-field input,
-  .dialog-field textarea {
+  .dialog-field textarea,
+  .dialog-field select {
     width: 100%;
     box-sizing: border-box;
     padding: 10px 11px;
@@ -103,7 +104,8 @@
     font-size: 0.85rem;
   }
   .dialog-field input:focus,
-  .dialog-field textarea:focus {
+  .dialog-field textarea:focus,
+  .dialog-field select:focus {
     border-color: var(--accent);
   }
   .link-preview {

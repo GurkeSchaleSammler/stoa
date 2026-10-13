@@ -1,0 +1,123 @@
+:host {
+  display: block;
+}
+
+.world-trail {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 8px 22px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--accent-soft) 52%, var(--surface-raised));
+}
+
+button,
+select {
+  font: inherit;
+}
+
+.world-home,
+.overview-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.world-home {
+  padding: 2px 4px 2px 0;
+}
+
+.world-home > span:first-child {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-raised);
+}
+
+.world-home small,
+.world-home strong {
+  display: block;
+  text-align: left;
+}
+
+.world-home small {
+  color: var(--muted);
+  font-size: 0.58rem;
+  font-weight: 750;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.world-home strong {
+  margin-top: 1px;
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+}
+
+.trail-divider {
+  color: var(--muted);
+}
+
+label {
+  min-width: 0;
+  flex: 1;
+}
+
+select {
+  width: min(100%, 300px);
+  min-height: 34px;
+  padding: 0 34px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface-raised);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.overview-button {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface-raised);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.overview-button ui-app-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+@media (max-width: 680px) {
+  .world-trail {
+    padding-inline: 12px;
+  }
+  .world-home small,
+  .overview-button {
+    display: none;
+  }
+  .world-home strong {
+    max-width: 88px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

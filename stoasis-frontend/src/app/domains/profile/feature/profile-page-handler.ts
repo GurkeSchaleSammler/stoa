@@ -53,9 +53,9 @@ import { ProfileFormValue } from '../data/models/profile-form-value';
       overflow: auto;
     }
     .profile-page {
-      width: min(820px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: clamp(28px, 6vw, 68px) 0;
+      width: min(820px, calc(100% - 2 * var(--page-gutter)));
+      margin-inline: auto;
+      padding: var(--page-padding);
     }
     .page-heading p {
       margin: 0;
@@ -66,15 +66,17 @@ import { ProfileFormValue } from '../data/models/profile-form-value';
       text-transform: uppercase;
     }
     .page-heading h1 {
-      margin: 5px 0 25px;
+      margin: 10px 0 28px;
       font-family: var(--font-display);
-      font-size: clamp(2rem, 6vw, 3.4rem);
-      letter-spacing: -0.05em;
+      font-size: var(--heading-size);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
     }
     .profile-stack {
       display: flex;
       flex-direction: column;
-      gap: 13px;
+      gap: 20px;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

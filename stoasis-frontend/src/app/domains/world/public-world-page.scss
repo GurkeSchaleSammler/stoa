@@ -1,0 +1,178 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: var(--surface-sunken);
+}
+.public-world-page {
+  min-height: 100dvh;
+  padding-bottom: 70px;
+}
+.public-nav {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 max(20px, calc((100% - 1120px) / 2));
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+.public-nav .brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.public-nav img {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+.public-nav > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.world-hero {
+  display: flex;
+  width: min(1120px, calc(100% - 40px));
+  align-items: center;
+  gap: 17px;
+  margin: 42px auto 18px;
+}
+.world-hero > span {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  font-size: 2rem;
+}
+.world-hero p,
+.world-hero h1,
+.world-hero small {
+  display: block;
+  margin: 0;
+}
+.world-hero p {
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.world-hero h1 {
+  margin: 4px 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 1;
+}
+.world-hero small {
+  color: var(--muted);
+}
+.board-trail {
+  display: flex;
+  width: min(1120px, calc(100% - 40px));
+  gap: 8px;
+  margin: 0 auto 28px;
+  padding: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-raised);
+}
+.board-trail button {
+  display: flex;
+  min-width: max-content;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.board-trail button.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.board-trail small {
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+}
+.board-heading {
+  display: flex;
+  width: min(1120px, calc(100% - 40px));
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto;
+  padding: 18px 0 4px;
+  border-top: 1px solid var(--border);
+}
+.board-heading > span {
+  font-size: 1.6rem;
+}
+.board-heading p,
+.board-heading h2 {
+  margin: 0;
+}
+.board-heading p {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+.board-heading h2 {
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+}
+.public-state {
+  display: grid;
+  min-height: 420px;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 30px;
+  text-align: center;
+}
+.public-state.error ui-app-icon {
+  color: var(--danger);
+  font-size: 2rem;
+}
+.public-state h1,
+.public-state p {
+  margin: 0;
+}
+.public-state p {
+  color: var(--muted);
+}
+.public-state.compact {
+  min-height: 190px;
+}
+@media (max-width: 620px) {
+  .world-hero,
+  .board-trail,
+  .board-heading {
+    width: calc(100% - 28px);
+  }
+  .world-hero {
+    margin-top: 28px;
+  }
+  .public-nav {
+    padding: 0 14px;
+  }
+}

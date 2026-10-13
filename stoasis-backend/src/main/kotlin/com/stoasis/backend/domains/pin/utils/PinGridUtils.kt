@@ -23,12 +23,13 @@ fun estimatedPinHeight(pin: PinEntity): Int = when (pin.type) {
         (8 + (CARD_WIDTH_CLIPS * ratio).toInt()).coerceIn(12, 30)
     }
     PinType.skill -> 12
+    PinType.portal -> 13
 }
 
-fun findFreePinPosition(heightClips: Int, occupied: List<PinGridRect>): Pair<Int, Int> {
+fun findFreePinPosition(heightClips: Int, occupied: List<PinGridRect>, widthClips: Int = CARD_WIDTH_CLIPS): Pair<Int, Int> {
     for (y in 0..(BOARD_HEIGHT_CLIPS - heightClips) step AUTO_LAYOUT_GAP_CLIPS) {
-        for (x in 0..(BOARD_WIDTH_CLIPS - CARD_WIDTH_CLIPS) step (CARD_WIDTH_CLIPS + AUTO_LAYOUT_GAP_CLIPS)) {
-            val candidate = PinGridRect(x, y, CARD_WIDTH_CLIPS, heightClips)
+        for (x in 0..(BOARD_WIDTH_CLIPS - widthClips) step (widthClips + AUTO_LAYOUT_GAP_CLIPS)) {
+            val candidate = PinGridRect(x, y, widthClips, heightClips)
             if (occupied.none { pinIntersectionArea(candidate, it) > 0 }) return x to y
         }
     }

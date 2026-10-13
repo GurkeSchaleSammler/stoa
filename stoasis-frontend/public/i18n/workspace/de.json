@@ -1,5 +1,78 @@
 {
+  "templates": {
+    "actions": "Board-Aktionen",
+    "choose": "Startpunkt wählen",
+    "lead": "Ein ruhiger Rahmen für deine Inhalte. Alles bleibt verschiebbar und editierbar.",
+    "blank": "Leeres Board",
+    "blankHint": "Dein freier Start.",
+    "loading": "Vorlagen werden geladen …",
+    "loadError": "Vorlagen sind gerade nicht verfügbar. Du kannst mit einem leeren Board starten.",
+    "editableHint": "Die Vorlage enthält editierbare Notizen, farbige Zonen, Überschriften und einen dezenten Sticker.",
+    "duplicate": "Board duplizieren",
+    "duplicateHint": "Inhalte, Layout und Verzierungen werden übernommen. Die Kopie ist privat; Mitglieder, Einladungen und Kommentare werden nicht übernommen.",
+    "createCopy": "Private Kopie erstellen",
+    "copyName": "{{name}} – Kopie",
+    "duplicated": "Board dupliziert.",
+    "newFromTemplate": "Neues Board aus Vorlage",
+    "paste": "Kachel einfügen",
+    "clipboard": "Kopiert: {{name}}",
+    "copyPin": "Kachel kopieren",
+    "duplicatePin": "Kachel duplizieren",
+    "pinCopied": "Kachel kopiert. Öffne ein Board und wähle Einfügen.",
+    "pinPasted": "Kachel eingefügt.",
+    "project": {
+      "title": "Projekt",
+      "hint": "Ideen → In Arbeit → Erledigt."
+    },
+    "week": {
+      "title": "Meine Woche",
+      "hint": "Fünf Tage, ein klarer Überblick."
+    },
+    "research": {
+      "title": "Recherche",
+      "hint": "Fragen, Quellen und Erkenntnisse."
+    },
+    "moodboard": {
+      "title": "Moodboard",
+      "hint": "Stimmung, Inspiration und Details."
+    },
+    "learning": {
+      "title": "Lernreise",
+      "hint": "Entdecken, üben, verstehen."
+    },
+    "tour": {
+      "title": "Dein Board hat einen Startpunkt",
+      "introduction": "Mit Vorlagen startest du mit einem fertigen, aber frei editierbaren Layout. Möchtest du die kurze Erklärung sehen?",
+      "chooseTitle": "Wähle deinen Rahmen",
+      "chooseText": "Wähle eine Vorlage oder starte leer. Die Vorschau zeigt Zonen und Kacheln. Farben, Texte und Verzierungen kannst du danach frei ändern.",
+      "nameTitle": "Mach es zu deinem Board",
+      "nameText": "Gib dem Board einen Namen. Beim Erstellen entstehen echte Notizen und Zonen, die du bewegen, ergänzen oder löschen kannst."
+    },
+    "copyTour": {
+      "title": "Gute Ideen wiederverwenden",
+      "introduction": "Du kannst ganze Boards duplizieren oder einzelne Kacheln zwischen Boards kopieren. Möchtest du die beiden Aktionen kennenlernen?",
+      "duplicateTitle": "Ein ganzes Board mitnehmen",
+      "duplicateText": "Duplizieren erstellt eine private Kopie mit Kacheln, Stapeln, Verbindungen, Farben und Verzierungen. Du wählst einen neuen Namen.",
+      "pinTitle": "Kacheln kopieren und einfügen",
+      "pinText": "Öffne eine Kachel und wähle Kopieren oder Duplizieren. Zum Kopieren zwischen Boards öffnest du danach das Zielboard und wählst Einfügen. Strg/⌘+C und Strg/⌘+V funktionieren ebenfalls, solange du keinen Text bearbeitest."
+    }
+  },
+  "onboarding": {
+    "show": "Erklärung anzeigen",
+    "skip": "Skip",
+    "start": "Zeig es mir",
+    "next": "Weiter",
+    "finish": "Verstanden",
+    "progress": "Schritt {{current}} von {{total}}",
+    "loadError": "Deine Tutorial-Einstellungen konnten nicht geladen werden.",
+    "saveError": "Deine Auswahl konnte nicht gespeichert werden. Bitte versuche es erneut."
+  },
   "board": {
+    "presence": {
+      "unavailable": "Live-Cursor nicht verfügbar. Bitte lade das Board neu.",
+      "here": "Ebenfalls hier: {{count}}",
+      "reconnecting": "Live-Cursor werden neu verbunden …"
+    },
     "title": "Pinnwand",
     "view": "Ansicht",
     "boardView": "Board-Ansicht",
@@ -111,7 +184,27 @@
     "public": "Öffentlich",
     "delete": "Sammlung löschen",
     "deleteTitle": "Sammlung löschen?",
-    "confirmDelete": "Diese Sammlung und alle Pins wirklich löschen?"
+    "confirmDelete": "Diese Sammlung und alle Pins wirklich löschen?",
+    "shareBoard": "Pinnwand teilen",
+    "shareUrl": "Freigabelink",
+    "openSharedView": "Öffentliche Ansicht öffnen",
+    "saveToShare": "Speichere die neue Sichtbarkeit, um den Freigabelink zu aktivieren.",
+    "publicShareHint": "Diese Pinnwand ist ohne Anmeldung öffentlich zugänglich.",
+    "linkShareHint": "Nur Personen mit diesem geheimen Link können die Pinnwand ansehen.",
+    "publicWarningTitle": "Pinnwand öffentlich machen?",
+    "publicWarningText": "Alle Personen im Internet können diese Pinnwand und ihre Pins ohne Anmeldung ansehen.",
+    "makePublic": "Öffentlich machen",
+    "readOnly": "Nur ansehen",
+    "publicBoard": "Öffentliche Pinnwand",
+    "linkBoard": "Geteilte Pinnwand",
+    "publicReadOnlyHint": "Diese Ansicht ist schreibgeschützt.",
+    "publicLoading": "Pinnwand wird geladen …",
+    "publicForbiddenTitle": "Diese Pinnwand ist nicht öffentlich.",
+    "publicForbiddenText": "Melde dich an oder öffne den vollständigen Freigabelink.",
+    "publicNotFoundTitle": "Pinnwand nicht gefunden.",
+    "publicNotFoundText": "Der Link ist möglicherweise nicht mehr gültig.",
+    "publicErrorTitle": "Pinnwand konnte nicht geladen werden.",
+    "publicErrorText": "Versuche es in einem Moment erneut."
   },
   "membership": {
     "collaboration": "Zusammenarbeit",
@@ -129,6 +222,8 @@
     "inviteLead": "Jede Person mit dem Link kann als Leserin oder Leser beitreten.",
     "revokeLink": "Link widerrufen",
     "privateCollection": "Die Sammlung ist privat.",
+    "publicCollection": "Die Sammlung ist öffentlich.",
+    "publicCollectionHint": "Den öffentlichen Link verwaltest du in den Sammlungseinstellungen.",
     "createInviteLink": "Einladungslink erstellen",
     "invitation": "Einladung",
     "checkingInvite": "Einladung wird geprüft …",
@@ -146,8 +241,19 @@
     "link": "Link",
     "note": "Notiz",
     "photo": "Foto",
+    "portal": "Portal",
+    "openPortal": "Portal zu {{name}} öffnen",
+    "portalUnavailable": "Zielboard nicht mehr verfügbar",
+    "noPortalWorld": "Dieses Board gehört noch zu keiner World.",
+    "noPortalWorldLead": "Öffne Worlds, verbinde mindestens zwei Boards und füge danach hier ein Portal hinzu.",
+    "portalWorld": "World",
+    "portalTarget": "Zielboard",
+    "portalLabel": "Portal-Titel",
+    "returnPortal": "Rückweg automatisch anlegen",
+    "returnPortalLead": "Auf dem Zielboard entsteht ein zweites Portal zurück zu diesem Board.",
     "webLink": "Web-Link",
     "photoPin": "Foto-Pin",
+    "imageUnavailable": "Bild nicht verfügbar",
     "imagePreview": "Bildvorschau",
     "imageFullView": "Bild-Vollansicht",
     "openFullView": "Bild in Vollansicht öffnen",
@@ -160,7 +266,7 @@
     "new": "Neuer Pin",
     "add": "Pin hinzufügen",
     "addTitle": "An die Pinnwand heften",
-    "addTypes": "Link, Notiz oder Foto",
+    "addTypes": "Link, Notiz, Foto oder Portal",
     "address": "Adresse",
     "loadingPreview": "Link-Vorschau wird geladen …",
     "notePlaceholder": "Gedanke, Liste, Erinnerung …",
@@ -188,12 +294,14 @@
     "type": {
       "link": "Link",
       "note": "Notiz",
-      "photo": "Foto"
+      "photo": "Foto",
+      "portal": "Portal"
     },
     "types": {
       "links": "Links",
       "notes": "Notizen",
-      "photos": "Fotos"
+      "photos": "Fotos",
+      "portals": "Portale"
     },
     "invalidPhoto": "Bitte JPEG, PNG oder WebP wählen: maximal 5 MB mit Free, 20 MB mit Premium.",
     "markdownWrite": "Schreiben",
@@ -285,7 +393,8 @@
     "copyLink": "Profil-Link kopieren",
     "accent": "Profilfarbe",
     "capacity": "{{count}} / {{limit}} Skills",
-    "limitReached": "Skill-Limit erreicht. Bestehende Skills bleiben sichtbar und bearbeitbar."
+    "limitReached": "Skill-Limit erreicht. Bestehende Skills bleiben sichtbar und bearbeitbar.",
+    "mobileBoardLead": "Deine Fähigkeiten als übersichtliche Karten."
   },
   "groups": {
     "nav": "Gruppen",
@@ -327,7 +436,7 @@
   },
   "search": {
     "allPins": "Alle Pins durchsuchen",
-    "placeholder": "Links, Notizen, Fotos …",
+    "placeholder": "Links, Notizen, Fotos, Portale …",
     "searching": "Suche läuft",
     "clear": "Suche leeren",
     "filterTag": "Tag filtern",
@@ -341,6 +450,55 @@
     "newTag": "Neuer Tag",
     "deleteTag": "{{tag}} löschen",
     "eyebrow": "Pins wiederfinden"
+  },
+  "worlds": {
+    "nav": "Worlds",
+    "plural": "Worlds",
+    "eyebrow": "Räumlich verbunden",
+    "title": "Deine Boards werden zu einer Welt.",
+    "lead": "Verbinde Boards über Portale und erschaffe eine navigierbare Sammlung mit eigenem Einstiegspunkt.",
+    "create": "World erstellen",
+    "createFirst": "Erste World erstellen",
+    "emptyTitle": "Noch keine World",
+    "emptyLead": "Wähle ein Startboard und verbinde danach weitere Boards mit Portalen.",
+    "boards": "Boards",
+    "portals": "Portale",
+    "backlinks": "Rückwege",
+    "private": "Private World",
+    "link": "World per Link",
+    "public": "Öffentliche World",
+    "publicWorld": "Stoasis World",
+    "overview": "World-Übersicht",
+    "navigation": "Navigation in der World",
+    "currentWorld": "Aktuelle World",
+    "mapTitle": "Wege zwischen deinen Boards",
+    "startBoard": "Startboard",
+    "makeStart": "Als Start setzen",
+    "enter": "World betreten",
+    "copyLink": "Link kopieren",
+    "boardLimit": "verbundene Boards",
+    "premiumHint": "Premium entfernt das World- und Board-Limit.",
+    "portalEmpty": "Füge auf einem Board den ersten Portal-Pin hinzu.",
+    "addBoard": "Board verbinden",
+    "addBoardLead": "Nur Boards, die du bearbeiten kannst, lassen sich hinzufügen.",
+    "chooseBoard": "Board auswählen",
+    "settings": "World-Einstellungen",
+    "symbol": "Symbol",
+    "namePlaceholder": "z. B. Mein Gartenjahr",
+    "freeLimitHint": "Free enthält eine World mit bis zu fünf Boards. Bestehende Inhalte bleiben bei Erreichen des Limits erhalten.",
+    "removeBoard": "Board aus World entfernen?",
+    "removeBoardConfirm": "Das Board bleibt erhalten. Portale müssen zuerst entfernt werden.",
+    "delete": "World löschen",
+    "deleteConfirm": "Die World und ihre Portal-Pins wirklich löschen? Die verbundenen Boards bleiben erhalten.",
+    "created": "World erstellt.",
+    "updated": "World gespeichert.",
+    "deleted": "World gelöscht.",
+    "boardAdded": "Board mit der World verbunden.",
+    "boardRemoved": "Board aus der World entfernt.",
+    "loading": "World wird geladen …",
+    "unavailable": "Diese World ist nicht verfügbar.",
+    "unavailableLead": "Der Link ist ungültig, abgelaufen oder die World ist privat.",
+    "error": "World konnte nicht geladen werden."
   },
   "mcp": {
     "title": "Stoasis verbinden",

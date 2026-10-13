@@ -67,11 +67,18 @@ class PostgresMigrationTests {
         assertEquals(19, jdbc.queryForObject("SELECT base_height_clips FROM pins WHERE id = 'pin-preserved'", Int::class.java))
         assertEquals(false, jdbc.queryForObject("SELECT manual_size FROM pins WHERE id = 'pin-preserved'", Boolean::class.java))
         assertEquals("**Note**", jdbc.queryForObject("SELECT content FROM pins WHERE id = 'pin-preserved'", String::class.java))
-        assertEquals("16", latestVersion)
-        assertEquals(1, result.migrationsExecuted)
+        assertEquals("19", latestVersion)
+        assertEquals(4, result.migrationsExecuted)
         assertTrue(foreignKeyCount != null && foreignKeyCount > 0, "Expected relational integrity constraints")
         assertEquals(2, sessionTableCount)
         assertEquals(1, preservedUsers)
+        val flagSql = "INSERT INTO user_flags (user_id, flag_key, outcome, seen_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP) ON CONFLICT DO NOTHING"
+        jdbc.update(flagSql, "user-preserved", "tutorial.test.v1", "skipped")
+        jdbc.update(flagSql, "user-preserved", "tutorial.test.v1", "completed")
+        assertEquals("skipped", jdbc.queryForObject("SELECT outcome FROM user_flags WHERE user_id = 'user-preserved'", String::class.java))
+        jdbc.update("DELETE FROM collections WHERE id = 'board-preserved'")
+        jdbc.update("DELETE FROM users WHERE id = 'user-preserved'")
+        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM user_flags", Int::class.java))
     }
 
     companion object {

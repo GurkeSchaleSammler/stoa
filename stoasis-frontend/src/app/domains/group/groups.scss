@@ -5,9 +5,9 @@
   color: var(--text);
 }
 .groups-page {
-  width: min(1120px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 46px 0 80px;
+  width: min(var(--page-max), calc(100% - 2 * var(--page-gutter)));
+  margin-inline: auto;
+  padding: var(--page-padding);
 }
 .groups-header,
 .detail-header {
@@ -18,10 +18,12 @@
 }
 .groups-header h1,
 .detail-header h1 {
-  margin: 4px 0 8px;
-  font:
-    500 clamp(2rem, 5vw, 3.5rem)/1 Georgia,
-    serif;
+  margin: 10px 0 12px;
+  font-family: var(--font-display);
+  font-size: var(--heading-size);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
 }
 .groups-header p:last-child,
 .detail-header p:last-child,
@@ -43,7 +45,7 @@
 }
 .create-group input,
 .sharing-panel select {
-  min-height: 42px;
+  min-height: 44px;
   box-sizing: border-box;
   padding: 8px 11px;
   border: 1px solid var(--border);
@@ -57,12 +59,12 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 15px;
-  border: 1px solid var(--sage);
-  border-radius: 10px;
-  background: var(--sage);
-  color: white;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-control);
+  background: var(--accent);
+  color: var(--on-accent);
   font: inherit;
   font-weight: 700;
   cursor: pointer;
@@ -78,17 +80,20 @@
 .matrix-card,
 .members-card {
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius-panel);
   background: var(--surface-raised);
-  box-shadow: 0 12px 34px rgb(25 34 23 / 5%);
+  box-shadow: var(--shadow-sm);
 }
 .group-card {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 13px;
-  padding: 18px;
+  padding: 22px;
   color: var(--text);
   text-decoration: none;
+  transition:
+    border-color var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-soft);
 }
 .group-card:hover {
   border-color: var(--sage);
@@ -282,8 +287,7 @@
 }
 @media (max-width: 760px) {
   .groups-page {
-    width: min(100% - 24px, 1120px);
-    padding-top: 24px;
+    padding-bottom: 40px;
   }
   .groups-header,
   .detail-header,
@@ -293,6 +297,30 @@
   }
   .create-group {
     flex-direction: column;
+  }
+  .group-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .group-card {
+    min-width: 0;
+    animation: stoa-content-enter var(--motion-enter) var(--ease-soft);
+  }
+  .group-card h2,
+  .detail-header h1 {
+    overflow-wrap: anywhere;
+  }
+  .group-card > div {
+    min-width: 0;
+  }
+  .create-group button,
+  .create-group input,
+  .invite-button {
+    min-height: 48px;
+  }
+  .create-group button {
+    justify-content: center;
   }
   .matrix-row {
     grid-template-columns: 1fr;

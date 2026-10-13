@@ -4,11 +4,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { SessionContextStore } from '../../../shared/application/session-context.store';
 import { SearchDiscoveryService } from '../data/application/search-discovery.service';
 import { SearchService } from '../data/application/search.service';
+import { AppIconComponent } from '../../../shared/ui/app-icon';
 
 /** Makes premium discovery controls visible alongside free basic search. */
 @Component({
   selector: 'ui-search-discovery',
-  imports: [FormsModule, TranslatePipe],
+  imports: [FormsModule, TranslatePipe, AppIconComponent],
   providers: [SearchDiscoveryService],
   templateUrl: './search-discovery.html',
   styleUrl: './search-discovery.scss',

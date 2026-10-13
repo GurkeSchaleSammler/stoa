@@ -11,6 +11,7 @@ import com.stoasis.backend.domains.pin.api.GridBlockDto
 import com.stoasis.backend.domains.pin.api.LinkPinData
 import com.stoasis.backend.domains.pin.api.NotePinData
 import com.stoasis.backend.domains.pin.api.PhotoPinData
+import com.stoasis.backend.domains.pin.api.PortalPinData
 import com.stoasis.backend.domains.pin.api.PinCommentDto
 import com.stoasis.backend.domains.pin.api.PinData
 import com.stoasis.backend.domains.pin.api.PinDto
@@ -36,6 +37,7 @@ import com.stoasis.backend.domains.search.application.normalizeTags
 import com.stoasis.backend.domains.upload.application.PhotoPinService
 import com.stoasis.backend.domains.upload.application.UploadService
 import com.stoasis.backend.shared.id.IdGenerator
+import com.stoasis.backend.domains.world.application.WorldService
 import java.time.Instant
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -55,6 +57,7 @@ class PinService(
     private val plans: PlanService,
     private val photos: PhotoPinService,
     private val uploads: UploadService,
+    private val worlds: WorldService,
     private val idGenerator: IdGenerator,
 ) {
     companion object {
@@ -82,6 +85,11 @@ class PinService(
             } else dto
         }
     }
+
+    /** Called only after another service has authorized a published World board. */
+    @Transactional(readOnly = true)
+    fun listAuthorized(collectionId: String): List<PinDto> =
+        pins.findAllByCollectionIdOrderBySortOrder(collectionId).map(::toDto)
 
     @Transactional(readOnly = true)
     fun detail(collectionId: String, pinId: String, userId: String): PinDto {
@@ -118,6 +126,9 @@ class PinService(
         collection.updatedAt = Instant.now()
         val saved = pins.save(pin)
         if (request.type == PinType.skill) applySkillData(saved.id, request.data)
+        if (request.type == PinType.portal && request.data.get("createReturnPortal")?.asBoolean(false) == true) {
+            createReturnPortal(saved, userId)
+        }
         return toDto(saved)
     }
 
@@ -207,6 +218,15 @@ class PinService(
             PinType.skill -> skillData.findById(pin.id).orElseThrow {
                 ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Skill-Daten fehlen.")
             }.let { SkillPinData(it.skillName, it.level, it.yearsExperience?.toInt()) }
+            PinType.portal -> PortalPinData(
+                worldId = pin.portalWorld?.id,
+                targetCollectionId = pin.portalTargetCollection?.id,
+                targetName = pin.portalTargetCollection?.name,
+                targetEmoji = pin.portalTargetCollection?.emoji,
+                label = pin.portalLabel ?: pin.portalTargetCollection?.name ?: "Entferntes Board",
+                emoji = pin.portalEmoji ?: pin.portalTargetCollection?.emoji ?: "↗",
+                available = pin.portalWorld != null && pin.portalTargetCollection != null,
+            )
         }
         return PinDto(
             id = pin.id,
@@ -308,6 +328,9 @@ class PinService(
         pin.layer = grid.layer
     }
 
+    fun freeCopyPosition(collectionId: String, height: Int, width: Int = CARD_WIDTH_CLIPS): Pair<Int, Int> =
+        findFreePinPosition(height, occupiedRects(collectionId, pins.findAllByCollectionIdOrderBySortOrder(collectionId)), width)
+
     private fun occupiedRects(collectionId: String, existing: List<PinEntity>): List<PinGridRect> {
         val allStacks = stacks.findAllByCollectionIdOrderByLayer(collectionId)
         val stackedIds = allStacks.flatMap { it.children }.mapNotNull { it.pin?.id }.toSet()
@@ -341,8 +364,57 @@ class PinService(
                 }
             }
             PinType.photo -> photos.apply(pin, data, userId)
+            PinType.portal -> {
+                val sourceId = pin.collection?.id
+                    ?: throw ApiException(HttpStatus.BAD_REQUEST, "Quellboard fehlt.")
+                val worldId = text("worldId") ?: pin.portalWorld?.id
+                    ?: throw ApiException(HttpStatus.BAD_REQUEST, "World ist erforderlich.")
+                val targetId = text("targetCollectionId") ?: pin.portalTargetCollection?.id
+                    ?: throw ApiException(HttpStatus.BAD_REQUEST, "Zielboard ist erforderlich.")
+                val world = worlds.requirePortalMembership(worldId, sourceId, targetId, userId)
+                val target = collections.get(targetId)
+                collections.requireEdit(target, userId)
+                if (PinType.portal !in target.allowedTypes) {
+                    throw ApiException(HttpStatus.CONFLICT, "Portal-Pins sind im Zielboard nicht erlaubt.")
+                }
+                val label = (text("label") ?: pin.portalLabel ?: target.name).trim()
+                val emoji = (text("emoji") ?: pin.portalEmoji ?: target.emoji).trim().ifBlank { "↗" }
+                if (label.isBlank() || label.length > 180 || emoji.length > 32) {
+                    throw ApiException(HttpStatus.BAD_REQUEST, "Ungültige Portal-Darstellung.")
+                }
+                pin.portalWorld = world
+                pin.portalTargetCollection = target
+                pin.portalLabel = label
+                pin.portalEmoji = emoji
+            }
             PinType.skill -> applySkillData(pin.id, data)
         }
+    }
+
+    private fun createReturnPortal(portal: PinEntity, userId: String) {
+        val source = portal.collection ?: throw ApiException(HttpStatus.BAD_REQUEST, "Quellboard fehlt.")
+        val target = portal.portalTargetCollection ?: throw ApiException(HttpStatus.BAD_REQUEST, "Zielboard fehlt.")
+        val world = portal.portalWorld ?: throw ApiException(HttpStatus.BAD_REQUEST, "World fehlt.")
+        worlds.requirePortalMembership(world.id, target.id, source.id, userId)
+        collections.requireEdit(target, userId)
+        if (PinType.portal !in target.allowedTypes) {
+            throw ApiException(HttpStatus.CONFLICT, "Portal-Pins sind im Zielboard nicht erlaubt.")
+        }
+        val existing = pins.findAllByCollectionIdOrderBySortOrder(target.id)
+        val backlink = PinEntity(
+            id = "pin-${idGenerator.newId()}", collection = target, type = PinType.portal,
+            createdBy = users.getReferenceById(userId), sortOrder = existing.size + 1,
+            portalWorld = world, portalTargetCollection = source,
+            portalLabel = source.name, portalEmoji = source.emoji,
+        )
+        backlink.heightClips = estimatedPinHeight(backlink)
+        backlink.baseHeightClips = backlink.heightClips
+        val position = findFreePinPosition(backlink.heightClips, occupiedRects(target.id, existing))
+        backlink.gridX = position.first
+        backlink.gridY = position.second
+        backlink.layer = (existing.maxOfOrNull(PinEntity::layer) ?: 0) + 1
+        target.updatedAt = Instant.now()
+        pins.save(backlink)
     }
 
     private fun cleanPinColor(value: String?, userId: String, currentColor: String? = null): String? {

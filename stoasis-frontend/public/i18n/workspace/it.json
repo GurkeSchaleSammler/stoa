@@ -1,5 +1,78 @@
 {
+  "templates": {
+    "actions": "Azioni della bacheca",
+    "choose": "Scegli un punto di partenza",
+    "lead": "Una cornice tranquilla per i tuoi contenuti. Tutto resta spostabile e modificabile.",
+    "blank": "Bacheca vuota",
+    "blankHint": "Inizia a modo tuo.",
+    "loading": "Caricamento dei modelli …",
+    "loadError": "I modelli non sono disponibili. Puoi iniziare con una bacheca vuota.",
+    "editableHint": "Il modello include note modificabili, zone colorate, titoli e un adesivo discreto.",
+    "duplicate": "Duplica bacheca",
+    "duplicateHint": "Contenuti, disposizione e decorazioni vengono copiati. La copia è privata; membri, inviti e commenti non vengono copiati.",
+    "createCopy": "Crea copia privata",
+    "copyName": "{{name}} – Copia",
+    "duplicated": "Bacheca duplicata.",
+    "newFromTemplate": "Nuova bacheca da modello",
+    "paste": "Incolla scheda",
+    "clipboard": "Copiato: {{name}}",
+    "copyPin": "Copia scheda",
+    "duplicatePin": "Duplica scheda",
+    "pinCopied": "Scheda copiata. Apri una bacheca e scegli Incolla.",
+    "pinPasted": "Scheda incollata.",
+    "project": {
+      "title": "Progetto",
+      "hint": "Idee → In corso → Completato."
+    },
+    "week": {
+      "title": "La mia settimana",
+      "hint": "Cinque giorni, una vista chiara."
+    },
+    "research": {
+      "title": "Ricerca",
+      "hint": "Domande, fonti e risultati."
+    },
+    "moodboard": {
+      "title": "Moodboard",
+      "hint": "Atmosfera, ispirazione e dettagli."
+    },
+    "learning": {
+      "title": "Percorso di apprendimento",
+      "hint": "Scoprire, esercitarsi, capire."
+    },
+    "tour": {
+      "title": "Un punto di partenza per la tua bacheca",
+      "introduction": "I modelli offrono una disposizione pronta e modificabile. Vuoi una breve spiegazione?",
+      "chooseTitle": "Scegli la tua cornice",
+      "chooseText": "Scegli un modello o inizia da zero. L’anteprima mostra zone e schede. Puoi cambiare colori, testi e decorazioni liberamente.",
+      "nameTitle": "Rendila la tua bacheca",
+      "nameText": "Dai un nome alla bacheca. Verranno create note e zone che puoi spostare, arricchire o eliminare."
+    },
+    "copyTour": {
+      "title": "Riutilizza le buone idee",
+      "introduction": "Puoi duplicare bacheche intere o copiare singole schede tra bacheche. Vuoi scoprire come?",
+      "duplicateTitle": "Porta con te un’intera bacheca",
+      "duplicateText": "Duplica crea una copia privata con schede, pile, connessioni, colori e decorazioni. Scegli un nuovo nome.",
+      "pinTitle": "Copia e incolla schede",
+      "pinText": "Apri una scheda e scegli Copia o Duplica. Per copiare tra bacheche, apri la bacheca di destinazione e scegli Incolla. Funzionano anche Ctrl/⌘+C e Ctrl/⌘+V se non stai modificando del testo."
+    }
+  },
+  "onboarding": {
+    "show": "Mostra spiegazione",
+    "skip": "Salta",
+    "start": "Mostrami",
+    "next": "Avanti",
+    "finish": "Capito",
+    "progress": "Passo {{current}} di {{total}}",
+    "loadError": "Impossibile caricare le preferenze dei tutorial.",
+    "saveError": "Impossibile salvare la scelta. Riprova."
+  },
   "board": {
+    "presence": {
+      "unavailable": "Cursori in tempo reale non disponibili. Ricarica la bacheca.",
+      "here": "{{count}} altre persone presenti",
+      "reconnecting": "Riconnessione dei cursori in tempo reale …"
+    },
     "title": "Bacheca",
     "view": "Vista",
     "boardView": "Vista bacheca",
@@ -111,7 +184,27 @@
     "public": "Pubblica",
     "delete": "Elimina raccolta",
     "deleteTitle": "Eliminare la raccolta?",
-    "confirmDelete": "Eliminare davvero questa raccolta e tutti i suoi pin?"
+    "confirmDelete": "Eliminare davvero questa raccolta e tutti i suoi pin?",
+    "shareBoard": "Condividi bacheca",
+    "shareUrl": "Link di condivisione",
+    "openSharedView": "Apri vista condivisa",
+    "saveToShare": "Salva la nuova visibilità per attivare il link.",
+    "publicShareHint": "Questa bacheca è pubblica e accessibile senza login.",
+    "linkShareHint": "Solo chi possiede questo link segreto può vedere la bacheca.",
+    "publicWarningTitle": "Rendere pubblica la bacheca?",
+    "publicWarningText": "Chiunque su Internet potrà vedere la bacheca e i suoi pin senza login.",
+    "makePublic": "Rendi pubblica",
+    "readOnly": "Sola lettura",
+    "publicBoard": "Bacheca pubblica",
+    "linkBoard": "Bacheca condivisa",
+    "publicReadOnlyHint": "Questa vista è di sola lettura.",
+    "publicLoading": "Caricamento bacheca …",
+    "publicForbiddenTitle": "Questa bacheca non è pubblica.",
+    "publicForbiddenText": "Accedi oppure apri il link di condivisione completo.",
+    "publicNotFoundTitle": "Bacheca non trovata.",
+    "publicNotFoundText": "Il link potrebbe non essere più valido.",
+    "publicErrorTitle": "Impossibile caricare la bacheca.",
+    "publicErrorText": "Riprova tra poco."
   },
   "membership": {
     "collaboration": "Collaborazione",
@@ -129,6 +222,8 @@
     "inviteLead": "Chiunque abbia il link può partecipare con accesso in lettura.",
     "revokeLink": "Revoca link",
     "privateCollection": "La raccolta è privata.",
+    "publicCollection": "La raccolta è pubblica.",
+    "publicCollectionHint": "Gestisci il link pubblico nelle impostazioni della raccolta.",
     "createInviteLink": "Crea link di invito",
     "invitation": "Invito",
     "checkingInvite": "Verifica dell’invito …",
@@ -146,8 +241,19 @@
     "link": "Link",
     "note": "Nota",
     "photo": "Foto",
+    "portal": "Portale",
+    "openPortal": "Apri il portale verso {{name}}",
+    "portalUnavailable": "La bacheca di destinazione non è più disponibile",
+    "noPortalWorld": "Questa bacheca non appartiene ancora a nessun Mondo.",
+    "noPortalWorldLead": "Apri Mondi, collega almeno due bacheche e poi aggiungi qui un portale.",
+    "portalWorld": "Mondo",
+    "portalTarget": "Bacheca di destinazione",
+    "portalLabel": "Titolo del portale",
+    "returnPortal": "Crea un portale di ritorno",
+    "returnPortalLead": "Sulla bacheca di destinazione viene creato un secondo portale verso questa bacheca.",
     "webLink": "Link web",
     "photoPin": "Pin foto",
+    "imageUnavailable": "Immagine non disponibile",
     "imagePreview": "Anteprima immagine",
     "imageFullView": "Vista completa immagine",
     "openFullView": "Apri immagine a schermo intero",
@@ -160,7 +266,7 @@
     "new": "Nuovo pin",
     "add": "Aggiungi pin",
     "addTitle": "Aggiungi alla bacheca",
-    "addTypes": "Link, nota o foto",
+    "addTypes": "Link, nota, foto o portale",
     "address": "Indirizzo",
     "loadingPreview": "Caricamento anteprima del link …",
     "notePlaceholder": "Pensiero, elenco, promemoria …",
@@ -188,12 +294,14 @@
     "type": {
       "link": "Link",
       "note": "Nota",
-      "photo": "Foto"
+      "photo": "Foto",
+      "portal": "Portale"
     },
     "types": {
       "links": "Link",
       "notes": "Note",
-      "photos": "Foto"
+      "photos": "Foto",
+      "portals": "Portali"
     },
     "invalidPhoto": "Scegli JPEG, PNG o WebP: massimo 5 MB con Free, 20 MB con Premium.",
     "markdownWrite": "Scrivi",
@@ -285,7 +393,8 @@
     "copyLink": "Copia il link del profilo",
     "accent": "Colore del profilo",
     "capacity": "{{count}} / {{limit}} competenze",
-    "limitReached": "Limite raggiunto. Le competenze esistenti restano visibili e modificabili."
+    "limitReached": "Limite raggiunto. Le competenze esistenti restano visibili e modificabili.",
+    "mobileBoardLead": "Le tue competenze in schede leggibili."
   },
   "groups": {
     "nav": "Gruppi",
@@ -327,7 +436,7 @@
   },
   "search": {
     "allPins": "Cerca in tutti i pin",
-    "placeholder": "Link, note, foto …",
+    "placeholder": "Link, note, foto, portali …",
     "searching": "Ricerca in corso",
     "clear": "Cancella ricerca",
     "filterTag": "Filtra per tag",
@@ -341,6 +450,55 @@
     "newTag": "Nuovo tag",
     "deleteTag": "Elimina {{tag}}",
     "eyebrow": "Ritrova i pin"
+  },
+  "worlds": {
+    "nav": "Mondi",
+    "plural": "Mondi",
+    "eyebrow": "Collegati nello spazio",
+    "title": "Le tue bacheche diventano un mondo.",
+    "lead": "Collega le bacheche con portali e crea una raccolta navigabile con il proprio punto di ingresso.",
+    "create": "Crea Mondo",
+    "createFirst": "Crea il primo Mondo",
+    "emptyTitle": "Nessun Mondo",
+    "emptyLead": "Scegli una bacheca iniziale e collegane altre con i portali.",
+    "boards": "bacheche",
+    "portals": "portali",
+    "backlinks": "ritorni",
+    "private": "Mondo privato",
+    "link": "Mondo condiviso tramite link",
+    "public": "Mondo pubblico",
+    "publicWorld": "Mondo Stoasis",
+    "overview": "Panoramica del Mondo",
+    "navigation": "Navigazione nel Mondo",
+    "currentWorld": "Mondo attuale",
+    "mapTitle": "Percorsi tra le tue bacheche",
+    "startBoard": "Bacheca iniziale",
+    "makeStart": "Imposta come iniziale",
+    "enter": "Entra nel Mondo",
+    "copyLink": "Copia link",
+    "boardLimit": "bacheche collegate",
+    "premiumHint": "Premium rimuove i limiti di Mondi e bacheche.",
+    "portalEmpty": "Aggiungi il primo portale su una delle tue bacheche.",
+    "addBoard": "Collega una bacheca",
+    "addBoardLead": "Puoi aggiungere le bacheche che sei autorizzato a modificare.",
+    "chooseBoard": "Scegli una bacheca",
+    "settings": "Impostazioni del Mondo",
+    "symbol": "Simbolo",
+    "namePlaceholder": "ad es. Il mio anno in giardino",
+    "freeLimitHint": "Il piano Free include un Mondo con un massimo di cinque bacheche. I contenuti esistenti restano disponibili dopo aver raggiunto il limite.",
+    "removeBoard": "Rimuovere la bacheca dal Mondo?",
+    "removeBoardConfirm": "La bacheca rimarrà disponibile. Rimuovi prima i suoi portali.",
+    "delete": "Elimina Mondo",
+    "deleteConfirm": "Eliminare questo Mondo e i suoi portali? Le bacheche collegate rimarranno disponibili.",
+    "created": "Mondo creato.",
+    "updated": "Mondo salvato.",
+    "deleted": "Mondo eliminato.",
+    "boardAdded": "Bacheca collegata al Mondo.",
+    "boardRemoved": "Bacheca rimossa dal Mondo.",
+    "loading": "Caricamento del Mondo …",
+    "unavailable": "Questo Mondo non è disponibile.",
+    "unavailableLead": "Il link non è valido, è scaduto o il Mondo è privato.",
+    "error": "Impossibile caricare il Mondo."
   },
   "mcp": {
     "title": "Collega Stoasis",

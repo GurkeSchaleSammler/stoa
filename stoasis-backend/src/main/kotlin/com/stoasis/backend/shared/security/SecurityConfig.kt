@@ -54,6 +54,7 @@ class SecurityConfig(
                 it.requestMatchers(HttpMethod.GET, "/api/uploads/**").permitAll()
                 it.requestMatchers(HttpMethod.GET, "/api/public/profile-boards/**").permitAll()
                 it.requestMatchers(HttpMethod.GET, "/api/public/collections/**").permitAll()
+                it.requestMatchers(HttpMethod.GET, "/api/public/worlds/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .exceptionHandling {
@@ -84,7 +85,7 @@ class SecurityConfig(
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
             allowedOrigins = corsAllowedOrigins.split(',').map(String::trim).filter(String::isNotEmpty)
-            allowedMethods = listOf("GET", "POST", "PATCH", "DELETE", "OPTIONS")
+            allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             allowedHeaders = listOf("Content-Type", "X-File-Name", "Accept")
             allowCredentials = true
             maxAge = 3600

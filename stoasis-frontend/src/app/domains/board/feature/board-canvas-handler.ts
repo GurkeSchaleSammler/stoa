@@ -5,6 +5,7 @@ import {
   inject,
   signal,
   untracked,
+  HostListener,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,20 +17,41 @@ import { AddPinDialogHandlerComponent } from './add-pin-dialog-handler';
 import { PinDetailHandlerComponent } from './pin-detail-handler';
 import { BoardViewMode } from '../../../shared/models/board-view-mode';
 import { BoardConsoleHandlerComponent } from './board-console-handler';
+import { BoardReuseHandlerComponent } from './board-reuse-handler';
+import { BoardClipboardService } from '../data/application/board-clipboard.service';
+import { boardShortcut } from '../data/models/board-shortcut';
+import { PortalPinData } from '../../../shared/models/portal-pin-data';
+import { WorldTrailComponent } from '../../world/world-trail';
+import { BoardPresenceStore } from '../data/application/board-presence.store';
+import { BoardPresenceComponent } from '../ui/board-presence';
 
 @Component({
   selector: 'feature-board-canvas-handler',
   host: { class: 'stoa-board' },
   standalone: true,
+  styles: `
+    :host {
+      display: block;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+  `,
+  providers: [BoardPresenceStore],
   imports: [
     BoardCanvasComponent,
     AddPinDialogHandlerComponent,
     PinDetailHandlerComponent,
     BoardConsoleHandlerComponent,
+    BoardReuseHandlerComponent,
+    WorldTrailComponent,
+    BoardPresenceComponent,
   ],
   template: `
     <ui-board-canvas
       [pins]="pins.sortedPins()"
+      [participants]="presence.participants()"
+      (cursorMoved)="presence.move($event)"
       [elements]="pins.elements()"
       [context]="pins.context()"
       [viewMode]="pins.viewMode()"
@@ -38,6 +60,7 @@ import { BoardConsoleHandlerComponent } from './board-console-handler';
       [isLoading]="pins.isLoading()"
       [error]="pins.error() || pins.elementsError()"
       (onSelectPin)="selectPin($event)"
+      (onNavigatePortal)="navigatePortal($event)"
       (onAddPinClick)="addDialogOpen.set(true)"
       (onViewModeChange)="changeView($event)"
       (onGridChange)="pins.updateGrid(collectionId(), $event.pinId, $event.grid)"
@@ -71,7 +94,23 @@ import { BoardConsoleHandlerComponent } from './board-console-handler';
       (onMembersClick)="openMembers()"
       (onConsoleClick)="consoleOpen.set(true)"
       (onSettingsClick)="openSettings()"
-    />
+    >
+      <ui-board-presence
+        board-presence
+        [participants]="presence.participants()"
+        [status]="presence.status()"
+      />
+      @if (worldId(); as activeWorldId) {
+        <ui-world-trail
+          world-navigation
+          [worldId]="activeWorldId"
+          [collectionId]="collectionId()"
+        />
+      }
+      @if (pins.context(); as context) {
+        <feature-board-reuse-handler board-reuse-controls [context]="context" />
+      }
+    </ui-board-canvas>
     @if (pins.context(); as context) {
       <feature-board-console-handler
         [isOpen]="consoleOpen()"
@@ -98,6 +137,9 @@ import { BoardConsoleHandlerComponent } from './board-console-handler';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardCanvasHandlerComponent {
+  protected readonly presence = inject(BoardPresenceStore);
+  private readonly pageVisible = signal(document.visibilityState !== 'hidden');
+  private readonly clipboard = inject(BoardClipboardService);
   protected readonly pins = inject(PinService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -115,10 +157,79 @@ export class BoardCanvasHandlerComponent {
     ),
     { initialValue: this.route.snapshot.queryParamMap.get('pin') },
   );
+  readonly worldId = toSignal(
+    this.route.queryParamMap.pipe(
+      map((params) => params.get('world')),
+      distinctUntilChanged(),
+    ),
+    { initialValue: this.route.snapshot.queryParamMap.get('world') },
+  );
   readonly addDialogOpen = signal(false);
   readonly consoleOpen = signal(false);
 
+  @HostListener('document:visibilitychange')
+  visibilityChanged(): void {
+    this.pageVisible.set(document.visibilityState !== 'hidden');
+  }
+
+  @HostListener('window:pagehide')
+  leavePresence(): void {
+    this.presence.disconnect();
+  }
+
+  @HostListener('window:pageshow')
+  resumePresence(): void {
+    this.visibilityChanged();
+    const context = this.pins.context();
+    if (
+      this.pageVisible() &&
+      context?.id === this.collectionId() &&
+      context.currentUserRole &&
+      this.pins.viewMode() === 'board'
+    ) {
+      this.presence.connect(this.collectionId());
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  reuseShortcut(event: KeyboardEvent): void {
+    if (this.pins.context()?.isSystem) return;
+    const command = boardShortcut(event, !!window.getSelection()?.toString());
+    const selected = this.pins.selectedPin();
+    if (
+      command === 'copy' &&
+      selected &&
+      selected.type !== 'skill' &&
+      this.pins.context()?.currentUserRole
+    ) {
+      event.preventDefault();
+      this.clipboard.copy(selected);
+    } else if (command === 'paste' && this.pins.canEdit() && this.clipboard.copied()) {
+      event.preventDefault();
+      const copy = this.clipboard.copied()!;
+      this.pins.pastePin(this.collectionId(), copy.sourceCollectionId, copy.pinId);
+    }
+  }
+
   constructor() {
+    effect(() => {
+      const id = this.collectionId();
+      const context = this.pins.context();
+      const visible = this.pageVisible();
+      const boardView = this.pins.viewMode() === 'board';
+      untracked(() => {
+        if (id && context?.id === id && context.currentUserRole && visible && boardView) {
+          this.presence.connect(id);
+        } else {
+          this.presence.disconnect();
+        }
+      });
+    });
+    effect(() => {
+      if (this.addDialogOpen() || this.consoleOpen() || this.pins.selectedPin()) {
+        this.presence.move(null);
+      }
+    });
     effect(() => {
       const id = this.collectionId();
       untracked(() => {
@@ -163,6 +274,14 @@ export class BoardCanvasHandlerComponent {
     void this.router.navigate(['/collections', this.collectionId(), 'members']);
   }
   openSettings(): void {
-    void this.router.navigate(['/collections', this.collectionId(), 'settings']);
+    void this.router.navigate(['/collections', this.collectionId(), 'settings'], {
+      queryParams: this.worldId() ? { world: this.worldId() } : undefined,
+    });
+  }
+  navigatePortal(portal: PortalPinData): void {
+    if (!portal.available || !portal.targetCollectionId) return;
+    void this.router.navigate(['/collections', portal.targetCollectionId], {
+      queryParams: portal.worldId ? { world: portal.worldId } : undefined,
+    });
   }
 }

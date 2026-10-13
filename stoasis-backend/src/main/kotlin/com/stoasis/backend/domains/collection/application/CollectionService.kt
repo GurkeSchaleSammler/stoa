@@ -19,7 +19,9 @@ import com.stoasis.backend.domains.pin.data.PinRepository
 import com.stoasis.backend.shared.web.ApiException
 import com.stoasis.backend.domains.membership.application.CollaborationPolicy
 import com.stoasis.backend.domains.plan.application.PlanService
+import com.stoasis.backend.domains.world.data.WorldBoardRepository
 import com.stoasis.backend.shared.id.IdGenerator
+import java.time.Clock
 import java.time.Instant
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -34,7 +36,9 @@ class CollectionService(
     private val pins: PinRepository,
     private val collaboration: CollaborationPolicy,
     private val plans: PlanService,
+    private val worldBoards: WorldBoardRepository,
     private val idGenerator: IdGenerator,
+    private val clock: Clock,
 ) {
     @Transactional(readOnly = true)
     fun list(userId: String, filter: String): List<CollectionSummary> =
@@ -109,6 +113,9 @@ class CollectionService(
         if (collection.isSystem) {
             throw ApiException(HttpStatus.CONFLICT, "Profil-Boards können nicht gelöscht werden.")
         }
+        if (worldBoards.existsByCollectionId(id)) {
+            throw ApiException(HttpStatus.CONFLICT, "Entferne das Board zuerst aus seinen Worlds.")
+        }
         collections.delete(collection)
     }
 
@@ -130,6 +137,13 @@ class CollectionService(
             collection.updatedAt = Instant.now()
         }
         return CollectionIdResponse(collection.id)
+    }
+
+    @Transactional
+    fun touch(id: String, userId: String) {
+        val collection = get(id)
+        requireEdit(collection, userId)
+        collection.updatedAt = clock.instant()
     }
 
     fun lock(id: String): CollectionEntity = collections.lockById(id)
@@ -172,13 +186,31 @@ class CollectionService(
         val isMember = viewerId != null && roleOf(collection, viewerId) != null
         val isPublic = collection.visibility == Visibility.public
         val hasLink = collection.visibility == Visibility.link && token != null && token == collection.inviteToken
-        if (!isMember && !isPublic && !hasLink) forbidden()
+        if (!isMember && !isPublic && !hasLink) {
+            throw ApiException(HttpStatus.NOT_FOUND, "Sammlung nicht gefunden.")
+        }
     }
 
     @Transactional(readOnly = true)
     fun publicDetail(id: String, token: String?, viewerId: String?): PublicCollectionDto {
         val collection = get(id)
         requireSharedView(collection, token, viewerId)
+        return PublicCollectionDto(
+            collection.id,
+            collection.name,
+            collection.emoji,
+            collection.allowedTypes,
+            collection.visibility,
+            pins.countByCollectionId(collection.id),
+            collection.updatedAt,
+            collection.boardKind,
+        )
+    }
+
+    /** Called only after a published World has authorized the board membership. */
+    @Transactional(readOnly = true)
+    fun worldPublicDetail(id: String): PublicCollectionDto {
+        val collection = get(id)
         return PublicCollectionDto(
             collection.id,
             collection.name,

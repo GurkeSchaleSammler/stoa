@@ -30,8 +30,8 @@ class PlanService(private val users: UserRepository, private val pins: PinReposi
     }
 
     companion object {
-        val FREE = PlanLimits(false, 2, 3, 50, 5 * 1024 * 1024, 12, 100, 1600)
-        val PREMIUM = PlanLimits(true, 25, 25, 2000, 20 * 1024 * 1024, 10000, 10000, 3200)
+        val FREE = PlanLimits(false, 2, 3, 50, 5 * 1024 * 1024, 12, 100, 1600, 1, 5)
+        val PREMIUM = PlanLimits(true, 25, 25, 2000, 20 * 1024 * 1024, 10000, 10000, 3200, 1000, 10000)
     }
 }
 
@@ -45,4 +45,6 @@ data class PlanLimits(
     val skills: Int,
     val importRows: Int,
     val previewDimension: Int,
+    val worlds: Int,
+    val worldBoards: Int,
 )

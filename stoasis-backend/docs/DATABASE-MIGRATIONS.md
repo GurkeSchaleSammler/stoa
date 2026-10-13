@@ -33,3 +33,14 @@ Backend-Replikas den Wechsel ohne erneute Anmeldung.
 
 Das Feature ist im Produktionsprofil standardmäßig deaktiviert und kann während des
 Rollouts mit `STOASIS_SKILLS_ENABLED=true` schrittweise aktiviert werden.
+
+`V16` ergänzt `user_flags` für versionierte Tutorials. Die Migration ist additiv und
+benötigt keinen Backfill. Vor dem neuen Backend-Image den vorhandenen Pipeline-Einstieg
+ausführen. Ein App-Rollback kann die Tabelle unverändert stehen lassen. Pro Nutzer und
+Tutorial bleibt die erste Auswahl (`completed`/`skipped`) erhalten; Kontolöschung entfernt
+die Flags über den Foreign Key. Vertrag und Verifikation: `spec/09-board-templates-and-reuse.md`.
+
+`V19` ergänzt die gespeicherte Breite, die ursprüngliche Höhe und den Status manuell
+vergrösserter Pins. Bestehende Pins behalten ihre Größe; die ursprüngliche Höhe wird
+aus `height_clips` übernommen. Die Migration ist additiv und muss vor dem neuen
+Backend-Image über den vorhandenen Pipeline-Einstieg ausgeführt werden.

@@ -25,6 +25,16 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'shared/collections/:id',
+    loadComponent: () =>
+      import('./domains/collection/public-board-page').then((m) => m.PublicBoardPageComponent),
+  },
+  {
+    path: 'shared/worlds/:id',
+    loadComponent: () =>
+      import('./domains/world/public-world-page').then((m) => m.PublicWorldPageComponent),
+  },
+  {
     path: 'stoaql-docs',
     loadChildren: () =>
       import('./domains/stoaql-docs/stoaql-docs.routes').then((m) => m.STOAQL_DOCS_ROUTES),
@@ -48,6 +58,10 @@ export const routes: Routes = [
       {
         path: 'collections/:id',
         loadChildren: () => import('./domains/board/board.routes').then((m) => m.BOARD_ROUTES),
+      },
+      {
+        path: 'worlds',
+        loadChildren: () => import('./domains/world/world.routes').then((m) => m.WORLD_ROUTES),
       },
       {
         path: 'skills',

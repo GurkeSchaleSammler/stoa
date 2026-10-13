@@ -2,7 +2,6 @@ import {
   DestroyRef,
   Directive,
   ElementRef,
-  HostListener,
   computed,
   inject,
   input,
@@ -11,7 +10,9 @@ import {
   viewChildren,
 } from '@angular/core';
 import { BoardViewMode } from '../../../shared/models/board-view-mode';
+import { BoardCursorPosition, BoardParticipant } from '../data/models/board-presence';
 import { Pin } from '../../../shared/models/pin';
+import { PortalPinData } from '../../../shared/models/portal-pin-data';
 import { BOARD_HEIGHT_CLIPS } from '../data/models/board-height-clips';
 import { BOARD_WIDTH_CLIPS } from '../data/models/board-width-clips';
 import { BoardColorVariant } from '../data/models/board-color-variant';
@@ -44,6 +45,8 @@ import { ZonePointerState } from './models/zone-pointer-state';
 @Directive()
 export abstract class BoardCanvasState {
   readonly pins = input.required<Pin[]>();
+  readonly participants = input<BoardParticipant[]>([]);
+  readonly cursorMoved = output<BoardCursorPosition | null>();
   readonly elements = input.required<BoardElements>();
   readonly context = input<BoardContext | null>(null);
   readonly viewMode = input<BoardViewMode>('board');
@@ -52,6 +55,7 @@ export abstract class BoardCanvasState {
   readonly isLoading = input(false);
   readonly error = input<string | null>(null);
   readonly onSelectPin = output<string>();
+  readonly onNavigatePortal = output<PortalPinData>();
   readonly onAddPinClick = output<void>();
   readonly onGridChange = output<PinGridChange>();
   readonly onStackDrop = output<StackDrop>();
@@ -140,11 +144,6 @@ export abstract class BoardCanvasState {
   protected resizeObserver?: ResizeObserver;
   protected suppressedOpenPinId: string | null = null;
   protected rejectedTimer?: ReturnType<typeof setTimeout>;
-
-  @HostListener('document:keydown.escape')
-  closeImageFullViewFromKeyboard(): void {
-    if (this.imageFullView()) this.closeImageFullView();
-  }
 
   openImageFullView(image: ImageFullView): void {
     if (image.src) this.imageFullView.set(image);

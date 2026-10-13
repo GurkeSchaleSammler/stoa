@@ -9,4 +9,9 @@ export interface AddPinDraft {
   pinColor: string | null;
   caption: string;
   tags: string;
+  portalWorldId: string;
+  portalTargetCollectionId: string;
+  portalLabel: string;
+  portalEmoji: string;
+  createReturnPortal: boolean;
 }

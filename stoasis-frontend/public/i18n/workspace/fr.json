@@ -1,5 +1,78 @@
 {
+  "templates": {
+    "actions": "Actions du tableau",
+    "choose": "Choisir un point de départ",
+    "lead": "Un cadre calme pour vos contenus. Tout reste déplaçable et modifiable.",
+    "blank": "Tableau vide",
+    "blankHint": "Commencez librement.",
+    "loading": "Chargement des modèles …",
+    "loadError": "Les modèles sont indisponibles. Vous pouvez commencer avec un tableau vide.",
+    "editableHint": "Le modèle comprend des notes modifiables, des zones colorées, des titres et un autocollant discret.",
+    "duplicate": "Dupliquer le tableau",
+    "duplicateHint": "Le contenu, la disposition et les décorations sont copiés. La copie est privée ; les membres, invitations et commentaires ne sont pas copiés.",
+    "createCopy": "Créer une copie privée",
+    "copyName": "{{name}} – Copie",
+    "duplicated": "Tableau dupliqué.",
+    "newFromTemplate": "Nouveau tableau à partir d’un modèle",
+    "paste": "Coller une épingle",
+    "clipboard": "Copié : {{name}}",
+    "copyPin": "Copier l’épingle",
+    "duplicatePin": "Dupliquer l’épingle",
+    "pinCopied": "Épingle copiée. Ouvrez un tableau et choisissez Coller.",
+    "pinPasted": "Épingle collée.",
+    "project": {
+      "title": "Projet",
+      "hint": "Idées → En cours → Terminé."
+    },
+    "week": {
+      "title": "Ma semaine",
+      "hint": "Cinq jours, une vue claire."
+    },
+    "research": {
+      "title": "Recherche",
+      "hint": "Questions, sources et résultats."
+    },
+    "moodboard": {
+      "title": "Moodboard",
+      "hint": "Ambiance, inspiration et détails."
+    },
+    "learning": {
+      "title": "Parcours d’apprentissage",
+      "hint": "Découvrir, pratiquer, comprendre."
+    },
+    "tour": {
+      "title": "Un point de départ pour votre tableau",
+      "introduction": "Les modèles offrent une disposition prête à l’emploi et modifiable. Souhaitez-vous une brève visite ?",
+      "chooseTitle": "Choisissez votre cadre",
+      "chooseText": "Choisissez un modèle ou commencez avec un tableau vide. L’aperçu montre les zones et épingles. Les couleurs, textes et décorations restent modifiables.",
+      "nameTitle": "Personnalisez votre tableau",
+      "nameText": "Donnez un nom au tableau. Sa création ajoute des notes et des zones que vous pouvez déplacer, compléter ou supprimer."
+    },
+    "copyTour": {
+      "title": "Réutilisez les bonnes idées",
+      "introduction": "Dupliquez des tableaux entiers ou copiez des épingles entre tableaux. Souhaitez-vous découvrir ces actions ?",
+      "duplicateTitle": "Emportez tout un tableau",
+      "duplicateText": "Dupliquer crée une copie privée avec épingles, piles, connexions, couleurs et décorations. Vous choisissez un nouveau nom.",
+      "pinTitle": "Copier et coller des épingles",
+      "pinText": "Ouvrez une épingle et choisissez Copier ou Dupliquer. Pour copier entre tableaux, ouvrez le tableau cible et choisissez Coller. Ctrl/⌘+C et Ctrl/⌘+V fonctionnent aussi lorsque vous ne modifiez pas de texte."
+    }
+  },
+  "onboarding": {
+    "show": "Afficher l’explication",
+    "skip": "Passer",
+    "start": "Montrez-moi",
+    "next": "Suivant",
+    "finish": "Compris",
+    "progress": "Étape {{current}} sur {{total}}",
+    "loadError": "Impossible de charger vos préférences de tutoriel.",
+    "saveError": "Impossible d’enregistrer votre choix. Veuillez réessayer."
+  },
   "board": {
+    "presence": {
+      "unavailable": "Curseurs en direct indisponibles. Rechargez le tableau.",
+      "here": "{{count}} autres personnes présentes",
+      "reconnecting": "Reconnexion des curseurs en direct …"
+    },
     "title": "Tableau",
     "view": "Vue",
     "boardView": "Vue tableau",
@@ -111,7 +184,27 @@
     "public": "Public",
     "delete": "Supprimer la collection",
     "deleteTitle": "Supprimer la collection ?",
-    "confirmDelete": "Vraiment supprimer cette collection et tous ses pins ?"
+    "confirmDelete": "Vraiment supprimer cette collection et tous ses pins ?",
+    "shareBoard": "Partager le tableau",
+    "shareUrl": "Lien de partage",
+    "openSharedView": "Ouvrir la vue partagée",
+    "saveToShare": "Enregistrez la nouvelle visibilité pour activer le lien.",
+    "publicShareHint": "Ce tableau est accessible publiquement sans connexion.",
+    "linkShareHint": "Seules les personnes disposant de ce lien secret peuvent voir le tableau.",
+    "publicWarningTitle": "Rendre ce tableau public ?",
+    "publicWarningText": "Toute personne sur Internet pourra voir ce tableau et ses pins sans connexion.",
+    "makePublic": "Rendre public",
+    "readOnly": "Lecture seule",
+    "publicBoard": "Tableau public",
+    "linkBoard": "Tableau partagé",
+    "publicReadOnlyHint": "Cette vue est en lecture seule.",
+    "publicLoading": "Chargement du tableau …",
+    "publicForbiddenTitle": "Ce tableau n’est pas public.",
+    "publicForbiddenText": "Connectez-vous ou ouvrez le lien de partage complet.",
+    "publicNotFoundTitle": "Tableau introuvable.",
+    "publicNotFoundText": "Le lien n’est peut-être plus valide.",
+    "publicErrorTitle": "Impossible de charger le tableau.",
+    "publicErrorText": "Veuillez réessayer dans un instant."
   },
   "membership": {
     "collaboration": "Collaboration",
@@ -129,6 +222,8 @@
     "inviteLead": "Toute personne disposant du lien peut rejoindre la collection en lecture.",
     "revokeLink": "Révoquer le lien",
     "privateCollection": "La collection est privée.",
+    "publicCollection": "La collection est publique.",
+    "publicCollectionHint": "Gérez le lien public dans les paramètres de la collection.",
     "createInviteLink": "Créer un lien d’invitation",
     "invitation": "Invitation",
     "checkingInvite": "Vérification de l’invitation …",
@@ -146,8 +241,19 @@
     "link": "Lien",
     "note": "Note",
     "photo": "Photo",
+    "portal": "Portail",
+    "openPortal": "Ouvrir le portail vers {{name}}",
+    "portalUnavailable": "Le tableau cible n’est plus disponible",
+    "noPortalWorld": "Ce tableau ne fait encore partie d’aucun Monde.",
+    "noPortalWorldLead": "Ouvrez Mondes, reliez au moins deux tableaux, puis ajoutez un portail ici.",
+    "portalWorld": "Monde",
+    "portalTarget": "Tableau cible",
+    "portalLabel": "Titre du portail",
+    "returnPortal": "Créer un portail de retour",
+    "returnPortalLead": "Un second portail vers ce tableau est créé sur le tableau cible.",
     "webLink": "Lien web",
     "photoPin": "Pin photo",
+    "imageUnavailable": "Image indisponible",
     "imagePreview": "Aperçu de l’image",
     "imageFullView": "Vue complète de l’image",
     "openFullView": "Ouvrir l’image en vue complète",
@@ -160,7 +266,7 @@
     "new": "Nouveau pin",
     "add": "Ajouter un pin",
     "addTitle": "Épingler au tableau",
-    "addTypes": "Lien, note ou photo",
+    "addTypes": "Lien, note, photo ou portail",
     "address": "Adresse",
     "loadingPreview": "Chargement de l’aperçu du lien …",
     "notePlaceholder": "Idée, liste, rappel …",
@@ -188,12 +294,14 @@
     "type": {
       "link": "Lien",
       "note": "Note",
-      "photo": "Photo"
+      "photo": "Photo",
+      "portal": "Portail"
     },
     "types": {
       "links": "Liens",
       "notes": "Notes",
-      "photos": "Photos"
+      "photos": "Photos",
+      "portals": "Portails"
     },
     "invalidPhoto": "Choisissez JPEG, PNG ou WebP : 5 Mo maximum avec Free, 20 Mo avec Premium.",
     "markdownWrite": "Écrire",
@@ -285,7 +393,8 @@
     "copyLink": "Copier le lien du profil",
     "accent": "Couleur du profil",
     "capacity": "{{count}} / {{limit}} compétences",
-    "limitReached": "Limite atteinte. Les compétences existantes restent visibles et modifiables."
+    "limitReached": "Limite atteinte. Les compétences existantes restent visibles et modifiables.",
+    "mobileBoardLead": "Vos compétences dans des cartes lisibles."
   },
   "groups": {
     "nav": "Groupes",
@@ -327,7 +436,7 @@
   },
   "search": {
     "allPins": "Rechercher dans tous les pins",
-    "placeholder": "Liens, notes, photos …",
+    "placeholder": "Liens, notes, photos, portails …",
     "searching": "Recherche en cours",
     "clear": "Effacer la recherche",
     "filterTag": "Filtrer par tag",
@@ -341,6 +450,55 @@
     "newTag": "Nouveau tag",
     "deleteTag": "Supprimer {{tag}}",
     "eyebrow": "Retrouver des pins"
+  },
+  "worlds": {
+    "nav": "Mondes",
+    "plural": "Mondes",
+    "eyebrow": "Reliés dans l’espace",
+    "title": "Vos tableaux deviennent un monde.",
+    "lead": "Reliez vos tableaux par des portails et créez une collection navigable avec son propre point d’entrée.",
+    "create": "Créer un Monde",
+    "createFirst": "Créer le premier Monde",
+    "emptyTitle": "Aucun Monde",
+    "emptyLead": "Choisissez un tableau de départ, puis reliez-en d’autres avec des portails.",
+    "boards": "tableaux",
+    "portals": "portails",
+    "backlinks": "retours",
+    "private": "Monde privé",
+    "link": "Monde partagé par lien",
+    "public": "Monde public",
+    "publicWorld": "Monde Stoasis",
+    "overview": "Vue d’ensemble",
+    "navigation": "Navigation dans le monde",
+    "currentWorld": "Monde actuel",
+    "mapTitle": "Chemins entre vos tableaux",
+    "startBoard": "Tableau de départ",
+    "makeStart": "Définir comme départ",
+    "enter": "Entrer dans le Monde",
+    "copyLink": "Copier le lien",
+    "boardLimit": "tableaux reliés",
+    "premiumHint": "Premium supprime les limites de Mondes et de tableaux.",
+    "portalEmpty": "Ajoutez le premier portail sur l’un de vos tableaux.",
+    "addBoard": "Relier un tableau",
+    "addBoardLead": "Vous pouvez ajouter les tableaux que vous êtes autorisé à modifier.",
+    "chooseBoard": "Choisir un tableau",
+    "settings": "Réglages du Monde",
+    "symbol": "Symbole",
+    "namePlaceholder": "p. ex. Mon année au jardin",
+    "freeLimitHint": "L’offre gratuite comprend un Monde de cinq tableaux maximum. Le contenu existant reste disponible une fois la limite atteinte.",
+    "removeBoard": "Retirer le tableau du Monde ?",
+    "removeBoardConfirm": "Le tableau sera conservé. Retirez d’abord ses portails.",
+    "delete": "Supprimer le Monde",
+    "deleteConfirm": "Supprimer ce Monde et ses portails ? Les tableaux reliés seront conservés.",
+    "created": "Monde créé.",
+    "updated": "Monde enregistré.",
+    "deleted": "Monde supprimé.",
+    "boardAdded": "Tableau relié au Monde.",
+    "boardRemoved": "Tableau retiré du Monde.",
+    "loading": "Chargement du Monde …",
+    "unavailable": "Ce Monde n’est pas disponible.",
+    "unavailableLead": "Le lien est invalide, expiré ou le Monde est privé.",
+    "error": "Impossible de charger le Monde."
   },
   "mcp": {
     "title": "Connecter Stoasis",

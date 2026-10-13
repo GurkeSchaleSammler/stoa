@@ -1,14 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  input,
-  output,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
+import { NativeModalDirective } from '../../../shared/ui/native-modal';
 import { Pin } from '../../../shared/models/pin';
 import { NOTE_BACKGROUND_PRESETS } from '../data/models/board-color';
 import { PinEditValue } from '../data/models/pin-edit-value';
@@ -29,18 +23,34 @@ import { NoteEditorComponent } from './note-editor';
     ImageFullViewComponent,
     MarkdownContentComponent,
     NoteEditorComponent,
+    NativeModalDirective,
   ],
   template: `
     @if (pin(); as item) {
-      <div class="detail-backdrop" (click)="onClose.emit()">
-        <aside
-          class="detail-panel"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="pin-detail-title"
-          (click)="$event.stopPropagation()"
-        >
+      <dialog
+        class="detail-backdrop"
+        uiNativeModal
+        aria-labelledby="pin-detail-title"
+        (dismissed)="onClose.emit()"
+        (click)="onClose.emit()"
+      >
+        <aside class="detail-panel" (click)="$event.stopPropagation()">
           <header>
+            @if (canCopy() && !editMode()) {
+              <button type="button" class="button secondary" (click)="copyRequested.emit()">
+                <ui-app-icon name="copy" />{{ 'templates.copyPin' | translate }}
+              </button>
+              @if (canEdit()) {
+                <button
+                  type="button"
+                  class="button secondary"
+                  [disabled]="isMutating()"
+                  (click)="duplicateRequested.emit()"
+                >
+                  <ui-app-icon name="layers" />{{ 'templates.duplicatePin' | translate }}
+                </button>
+              }
+            }
             <span class="detail-type">{{ 'pin.type.' + item.type | translate }}</span
             ><button
               type="button"
@@ -71,6 +81,12 @@ import { NoteEditorComponent } from './note-editor';
                   </label>
                 }
                 @case ('note') {
+                  <label class="dialog-field"
+                    ><span>{{ 'common.title' | translate }}</span
+                    ><input
+                      [ngModel]="editValue().title"
+                      (ngModelChange)="onDraftChange.emit({ title: $event })"
+                  /></label>
                   <ui-note-editor
                     [content]="editValue().content"
                     (contentChange)="onDraftChange.emit({ content: $event })"
@@ -174,6 +190,18 @@ import { NoteEditorComponent } from './note-editor';
                     {{ item.data.caption || ('pin.photo' | translate) }}
                   </h1>
                 }
+                @case ('portal') {
+                  <p class="eyebrow">{{ 'pin.portal' | translate }}</p>
+                  <div class="detail-portal-symbol" aria-hidden="true">{{ item.data.emoji }}</div>
+                  <h1 id="pin-detail-title">{{ item.data.label }}</h1>
+                  <p class="detail-lead">
+                    {{
+                      item.data.available
+                        ? item.data.targetName
+                        : ('pin.portalUnavailable' | translate)
+                    }}
+                  </p>
+                }
               }
               @if (item.tags.length) {
                 <div class="tag-row">
@@ -196,10 +224,13 @@ import { NoteEditorComponent } from './note-editor';
               @if (canEdit()) {
                 <div class="detail-actions">
                   <button type="button" class="button danger-ghost" (click)="onDelete.emit()">
-                    <ui-app-icon name="trash" /> {{ 'common.delete' | translate }}</button
-                  ><button type="button" class="button secondary" (click)="onEdit.emit()">
-                    <ui-app-icon name="edit" /> {{ 'common.edit' | translate }}
+                    <ui-app-icon name="trash" /> {{ 'common.delete' | translate }}
                   </button>
+                  @if (item.type !== 'portal') {
+                    <button type="button" class="button secondary" (click)="onEdit.emit()">
+                      <ui-app-icon name="edit" /> {{ 'common.edit' | translate }}
+                    </button>
+                  }
                 </div>
               }
             }
@@ -226,22 +257,28 @@ import { NoteEditorComponent } from './note-editor';
               } @empty {
                 <p class="helper">{{ 'pin.noComments' | translate }}</p>
               }
-              <div class="comment-form">
-                <label class="sr-only" for="new-comment">{{ 'pin.comment' | translate }}</label
-                ><textarea
-                  id="new-comment"
-                  rows="2"
-                  [placeholder]="'pin.replyPlaceholder' | translate"
-                  [(ngModel)]="commentDraft"
-                ></textarea
-                ><button type="button" [disabled]="!commentDraft.trim()" (click)="submitComment()">
-                  <ui-app-icon name="send" /> {{ 'common.send' | translate }}
-                </button>
-              </div>
+              @if (canComment()) {
+                <div class="comment-form">
+                  <label class="sr-only" for="new-comment">{{ 'pin.comment' | translate }}</label
+                  ><textarea
+                    id="new-comment"
+                    rows="2"
+                    [placeholder]="'pin.replyPlaceholder' | translate"
+                    [(ngModel)]="commentDraft"
+                  ></textarea
+                  ><button
+                    type="button"
+                    [disabled]="!commentDraft.trim()"
+                    (click)="submitComment()"
+                  >
+                    <ui-app-icon name="send" /> {{ 'common.send' | translate }}
+                  </button>
+                </div>
+              }
             </section>
           </div>
         </aside>
-      </div>
+      </dialog>
     }
     @if (imageFullView(); as image) {
       <ui-image-full-view [image]="image" (close)="closeImageFullView()" />
@@ -253,6 +290,11 @@ import { NoteEditorComponent } from './note-editor';
 export class PinDetailComponent {
   readonly pin = input<Pin | null>(null);
   readonly canEdit = input(false);
+  readonly canCopy = input(false);
+  readonly isMutating = input(false);
+  readonly copyRequested = output<void>();
+  readonly duplicateRequested = output<void>();
+  readonly canComment = input(true);
   readonly editMode = input(false);
   readonly editValue = input.required<PinEditValue>();
   readonly allowCustomColors = input(false);
@@ -266,11 +308,6 @@ export class PinDetailComponent {
   readonly backgroundColors = NOTE_BACKGROUND_PRESETS;
   readonly imageFullView = signal<ImageFullView | null>(null);
   commentDraft = '';
-
-  @HostListener('document:keydown.escape')
-  closeImageFullViewFromKeyboard(): void {
-    if (this.imageFullView()) this.closeImageFullView();
-  }
 
   openPinImage(pin: Pin): void {
     if (pin.type === 'photo' && pin.data.imageUrl) {

@@ -54,7 +54,7 @@ import { StickerPointerState } from './models/sticker-pointer-state';
           (pointerdown)="$event.stopPropagation()"
           (click)="delete.emit()"
         >
-          <ui-app-icon name="close" />
+          <ui-app-icon name="trash" />
         </button>
         <button
           type="button"

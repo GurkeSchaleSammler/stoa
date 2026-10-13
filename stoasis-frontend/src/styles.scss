@@ -1,15 +1,21 @@
 @use './styles/themes';
 
 :root {
+  --motion-fast: 160ms;
+  --motion-enter: 240ms;
   --ease-soft: cubic-bezier(0.25, 0.8, 0.25, 1);
   --ease-spring: cubic-bezier(0.22, 1.08, 0.36, 1);
-  --radius-control: 7px;
-  --radius-card: 7px;
-  --radius-panel: 8px;
-  --shadow-sm: 0 2px 0 color-mix(in srgb, var(--border-strong) 22%, transparent);
-  --shadow-md: 0 6px 18px rgb(20 13 8 / 18%);
-  --shadow-lg: 0 14px 38px rgb(20 13 8 / 24%);
-  --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --page-max: 1120px;
+  --page-gutter: clamp(20px, 3vw, 40px);
+  --page-padding: clamp(32px, 4vw, 56px) 0 64px;
+  --heading-size: clamp(2rem, 3.5vw, 3.15rem);
+  --radius-control: 10px;
+  --radius-card: 12px;
+  --radius-panel: 16px;
+  --shadow-sm: 0 1px 2px color-mix(in srgb, var(--text) 5%, transparent);
+  --shadow-md: 0 4px 16px color-mix(in srgb, var(--text) 7%, transparent);
+  --shadow-lg: 0 16px 48px rgb(0 0 0 / 16%);
+  --font-sans: 'Candara', 'Trebuchet MS', sans-serif;
   --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
   --surface-0: var(--surface-sunken);
   --surface-1: var(--surface-sunken);
@@ -60,6 +66,17 @@ textarea,
 select {
   outline-offset: 3px;
 }
+select:not([multiple]):not([size]) {
+  appearance: none;
+  // Component background/padding shorthands must preserve the shared arrow and its space.
+  padding-inline-end: 36px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b8b85' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+}
+button:disabled {
+  cursor: not-allowed;
+}
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -93,13 +110,158 @@ ui-app-icon {
     180px 180px;
   background-attachment: local;
 }
+
+// Shared motion vocabulary: short fades, small lifts, no moving canvas coordinates.
+// Routed component hosts do not receive the shell's emulated style attributes.
+app-shell .route-stage > :not(router-outlet) {
+  min-width: 0;
+  animation: stoa-fade-in 180ms ease;
+}
+// Reserve equal space for classic scrollbars; overlay scrollbars need no gutter.
+app-home,
+feature-profile-page-handler,
+feature-search-results-handler,
+app-worlds-page,
+app-profile-skills-page,
+app-group-list-page,
+app-group-detail-page,
+app-shell
+  .route-stage:has(> feature-collection-create-handler, > feature-collection-settings-handler) {
+  scrollbar-gutter: stable both-edges;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+dialog[uiNativeModal] {
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  color: inherit;
+}
+dialog[uiNativeModal]::backdrop {
+  background: transparent;
+}
+dialog[uiNativeModal]:not([open]) {
+  display: none;
+}
+@keyframes stoa-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes stoa-content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes stoa-menu-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes stoa-selection-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes stoa-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes stoa-detail-enter {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.stoa-board .dialog-backdrop,
+.stoa-board .detail-backdrop {
+  animation: stoa-fade-in var(--motion-fast) ease;
+}
+.stoa-board .dialog-card {
+  animation: stoa-content-enter var(--motion-enter) var(--ease-soft);
+}
+.stoa-board .detail-panel {
+  animation: stoa-detail-enter var(--motion-enter) var(--ease-soft);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --page-gutter: 16px;
+    --page-padding: 24px 0 40px;
+    --heading-size: clamp(1.85rem, 8vw, 2.6rem);
+  }
+  // 16px prevents iOS from zooming into form fields and hiding the surrounding UI.
+  input:not([type='checkbox']):not([type='radio']),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+  .stoa-board .dialog-backdrop {
+    place-items: end stretch;
+    padding: 0;
+  }
+  .stoa-board .dialog-card {
+    width: 100%;
+    max-height: calc(100dvh - env(safe-area-inset-top) - 12px);
+    border-radius: 22px 22px 0 0;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    animation-name: stoa-content-enter;
+  }
+  .stoa-board .detail-panel {
+    padding: calc(16px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
+  }
+  .stoa-board .dialog-card > header,
+  .stoa-board .detail-panel > header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .stoa-board .close-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .stoa-board .button {
+    min-height: 44px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }

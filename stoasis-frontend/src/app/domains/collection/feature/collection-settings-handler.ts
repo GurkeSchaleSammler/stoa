@@ -6,6 +6,8 @@ import { CollectionSettingsComponent } from '../ui/collection-settings';
 import { ConfirmationDialogService } from '../../../shared/application/confirmation-dialog.service';
 import { PinType } from '../../../shared/models/pin-type';
 import { UpdateCollectionRequest } from '../data/models/update-collection-request';
+import { collectionShareUrl } from '../data/models/collection-share-url';
+import { SnackbarService } from '../../../shared/application/snackbar.service';
 
 /** Keeps board settings in a signal draft until they are saved. */
 @Component({
@@ -15,7 +17,7 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
   template: `
     <ui-collection-settings
       [collection]="draftCollection()"
-      [inviteUrl]="inviteUrl()"
+      [shareUrl]="shareUrl()"
       [canSave]="canSave()"
       [isSaving]="collections.isSaving()"
       [error]="collections.error()"
@@ -24,7 +26,8 @@ import { UpdateCollectionRequest } from '../data/models/update-collection-reques
       (onSave)="save()"
       (onDelete)="deleteCollection()"
       (onCancel)="back()"
-      (onCopyInvite)="copyInvite()"
+      (copyShareRequested)="copyShare()"
+      (openShareRequested)="openShare()"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +37,9 @@ export class CollectionSettingsHandlerComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly confirmation = inject(ConfirmationDialogService);
+  private readonly snackbars = inject(SnackbarService);
   private readonly collectionId = this.route.snapshot.paramMap.get('id') ?? '';
+  private readonly worldId = this.route.snapshot.queryParamMap.get('world');
   private readonly pendingModel = signal<UpdateCollectionRequest>({});
   readonly draftCollection = computed(() => {
     const board = this.collections.activeCollection();
@@ -48,15 +53,35 @@ export class CollectionSettingsHandlerComponent {
     if (changes.allowedTypes !== undefined && changes.allowedTypes.length === 0) return false;
     return true;
   });
-  readonly inviteUrl = computed(() => {
-    const token = this.collections.activeCollection()?.inviteToken;
-    return token ? `${window.location.origin}/join/${token}` : '';
+  readonly shareUrl = computed(() => {
+    const collection = this.collections.activeCollection();
+    if (!collection) return '';
+    const draftVisibility = this.pendingModel().visibility ?? collection.visibility;
+    if (draftVisibility !== collection.visibility) return '';
+    return collectionShareUrl(
+      window.location.origin,
+      collection.id,
+      collection.visibility,
+      collection.inviteToken,
+    );
   });
 
   constructor() {
     this.collections.loadCollection(this.collectionId);
   }
-  changeFields(changes: UpdateCollectionRequest): void {
+  async changeFields(changes: UpdateCollectionRequest): Promise<void> {
+    if (
+      changes.visibility === 'public' &&
+      this.draftCollection()?.visibility !== 'public' &&
+      !(await this.confirmation.confirm({
+        title: 'collection.publicWarningTitle',
+        message: 'collection.publicWarningText',
+        confirmLabel: 'collection.makePublic',
+        tone: 'danger',
+      }))
+    ) {
+      return;
+    }
     this.pendingModel.update((current) => ({ ...current, ...changes }));
   }
   toggleType(type: PinType): void {
@@ -82,9 +107,20 @@ export class CollectionSettingsHandlerComponent {
     if (confirmed) this.collections.delete(this.collectionId);
   }
   back(): void {
-    void this.router.navigate(['/collections', this.collectionId]);
+    void this.router.navigate(['/collections', this.collectionId], {
+      queryParams: this.worldId ? { world: this.worldId } : undefined,
+    });
   }
-  copyInvite(): void {
-    void navigator.clipboard.writeText(this.inviteUrl());
+  async copyShare(): Promise<void> {
+    if (!this.shareUrl()) return;
+    try {
+      await navigator.clipboard.writeText(this.shareUrl());
+      this.snackbars.success('snackbar.shareLinkCopied');
+    } catch {
+      this.snackbars.error('errors.copyShareLink');
+    }
+  }
+  openShare(): void {
+    if (this.shareUrl()) window.open(this.shareUrl(), '_blank', 'noopener,noreferrer');
   }
 }

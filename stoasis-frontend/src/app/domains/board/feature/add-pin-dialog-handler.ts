@@ -19,6 +19,10 @@ import { LinkPinData } from '../../../shared/models/link-pin-data';
 import { NotePinData } from '../../../shared/models/note-pin-data';
 import { PhotoPinData } from '../../../shared/models/photo-pin-data';
 import { SessionContextStore } from '../../../shared/application/session-context.store';
+import { PortalPinData } from '../../../shared/models/portal-pin-data';
+import { WorldApi } from '../../world/data/world.api';
+import { WorldDetail } from '../../world/data/world.models';
+import { catchError, EMPTY, take } from 'rxjs';
 
 const emptyDraft: AddPinDraft = {
   type: null,
@@ -28,6 +32,11 @@ const emptyDraft: AddPinDraft = {
   pinColor: null,
   caption: '',
   tags: '',
+  portalWorldId: '',
+  portalTargetCollectionId: '',
+  portalLabel: '',
+  portalEmoji: '↗',
+  createReturnPortal: true,
 };
 
 /** Builds pin requests from the current draft and validated previews. */
@@ -51,6 +60,8 @@ const emptyDraft: AddPinDraft = {
       [uploadedPhoto]="upload.photo()"
       [error]="parser.error() || upload.error() || pins.error()"
       [allowCustomColors]="allowCustomColors()"
+      [portalWorlds]="portalWorlds()"
+      [sourceCollectionId]="collectionId()"
       (onTypeSelect)="selectType($event)"
       (onUrlChange)="parser.parseMetadata($event)"
       (onFileSelect)="upload.upload($event)"
@@ -66,11 +77,13 @@ export class AddPinDialogHandlerComponent {
   protected readonly parser = inject(LinkParserService);
   protected readonly upload = inject(PhotoUploadService);
   private readonly session = inject(SessionContextStore);
+  private readonly worldApi = inject(WorldApi);
   readonly collectionId = input.required<string>();
   readonly allowedTypes = input.required<PinType[]>();
   readonly isOpen = input(false);
   readonly onClose = output<void>();
   private readonly draftModel = signal<AddPinDraft>(emptyDraft);
+  readonly portalWorlds = signal<WorldDetail[]>([]);
   readonly pinForm = form(this.draftModel);
   readonly draft = computed(() => this.draftModel());
   readonly allowCustomColors = computed(() => this.session.user()?.plan === 'premium');
@@ -79,11 +92,17 @@ export class AddPinDialogHandlerComponent {
     if (!draft.type || !this.allowedTypes().includes(draft.type)) return false;
     if (draft.type === 'link') return /^https?:\/\//i.test(draft.url.trim());
     if (draft.type === 'note') return draft.content.trim().length > 0;
+    if (draft.type === 'portal') {
+      return (
+        !!draft.portalWorldId && !!draft.portalTargetCollectionId && !!draft.portalLabel.trim()
+      );
+    }
     return this.upload.photo() !== null && !this.upload.isUploading();
   });
 
   selectType(type: PinType): void {
     this.draftModel.update((draft) => ({ ...draft, type }));
+    if (type === 'portal') this.loadPortalWorlds();
   }
 
   changeDraft(changes: Partial<AddPinDraft>): void {
@@ -145,6 +164,19 @@ export class AddPinDialogHandlerComponent {
       };
       return { type: 'photo', data, color: draft.pinColor, tags };
     }
+    if (draft.type === 'portal') {
+      const data: PortalPinData = {
+        worldId: draft.portalWorldId,
+        targetCollectionId: draft.portalTargetCollectionId,
+        targetName: null,
+        targetEmoji: null,
+        label: draft.portalLabel.trim(),
+        emoji: draft.portalEmoji.trim() || '↗',
+        available: true,
+        createReturnPortal: draft.createReturnPortal,
+      };
+      return { type: 'portal', data, color: draft.pinColor, tags };
+    }
     return null;
   }
 
@@ -153,5 +185,31 @@ export class AddPinDialogHandlerComponent {
     this.parser.reset();
     this.upload.reset();
     this.pins.clearError();
+  }
+
+  private loadPortalWorlds(): void {
+    this.worldApi
+      .forBoard(this.collectionId())
+      .pipe(
+        take(1),
+        catchError(() => {
+          this.portalWorlds.set([]);
+          return EMPTY;
+        }),
+      )
+      .subscribe((worlds) => {
+        this.portalWorlds.set(worlds);
+        const world = worlds[0];
+        const target = world?.boards.find((board) => board.id !== this.collectionId());
+        if (world && target) {
+          this.draftModel.update((draft) => ({
+            ...draft,
+            portalWorldId: world.id,
+            portalTargetCollectionId: target.id,
+            portalLabel: target.name,
+            portalEmoji: target.emoji,
+          }));
+        }
+      });
   }
 }

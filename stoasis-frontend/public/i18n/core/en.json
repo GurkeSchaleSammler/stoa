@@ -4,7 +4,10 @@
   },
   "shell": {
     "accountMenu": "Account menu",
-    "home": "Stoasis home"
+    "home": "Stoasis home",
+    "navigation": "Navigation",
+    "overview": "Home",
+    "boardTools": "Board tools"
   },
   "common": {
     "add": "Add",
@@ -81,7 +84,29 @@
     "bottomEyebrow": "Your quiet digital place",
     "bottomTitle": "Ready for your next collection?",
     "bottomLead": "Start small. One link, thought, or image is enough.",
-    "bottomCta": "Create a collection"
+    "bottomCta": "Create a collection",
+    "dashboardEyebrow": "Your overview",
+    "dashboardGreeting": "Welcome back, {{name}}.",
+    "dashboardLead": "Continue where you left off or start something new.",
+    "dashboardLoading": "Loading your collections …",
+    "dashboardSummary": "Collection summary",
+    "dashboardBoards": "Boards",
+    "dashboardPins": "Pins",
+    "dashboardShared": "Shared",
+    "dashboardFavoritesEyebrow": "Within easy reach",
+    "dashboardFavorites": "Favorites",
+    "dashboardRecentEyebrow": "Keep working",
+    "dashboardRecent": "Recently updated",
+    "dashboardBrowse": "Search all pins",
+    "dashboardUpdated": "Updated",
+    "dashboardAddFavorite": "Add {{name}} to favorites",
+    "dashboardRemoveFavorite": "Remove {{name}} from favorites",
+    "dashboardEmptyEyebrow": "Your first step",
+    "dashboardEmptyTitle": "It is still quiet here.",
+    "dashboardEmptyText": "Create your first collection and keep links, thoughts, and images together.",
+    "dashboardErrorEyebrow": "Unavailable",
+    "dashboardErrorTitle": "Your overview could not be loaded.",
+    "dashboardErrorText": "Please try again in a moment."
   },
   "auth": {
     "tagline": "Your collaborative pinboard",
@@ -120,6 +145,7 @@
   },
   "errors": {
     "unexpected": "An unexpected error occurred.",
+    "copyShareLink": "The share link could not be copied.",
     "collection": "The collection could not be loaded.",
     "board": "The board could not be updated.",
     "linkPreview": "The preview could not be loaded. You can still save the link.",
@@ -147,6 +173,7 @@
     "stickerCreated": "Sticker added.",
     "collectionCreated": "Collection created.",
     "collectionUpdated": "Collection updated.",
+    "shareLinkCopied": "Share link copied.",
     "collectionDeleted": "Collection deleted.",
     "collectionJoined": "You joined the collection.",
     "pinCreated": "Pin saved.",

@@ -3,6 +3,7 @@ import { AppIconComponent } from '../../../shared/ui/app-icon';
 import { LinkPinData } from '../../../shared/models/link-pin-data';
 import { NotePinData } from '../../../shared/models/note-pin-data';
 import { PhotoPinData } from '../../../shared/models/photo-pin-data';
+import { PortalPinData } from '../../../shared/models/portal-pin-data';
 import { Pin } from '../../../shared/models/pin';
 import { PinMeta } from '../data/models/pin-meta';
 import { boardColorCssValue, normalizeBoardColor } from '../data/models/board-color';
@@ -10,11 +11,18 @@ import { ImageFullView } from './models/image-full-view';
 import { LinkPinComponent } from './link-pin';
 import { NotePinComponent } from './note-pin';
 import { PhotoPinComponent } from './photo-pin';
+import { PortalPinComponent } from './portal-pin';
 
 @Component({
   selector: 'ui-pin-card',
   standalone: true,
-  imports: [LinkPinComponent, NotePinComponent, PhotoPinComponent, AppIconComponent],
+  imports: [
+    LinkPinComponent,
+    NotePinComponent,
+    PhotoPinComponent,
+    PortalPinComponent,
+    AppIconComponent,
+  ],
   template: `
     <article
       class="pin-card"
@@ -30,7 +38,15 @@ import { PhotoPinComponent } from './photo-pin';
     >
       <span class="pin-type" [class]="'pin-type ' + pin().type">
         <ui-app-icon
-          [name]="pin().type === 'link' ? 'link' : pin().type === 'note' ? 'note' : 'image'"
+          [name]="
+            pin().type === 'link'
+              ? 'link'
+              : pin().type === 'note'
+                ? 'note'
+                : pin().type === 'portal'
+                  ? 'door'
+                  : 'image'
+          "
         />
       </span>
       @switch (pin().type) {
@@ -50,6 +66,9 @@ import { PhotoPinComponent } from './photo-pin';
             [meta]="meta()"
             (onFullView)="onImageFullView.emit($event)"
           />
+        }
+        @case ('portal') {
+          <ui-portal-pin [data]="portalData()!" (onNavigate)="onPortalNavigate.emit($event)" />
         }
       }
       <footer class="pin-footer">
@@ -74,6 +93,7 @@ export class PinCardComponent {
   readonly selected = input(false);
   readonly onOpen = output<string>();
   readonly onImageFullView = output<ImageFullView>();
+  readonly onPortalNavigate = output<PortalPinData>();
   readonly pinColor = computed(() => normalizeBoardColor(this.pin().color));
   readonly meta = computed<PinMeta>(() => ({
     createdByName: this.pin().createdByName,
@@ -87,6 +107,9 @@ export class PinCardComponent {
   );
   readonly photoData = computed(() =>
     this.pin().type === 'photo' ? (this.pin().data as PhotoPinData) : null,
+  );
+  readonly portalData = computed(() =>
+    this.pin().type === 'portal' ? (this.pin().data as PortalPinData) : null,
   );
 
   pinColorCssValue(): string | null {

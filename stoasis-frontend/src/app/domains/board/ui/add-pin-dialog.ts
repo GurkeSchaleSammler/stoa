@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppIconComponent } from '../../../shared/ui/app-icon';
+import { NativeModalDirective } from '../../../shared/ui/native-modal';
 import { AppIconName } from '../../../shared/models/app-icon-name';
 import { PinType } from '../../../shared/models/pin-type';
 import { AddPinDraft } from '../data/models/add-pin-draft';
@@ -10,6 +11,7 @@ import { LinkPreview } from '../data/models/link-preview';
 import { UploadedPhoto } from '../data/models/uploaded-photo';
 import { BoardColorPickerComponent } from './board-color-picker';
 import { NoteEditorComponent } from './note-editor';
+import { WorldDetail } from '../../world/data/world.models';
 
 /** Collects pin content and displays upload validation and progress. */
 @Component({
@@ -21,17 +23,18 @@ import { NoteEditorComponent } from './note-editor';
     AppIconComponent,
     BoardColorPickerComponent,
     NoteEditorComponent,
+    NativeModalDirective,
   ],
   template: `
     @if (isOpen()) {
-      <div class="dialog-backdrop" (click)="onCancel.emit()">
-        <section
-          class="dialog-card"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="add-pin-title"
-          (click)="$event.stopPropagation()"
-        >
+      <dialog
+        class="dialog-backdrop"
+        uiNativeModal
+        aria-labelledby="add-pin-title"
+        (dismissed)="onCancel.emit()"
+        (click)="onCancel.emit()"
+      >
+        <section class="dialog-card" (click)="$event.stopPropagation()">
           <header>
             <div>
               <p class="eyebrow">{{ 'pin.new' | translate }}</p>
@@ -166,6 +169,65 @@ import { NoteEditorComponent } from './note-editor';
                   (ngModelChange)="onDraftChange.emit({ caption: $event })"
               /></label>
             }
+            @case ('portal') {
+              @if (portalWorlds().length === 0) {
+                <div class="dialog-empty">
+                  <ui-app-icon name="map" />
+                  <strong>{{ 'pin.noPortalWorld' | translate }}</strong>
+                  <p>{{ 'pin.noPortalWorldLead' | translate }}</p>
+                </div>
+              } @else {
+                <label class="dialog-field"
+                  ><span>{{ 'pin.portalWorld' | translate }}</span>
+                  <select
+                    [ngModel]="draft().portalWorldId"
+                    (ngModelChange)="selectPortalWorld($event)"
+                  >
+                    @for (world of portalWorlds(); track world.id) {
+                      <option [value]="world.id">{{ world.emoji }} {{ world.name }}</option>
+                    }
+                  </select>
+                </label>
+                <label class="dialog-field"
+                  ><span>{{ 'pin.portalTarget' | translate }}</span>
+                  <select
+                    [ngModel]="draft().portalTargetCollectionId"
+                    (ngModelChange)="selectPortalTarget($event)"
+                  >
+                    @for (board of portalTargets(); track board.id) {
+                      <option [value]="board.id">{{ board.emoji }} {{ board.name }}</option>
+                    }
+                  </select>
+                </label>
+                <div class="portal-appearance">
+                  <label class="dialog-field emoji"
+                    ><span>{{ 'worlds.symbol' | translate }}</span
+                    ><input
+                      maxlength="32"
+                      [ngModel]="draft().portalEmoji"
+                      (ngModelChange)="onDraftChange.emit({ portalEmoji: $event })"
+                  /></label>
+                  <label class="dialog-field"
+                    ><span>{{ 'pin.portalLabel' | translate }}</span
+                    ><input
+                      maxlength="180"
+                      [ngModel]="draft().portalLabel"
+                      (ngModelChange)="onDraftChange.emit({ portalLabel: $event })"
+                  /></label>
+                </div>
+                <label class="portal-return">
+                  <input
+                    type="checkbox"
+                    [ngModel]="draft().createReturnPortal"
+                    (ngModelChange)="onDraftChange.emit({ createReturnPortal: $event })"
+                  />
+                  <span
+                    ><strong>{{ 'pin.returnPortal' | translate }}</strong
+                    ><small>{{ 'pin.returnPortalLead' | translate }}</small></span
+                  >
+                </label>
+              }
+            }
           }
           @if (selectedType()) {
             <ui-board-color-picker
@@ -201,10 +263,10 @@ import { NoteEditorComponent } from './note-editor';
             </button>
           </footer>
         </section>
-      </div>
+      </dialog>
     }
   `,
-  styleUrl: './board.scss',
+  styleUrls: ['./board.scss', './add-pin-dialog.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddPinDialogComponent {
@@ -222,6 +284,8 @@ export class AddPinDialogComponent {
   readonly uploadedPhoto = input<UploadedPhoto | null>(null);
   readonly error = input<string | null>(null);
   readonly allowCustomColors = input(false);
+  readonly portalWorlds = input<WorldDetail[]>([]);
+  readonly sourceCollectionId = input('');
   readonly onTypeSelect = output<PinType>();
   readonly onUrlChange = output<string>();
   readonly onFileSelect = output<File>();
@@ -232,10 +296,35 @@ export class AddPinDialogComponent {
     { value: 'link', labelKey: 'pin.link', icon: 'link' },
     { value: 'note', labelKey: 'pin.note', icon: 'note' },
     { value: 'photo', labelKey: 'pin.photo', icon: 'image' },
+    { value: 'portal', labelKey: 'pin.portal', icon: 'door' },
   ];
   readonly backgroundColors = NOTE_BACKGROUND_PRESETS;
   selectFile(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) this.onFileSelect.emit(file);
+  }
+  portalTargets() {
+    return (
+      this.portalWorlds().find((world) => world.id === this.draft().portalWorldId)?.boards ?? []
+    ).filter((board) => board.id !== this.sourceCollectionId());
+  }
+  selectPortalWorld(worldId: string): void {
+    const target = this.portalWorlds()
+      .find((world) => world.id === worldId)
+      ?.boards.find((board) => board.id !== this.sourceCollectionId());
+    this.onDraftChange.emit({
+      portalWorldId: worldId,
+      portalTargetCollectionId: target?.id ?? '',
+      portalLabel: target?.name ?? '',
+      portalEmoji: target?.emoji ?? '↗',
+    });
+  }
+  selectPortalTarget(collectionId: string): void {
+    const target = this.portalTargets().find((board) => board.id === collectionId);
+    this.onDraftChange.emit({
+      portalTargetCollectionId: collectionId,
+      portalLabel: target?.name ?? '',
+      portalEmoji: target?.emoji ?? '↗',
+    });
   }
 }

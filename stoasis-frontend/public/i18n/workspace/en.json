@@ -1,5 +1,78 @@
 {
+  "templates": {
+    "actions": "Board actions",
+    "choose": "Choose a starting point",
+    "lead": "A calm frame for your content. Everything stays movable and editable.",
+    "blank": "Blank board",
+    "blankHint": "Start your own way.",
+    "loading": "Loading templates …",
+    "loadError": "Templates are currently unavailable. You can start with a blank board.",
+    "editableHint": "The template includes editable notes, coloured zones, headings and a subtle sticker.",
+    "duplicate": "Duplicate board",
+    "duplicateHint": "Content, layout and decorations are copied. The copy is private; members, invitations and comments are not copied.",
+    "createCopy": "Create private copy",
+    "copyName": "{{name}} – Copy",
+    "duplicated": "Board duplicated.",
+    "newFromTemplate": "New board from template",
+    "paste": "Paste pin",
+    "clipboard": "Copied: {{name}}",
+    "copyPin": "Copy pin",
+    "duplicatePin": "Duplicate pin",
+    "pinCopied": "Pin copied. Open a board and choose Paste.",
+    "pinPasted": "Pin pasted.",
+    "project": {
+      "title": "Project",
+      "hint": "Ideas → In progress → Done."
+    },
+    "week": {
+      "title": "My week",
+      "hint": "Five days, one clear overview."
+    },
+    "research": {
+      "title": "Research",
+      "hint": "Questions, sources and insights."
+    },
+    "moodboard": {
+      "title": "Moodboard",
+      "hint": "Mood, inspiration and details."
+    },
+    "learning": {
+      "title": "Learning journey",
+      "hint": "Discover, practise, understand."
+    },
+    "tour": {
+      "title": "Give your board a starting point",
+      "introduction": "Templates give you a ready-made, freely editable layout. Would you like a quick tour?",
+      "chooseTitle": "Choose your frame",
+      "chooseText": "Pick a template or start blank. The preview shows zones and pins. You can freely change colours, text and decorations later.",
+      "nameTitle": "Make it your board",
+      "nameText": "Give the board a name. Creating it adds real notes and zones that you can move, extend or delete."
+    },
+    "copyTour": {
+      "title": "Reuse good ideas",
+      "introduction": "You can duplicate whole boards or copy individual pins between boards. Would you like to see how?",
+      "duplicateTitle": "Take a whole board with you",
+      "duplicateText": "Duplicate creates a private copy with pins, stacks, connectors, colours and decorations. You choose a new name.",
+      "pinTitle": "Copy and paste pins",
+      "pinText": "Open a pin and choose Copy or Duplicate. To copy between boards, open the destination board and choose Paste. Ctrl/⌘+C and Ctrl/⌘+V work too, as long as you are not editing text."
+    }
+  },
+  "onboarding": {
+    "show": "Show tutorial",
+    "skip": "Skip",
+    "start": "Show me",
+    "next": "Next",
+    "finish": "Got it",
+    "progress": "Step {{current}} of {{total}}",
+    "loadError": "Your tutorial preferences could not be loaded.",
+    "saveError": "Your choice could not be saved. Please try again."
+  },
   "board": {
+    "presence": {
+      "unavailable": "Live cursors unavailable. Please reload the board.",
+      "here": "{{count}} others here now",
+      "reconnecting": "Reconnecting live cursors …"
+    },
     "title": "Board",
     "view": "View",
     "boardView": "Board view",
@@ -111,7 +184,27 @@
     "public": "Public",
     "delete": "Delete collection",
     "deleteTitle": "Delete collection?",
-    "confirmDelete": "Really delete this collection and all its pins?"
+    "confirmDelete": "Really delete this collection and all its pins?",
+    "shareBoard": "Share board",
+    "shareUrl": "Share link",
+    "openSharedView": "Open shared view",
+    "saveToShare": "Save the new visibility to activate the share link.",
+    "publicShareHint": "This board is publicly available without signing in.",
+    "linkShareHint": "Only people with this secret link can view the board.",
+    "publicWarningTitle": "Make this board public?",
+    "publicWarningText": "Anyone on the internet can view this board and its pins without signing in.",
+    "makePublic": "Make public",
+    "readOnly": "View only",
+    "publicBoard": "Public board",
+    "linkBoard": "Shared board",
+    "publicReadOnlyHint": "This view is read-only.",
+    "publicLoading": "Loading board …",
+    "publicForbiddenTitle": "This board is not public.",
+    "publicForbiddenText": "Sign in or open the complete share link.",
+    "publicNotFoundTitle": "Board not found.",
+    "publicNotFoundText": "The link may no longer be valid.",
+    "publicErrorTitle": "The board could not be loaded.",
+    "publicErrorText": "Please try again in a moment."
   },
   "membership": {
     "collaboration": "Collaboration",
@@ -129,6 +222,8 @@
     "inviteLead": "Anyone with the link can join as a viewer.",
     "revokeLink": "Revoke link",
     "privateCollection": "The collection is private.",
+    "publicCollection": "The collection is public.",
+    "publicCollectionHint": "Manage the public link in the collection settings.",
     "createInviteLink": "Create invitation link",
     "invitation": "Invitation",
     "checkingInvite": "Checking invitation …",
@@ -146,8 +241,19 @@
     "link": "Link",
     "note": "Note",
     "photo": "Photo",
+    "portal": "Portal",
+    "openPortal": "Open portal to {{name}}",
+    "portalUnavailable": "Destination board is no longer available",
+    "noPortalWorld": "This board is not part of a World yet.",
+    "noPortalWorldLead": "Open Worlds, connect at least two boards, then add a portal here.",
+    "portalWorld": "World",
+    "portalTarget": "Destination board",
+    "portalLabel": "Portal title",
+    "returnPortal": "Create a return portal",
+    "returnPortalLead": "A second portal back to this board is created on the destination board.",
     "webLink": "Web link",
     "photoPin": "Photo pin",
+    "imageUnavailable": "Image unavailable",
     "imagePreview": "Image preview",
     "imageFullView": "Image full view",
     "openFullView": "Open image full view",
@@ -160,7 +266,7 @@
     "new": "New pin",
     "add": "Add pin",
     "addTitle": "Pin to the board",
-    "addTypes": "Link, note, or photo",
+    "addTypes": "Link, note, photo, or portal",
     "address": "Address",
     "loadingPreview": "Loading link preview …",
     "notePlaceholder": "Thought, list, reminder …",
@@ -188,12 +294,14 @@
     "type": {
       "link": "Link",
       "note": "Note",
-      "photo": "Photo"
+      "photo": "Photo",
+      "portal": "Portal"
     },
     "types": {
       "links": "Links",
       "notes": "Notes",
-      "photos": "Photos"
+      "photos": "Photos",
+      "portals": "Portals"
     },
     "invalidPhoto": "Choose JPEG, PNG or WebP: up to 5 MB on Free or 20 MB on Premium.",
     "markdownWrite": "Write",
@@ -285,7 +393,8 @@
     "copyLink": "Copy profile link",
     "accent": "Profile accent",
     "capacity": "{{count}} / {{limit}} skills",
-    "limitReached": "Skill limit reached. Existing skills remain visible and editable."
+    "limitReached": "Skill limit reached. Existing skills remain visible and editable.",
+    "mobileBoardLead": "Your skills in easy-to-read cards."
   },
   "groups": {
     "nav": "Groups",
@@ -327,7 +436,7 @@
   },
   "search": {
     "allPins": "Search all pins",
-    "placeholder": "Links, notes, photos …",
+    "placeholder": "Links, notes, photos, portals …",
     "searching": "Searching",
     "clear": "Clear search",
     "filterTag": "Filter by tag",
@@ -341,6 +450,55 @@
     "newTag": "New tag",
     "deleteTag": "Delete {{tag}}",
     "eyebrow": "Find pins again"
+  },
+  "worlds": {
+    "nav": "Worlds",
+    "plural": "Worlds",
+    "eyebrow": "Spatially connected",
+    "title": "Turn your boards into a world.",
+    "lead": "Connect boards through portals and create a navigable collection with its own entry point.",
+    "create": "Create World",
+    "createFirst": "Create your first World",
+    "emptyTitle": "No World yet",
+    "emptyLead": "Choose a starting board, then connect more boards with portals.",
+    "boards": "boards",
+    "portals": "portals",
+    "backlinks": "backlinks",
+    "private": "Private World",
+    "link": "Link-shared World",
+    "public": "Public World",
+    "publicWorld": "Stoasis World",
+    "overview": "World overview",
+    "navigation": "World navigation",
+    "currentWorld": "Current World",
+    "mapTitle": "Paths between your boards",
+    "startBoard": "Starting board",
+    "makeStart": "Make starting board",
+    "enter": "Enter World",
+    "copyLink": "Copy link",
+    "boardLimit": "connected boards",
+    "premiumHint": "Premium removes the World and board limits.",
+    "portalEmpty": "Add the first portal pin on one of your boards.",
+    "addBoard": "Connect a board",
+    "addBoardLead": "You can add boards that you are allowed to edit.",
+    "chooseBoard": "Choose a board",
+    "settings": "World settings",
+    "symbol": "Symbol",
+    "namePlaceholder": "e.g. My garden year",
+    "freeLimitHint": "Free includes one World with up to five boards. Existing content remains available after reaching the limit.",
+    "removeBoard": "Remove board from World?",
+    "removeBoardConfirm": "The board remains available. Remove its portals first.",
+    "delete": "Delete World",
+    "deleteConfirm": "Delete this World and its portal pins? Connected boards remain available.",
+    "created": "World created.",
+    "updated": "World saved.",
+    "deleted": "World deleted.",
+    "boardAdded": "Board connected to the World.",
+    "boardRemoved": "Board removed from the World.",
+    "loading": "Loading World …",
+    "unavailable": "This World is unavailable.",
+    "unavailableLead": "The link is invalid, expired, or the World is private.",
+    "error": "The World could not be loaded."
   },
   "mcp": {
     "title": "Connect Stoasis",

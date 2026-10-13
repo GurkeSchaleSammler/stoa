@@ -13,17 +13,20 @@ interface PinRepository : JpaRepository<PinEntity, String>, JpaSpecificationExec
 
     fun findAllByFileKey(fileKey: String): List<PinEntity>
 
-    @EntityGraph(attributePaths = ["createdBy", "comments", "comments.author", "tags", "collection"])
+    @EntityGraph(attributePaths = ["createdBy", "comments", "comments.author", "tags", "collection", "portalWorld", "portalTargetCollection"])
     fun findAllByCollectionIdOrderBySortOrder(collectionId: String): List<PinEntity>
 
-    @EntityGraph(attributePaths = ["createdBy", "comments", "comments.author", "tags", "collection"])
+    @EntityGraph(attributePaths = ["createdBy", "comments", "comments.author", "tags", "collection", "portalWorld", "portalTargetCollection"])
     @Query("select p from PinEntity p where p.id = :id and p.collection.id = :collectionId")
     fun findDetailed(@Param("collectionId") collectionId: String, @Param("id") id: String): PinEntity?
 
-    @EntityGraph(attributePaths = ["createdBy", "comments", "comments.author", "tags", "collection"])
+    @EntityGraph(attributePaths = ["createdBy", "comments", "comments.author", "tags", "collection", "portalWorld", "portalTargetCollection"])
     @Query("select p from PinEntity p join p.collection c where c.visibility = com.stoasis.backend.domains.collection.model.Visibility.public or exists (select m.id from CollectionMemberEntity m where m.collection = c and m.user.id = :userId)")
     fun findAllVisibleTo(@Param("userId") userId: String): List<PinEntity>
 
     fun countByCollectionId(collectionId: String): Long
     fun deleteAllByCollectionId(collectionId: String)
+
+    @EntityGraph(attributePaths = ["collection", "portalTargetCollection", "portalWorld"])
+    fun findAllByPortalWorldId(worldId: String): List<PinEntity>
 }

@@ -42,7 +42,9 @@ import { SearchResult } from '../data/models/search-result';
                       ? 'note'
                       : result.type === 'photo'
                         ? 'image'
-                        : 'sparkles'
+                        : result.type === 'portal'
+                          ? 'door'
+                          : 'graduation-cap'
                 "
               />
             </span>
@@ -58,6 +60,9 @@ import { SearchResult } from '../data/models/search-result';
                   }
                   @case ('photo') {
                     {{ result.data.caption || ('pin.photo' | translate) }}
+                  }
+                  @case ('portal') {
+                    {{ result.data.label }}
                   }
                   @case ('skill') {
                     {{ result.data.skillName }}

@@ -4,7 +4,10 @@
   },
   "shell": {
     "accountMenu": "Kontomenü",
-    "home": "Stoasis Startseite"
+    "home": "Stoasis Startseite",
+    "navigation": "Navigation",
+    "overview": "Übersicht",
+    "boardTools": "Board-Werkzeuge"
   },
   "common": {
     "add": "Hinzufügen",
@@ -81,7 +84,29 @@
     "bottomEyebrow": "Dein ruhiger digitaler Ort",
     "bottomTitle": "Bereit für deine nächste Sammlung?",
     "bottomLead": "Beginne klein. Ein Link, ein Gedanke oder ein Bild genügt.",
-    "bottomCta": "Sammlung erstellen"
+    "bottomCta": "Sammlung erstellen",
+    "dashboardEyebrow": "Dein Überblick",
+    "dashboardGreeting": "Willkommen zurück, {{name}}.",
+    "dashboardLead": "Mach dort weiter, wo du aufgehört hast, oder beginne etwas Neues.",
+    "dashboardLoading": "Deine Sammlungen werden geladen …",
+    "dashboardSummary": "Zusammenfassung deiner Sammlungen",
+    "dashboardBoards": "Pinnwände",
+    "dashboardPins": "Pins",
+    "dashboardShared": "Geteilt",
+    "dashboardFavoritesEyebrow": "Schnell erreichbar",
+    "dashboardFavorites": "Favoriten",
+    "dashboardRecentEyebrow": "Weiterarbeiten",
+    "dashboardRecent": "Zuletzt aktualisiert",
+    "dashboardBrowse": "Alle Pins durchsuchen",
+    "dashboardUpdated": "Aktualisiert",
+    "dashboardAddFavorite": "{{name}} zu Favoriten hinzufügen",
+    "dashboardRemoveFavorite": "{{name}} aus Favoriten entfernen",
+    "dashboardEmptyEyebrow": "Dein erster Schritt",
+    "dashboardEmptyTitle": "Noch ist hier alles ruhig.",
+    "dashboardEmptyText": "Erstelle deine erste Sammlung und halte darin Links, Gedanken und Bilder fest.",
+    "dashboardErrorEyebrow": "Nicht erreichbar",
+    "dashboardErrorTitle": "Dein Überblick konnte nicht geladen werden.",
+    "dashboardErrorText": "Versuche es in einem Moment erneut."
   },
   "auth": {
     "tagline": "Dein kollaboratives Pinboard",
@@ -120,6 +145,7 @@
   },
   "errors": {
     "unexpected": "Ein unerwarteter Fehler ist aufgetreten.",
+    "copyShareLink": "Der Freigabelink konnte nicht kopiert werden.",
     "collection": "Die Sammlung konnte nicht geladen werden.",
     "board": "Die Pinnwand konnte nicht aktualisiert werden.",
     "linkPreview": "Die Vorschau konnte nicht geladen werden. Der Link kann trotzdem gespeichert werden.",
@@ -147,6 +173,7 @@
     "stickerCreated": "Sticker hinzugefügt.",
     "collectionCreated": "Sammlung erstellt.",
     "collectionUpdated": "Sammlung aktualisiert.",
+    "shareLinkCopied": "Freigabelink kopiert.",
     "collectionDeleted": "Sammlung gelöscht.",
     "collectionJoined": "Du bist der Sammlung beigetreten.",
     "pinCreated": "Pin gespeichert.",

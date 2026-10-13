@@ -1,139 +1,145 @@
-<main
-  class="home"
-  (pointermove)="trackPointer($event)"
-  [style.--pointer-x]="pointerX() + '%'"
-  [style.--pointer-y]="pointerY() + '%'"
-  [style.--dot-x]="dotX() + 'px'"
-  [style.--dot-y]="dotY() + 'px'"
->
-  <section class="hero" aria-labelledby="home-title">
-    <div class="hero-copy">
-      <div class="home-mark"><img src="/android-chrome-192x192.png" alt="" /></div>
-      <p class="eyebrow">{{ 'home.eyebrow' | translate }}</p>
-      <h1 id="home-title">
-        {{ 'home.title' | translate }}<br /><em>{{ 'home.titleAccent' | translate }}</em>
-      </h1>
-      <p class="lead">{{ 'home.lead' | translate }}</p>
-      <div class="home-actions">
-        <a routerLink="/collections/new"
-          >{{ 'collection.new' | translate }} <ui-app-icon name="chevron-right"
-        /></a>
-        <a class="secondary" routerLink="/search"
-          ><ui-app-icon name="search" /> {{ 'home.searchPins' | translate }}</a
-        >
-      </div>
-      <div class="principles" [attr.aria-label]="'home.principlesLabel' | translate">
-        <span
-          ><strong>{{ 'home.privateTitle' | translate }}</strong
-          >{{ 'home.privateText' | translate }}</span
-        ><span
-          ><strong>{{ 'home.sharedTitle' | translate }}</strong
-          >{{ 'home.sharedText' | translate }}</span
-        ><span
-          ><strong>{{ 'home.calmTitle' | translate }}</strong
-          >{{ 'home.calmText' | translate }}</span
-        >
-      </div>
+<main class="dashboard">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">{{ 'home.dashboardEyebrow' | translate }}</p>
+      <h1>{{ 'home.dashboardGreeting' | translate: { name: session.user()?.name || '' } }}</h1>
+      <p>{{ 'home.dashboardLead' | translate }}</p>
     </div>
-
-    <div class="demo-shell" [attr.aria-label]="'home.demoLabel' | translate">
-      <div class="demo-toolbar">
-        <span class="demo-brand"><img src="/android-chrome-192x192.png" alt="" /></span>
-        <strong>{{ 'home.demoBoard' | translate }}</strong>
-        <span class="demo-view"><ui-app-icon name="grid" /></span>
-      </div>
-      <div class="demo-board">
-        <article class="demo-pin demo-link">
-          <span class="pin-icon"><ui-app-icon name="link" /></span>
-          <small>{{ 'pin.link' | translate }}</small>
-          <strong>{{ 'home.demoLinkTitle' | translate }}</strong>
-          <span class="demo-lines"></span>
-        </article>
-        <article class="demo-pin demo-note">
-          <span class="pin-icon"><ui-app-icon name="note" /></span>
-          <small>{{ 'pin.note' | translate }}</small>
-          <strong>{{ 'home.demoNoteTitle' | translate }}</strong>
-          <span class="demo-tag">{{ 'home.demoTag' | translate }}</span>
-        </article>
-        <article class="demo-pin demo-photo">
-          <div class="photo-shape"><ui-app-icon name="image" /></div>
-          <small>{{ 'pin.photo' | translate }}</small>
-          <strong>{{ 'home.demoPhotoTitle' | translate }}</strong>
-        </article>
-        <span class="demo-cursor"><ui-app-icon name="plus" /></span>
-      </div>
+    <div class="quick-actions">
+      <a class="primary" routerLink="/collections/new">
+        <ui-app-icon name="plus" /> {{ 'collection.new' | translate }}
+      </a>
+      <a routerLink="/search">
+        <ui-app-icon name="search" /> {{ 'home.searchPins' | translate }}
+      </a>
     </div>
-  </section>
+  </header>
 
-  <section class="content-section benefits" aria-labelledby="benefits-title">
-    <header class="section-heading">
-      <p class="eyebrow">{{ 'home.featureEyebrow' | translate }}</p>
-      <h2 id="benefits-title">{{ 'home.featureTitle' | translate }}</h2>
-      <p>{{ 'home.featureLead' | translate }}</p>
-    </header>
-    <div class="feature-grid">
+  @if (dashboard.status() === 'loading') {
+    <section class="dashboard-loading" aria-live="polite">
+      <p>{{ 'home.dashboardLoading' | translate }}</p>
+      <div class="skeleton-grid" aria-hidden="true"><span></span><span></span><span></span></div>
+    </section>
+  } @else if (dashboard.status() === 'error') {
+    <section class="empty-dashboard" role="alert">
+      <span><ui-app-icon name="warning" /></span>
+      <p class="eyebrow">{{ 'home.dashboardErrorEyebrow' | translate }}</p>
+      <h2>{{ 'home.dashboardErrorTitle' | translate }}</h2>
+      <p>{{ 'home.dashboardErrorText' | translate }}</p>
+    </section>
+  } @else if (dashboard.collections().length === 0) {
+    <section class="empty-dashboard">
+      <span><ui-app-icon name="grid" /></span>
+      <p class="eyebrow">{{ 'home.dashboardEmptyEyebrow' | translate }}</p>
+      <h2>{{ 'home.dashboardEmptyTitle' | translate }}</h2>
+      <p>{{ 'home.dashboardEmptyText' | translate }}</p>
+      <a routerLink="/collections/new">
+        {{ 'home.bottomCta' | translate }} <ui-app-icon name="chevron-right" />
+      </a>
+    </section>
+  } @else {
+    <section class="summary-grid" [attr.aria-label]="'home.dashboardSummary' | translate">
       <article>
-        <span><ui-app-icon name="plus" /></span>
-        <h3>{{ 'home.captureTitle' | translate }}</h3>
-        <p>{{ 'home.captureText' | translate }}</p>
+        <small>{{ 'home.dashboardBoards' | translate }}</small
+        ><strong>{{ dashboard.collections().length }}</strong>
       </article>
       <article>
-        <span><ui-app-icon name="grid" /></span>
-        <h3>{{ 'home.organizeTitle' | translate }}</h3>
-        <p>{{ 'home.organizeText' | translate }}</p>
+        <small>{{ 'home.dashboardPins' | translate }}</small
+        ><strong>{{ totalPins() }}</strong>
       </article>
       <article>
-        <span><ui-app-icon name="user-plus" /></span>
-        <h3>{{ 'home.shareTitle' | translate }}</h3>
-        <p>{{ 'home.shareText' | translate }}</p>
+        <small>{{ 'home.dashboardShared' | translate }}</small
+        ><strong>{{ sharedCount() }}</strong>
       </article>
-    </div>
-  </section>
+    </section>
 
-  <section class="content-section workflow" aria-labelledby="workflow-title">
-    <div class="workflow-visual" aria-hidden="true">
-      <span><ui-app-icon name="link" /></span>
-      <i></i>
-      <span><ui-app-icon name="note" /></span>
-      <i></i>
-      <span><ui-app-icon name="image" /></span>
-    </div>
-    <div class="workflow-copy">
-      <p class="eyebrow">{{ 'home.flowEyebrow' | translate }}</p>
-      <h2 id="workflow-title">{{ 'home.flowTitle' | translate }}</h2>
-      <ol>
-        <li>
-          <span>01</span>
+    @if (favoriteCollections().length) {
+      <section class="dashboard-section" aria-labelledby="favorites-title">
+        <div class="section-heading">
           <div>
-            <h3>{{ 'home.flowOneTitle' | translate }}</h3>
-            <p>{{ 'home.flowOneText' | translate }}</p>
+            <p class="eyebrow">{{ 'home.dashboardFavoritesEyebrow' | translate }}</p>
+            <h2 id="favorites-title">{{ 'home.dashboardFavorites' | translate }}</h2>
           </div>
-        </li>
-        <li>
-          <span>02</span>
-          <div>
-            <h3>{{ 'home.flowTwoTitle' | translate }}</h3>
-            <p>{{ 'home.flowTwoText' | translate }}</p>
-          </div>
-        </li>
-        <li>
-          <span>03</span>
-          <div>
-            <h3>{{ 'home.flowThreeTitle' | translate }}</h3>
-            <p>{{ 'home.flowThreeText' | translate }}</p>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
+        </div>
+        <div class="board-grid compact">
+          @for (collection of favoriteCollections(); track collection.id) {
+            <article class="board-card">
+              <a [routerLink]="['/collections', collection.id]">
+                <span class="board-emoji" aria-hidden="true">{{ collection.emoji }}</span>
+                <span
+                  ><strong>{{ collection.name }}</strong
+                  ><small>{{ collection.pinCount }} {{ 'common.pins' | translate }}</small></span
+                >
+              </a>
+              <button
+                type="button"
+                class="favorite active"
+                [attr.aria-label]="
+                  'home.dashboardRemoveFavorite' | translate: { name: collection.name }
+                "
+                [attr.title]="'home.dashboardRemoveFavorite' | translate: { name: collection.name }"
+                (click)="toggleFavorite(collection)"
+              >
+                <ui-app-icon name="star" [filled]="true" />
+              </button>
+            </article>
+          }
+        </div>
+      </section>
+    }
 
-  <section class="closing-cta" aria-labelledby="closing-title">
-    <img src="/android-chrome-192x192.png" alt="" />
-    <p class="eyebrow">{{ 'home.bottomEyebrow' | translate }}</p>
-    <h2 id="closing-title">{{ 'home.bottomTitle' | translate }}</h2>
-    <p>{{ 'home.bottomLead' | translate }}</p>
-    <a routerLink="/collections/new"
-      >{{ 'home.bottomCta' | translate }} <ui-app-icon name="chevron-right"
-    /></a>
-  </section>
+    <section class="dashboard-section" aria-labelledby="recent-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">{{ 'home.dashboardRecentEyebrow' | translate }}</p>
+          <h2 id="recent-title">{{ 'home.dashboardRecent' | translate }}</h2>
+        </div>
+        <a routerLink="/search">{{ 'home.dashboardBrowse' | translate }}</a>
+      </div>
+      <div class="board-grid">
+        @for (collection of recentCollections(); track collection.id) {
+          <article class="board-card">
+            <a [routerLink]="['/collections', collection.id]">
+              <span class="board-emoji" aria-hidden="true">{{ collection.emoji }}</span>
+              <span class="board-copy">
+                <strong>{{ collection.name }}</strong>
+                <small
+                  >{{ collection.pinCount }} {{ 'common.pins' | translate }} ·
+                  {{
+                    (collection.members.length > 1 ? 'collection.shared' : 'collection.personal')
+                      | translate
+                  }}</small
+                >
+                <span class="updated-at"
+                  >{{ 'home.dashboardUpdated' | translate }}
+                  {{ formatDate(collection.updatedAt) }}</span
+                >
+              </span>
+            </a>
+            <button
+              type="button"
+              class="favorite"
+              [class.active]="isFavorite(collection.id)"
+              [attr.aria-pressed]="isFavorite(collection.id)"
+              [attr.aria-label]="
+                (isFavorite(collection.id)
+                  ? 'home.dashboardRemoveFavorite'
+                  : 'home.dashboardAddFavorite'
+                ) | translate: { name: collection.name }
+              "
+              [attr.title]="
+                (isFavorite(collection.id)
+                  ? 'home.dashboardRemoveFavorite'
+                  : 'home.dashboardAddFavorite'
+                ) | translate: { name: collection.name }
+              "
+              (click)="toggleFavorite(collection)"
+            >
+              <ui-app-icon name="star" [filled]="isFavorite(collection.id)" />
+            </button>
+          </article>
+        }
+      </div>
+    </section>
+  }
 </main>

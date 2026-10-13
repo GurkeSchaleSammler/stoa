@@ -2,7 +2,7 @@ export interface InviteInfo {
   collectionId: string;
   token: string;
   url: string;
-  visibility: 'private' | 'link';
+  visibility: 'private' | 'link' | 'public';
   collectionName: string;
   alreadyMember?: boolean;
   capacity: {

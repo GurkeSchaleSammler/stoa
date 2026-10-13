@@ -4,7 +4,10 @@
   },
   "shell": {
     "accountMenu": "Menu account",
-    "home": "Home di Stoasis"
+    "home": "Home di Stoasis",
+    "navigation": "Navigazione",
+    "overview": "Home",
+    "boardTools": "Strumenti della bacheca"
   },
   "common": {
     "add": "Aggiungi",
@@ -81,7 +84,29 @@
     "bottomEyebrow": "Il tuo spazio digitale tranquillo",
     "bottomTitle": "Pronto per la prossima raccolta?",
     "bottomLead": "Inizia in piccolo. Basta un link, un pensiero o un’immagine.",
-    "bottomCta": "Crea una raccolta"
+    "bottomCta": "Crea una raccolta",
+    "dashboardEyebrow": "La tua panoramica",
+    "dashboardGreeting": "Bentornato, {{name}}.",
+    "dashboardLead": "Continua da dove avevi lasciato o inizia qualcosa di nuovo.",
+    "dashboardLoading": "Caricamento delle raccolte …",
+    "dashboardSummary": "Riepilogo delle raccolte",
+    "dashboardBoards": "Bacheche",
+    "dashboardPins": "Pin",
+    "dashboardShared": "Condivise",
+    "dashboardFavoritesEyebrow": "A portata di mano",
+    "dashboardFavorites": "Preferiti",
+    "dashboardRecentEyebrow": "Continua il lavoro",
+    "dashboardRecent": "Aggiornate di recente",
+    "dashboardBrowse": "Cerca tutti i pin",
+    "dashboardUpdated": "Aggiornata",
+    "dashboardAddFavorite": "Aggiungi {{name}} ai preferiti",
+    "dashboardRemoveFavorite": "Rimuovi {{name}} dai preferiti",
+    "dashboardEmptyEyebrow": "Il tuo primo passo",
+    "dashboardEmptyTitle": "Qui è ancora tutto tranquillo.",
+    "dashboardEmptyText": "Crea la prima raccolta per riunire link, pensieri e immagini.",
+    "dashboardErrorEyebrow": "Non disponibile",
+    "dashboardErrorTitle": "Impossibile caricare la panoramica.",
+    "dashboardErrorText": "Riprova tra poco."
   },
   "auth": {
     "tagline": "La tua bacheca collaborativa",
@@ -120,6 +145,7 @@
   },
   "errors": {
     "unexpected": "Si è verificato un errore imprevisto.",
+    "copyShareLink": "Impossibile copiare il link di condivisione.",
     "collection": "Impossibile caricare la raccolta.",
     "board": "Impossibile aggiornare la bacheca.",
     "linkPreview": "Impossibile caricare l’anteprima. Puoi comunque salvare il link.",
@@ -147,6 +173,7 @@
     "stickerCreated": "Sticker aggiunto.",
     "collectionCreated": "Raccolta creata.",
     "collectionUpdated": "Raccolta aggiornata.",
+    "shareLinkCopied": "Link di condivisione copiato.",
     "collectionDeleted": "Raccolta eliminata.",
     "collectionJoined": "Hai aderito alla raccolta.",
     "pinCreated": "Pin salvato.",

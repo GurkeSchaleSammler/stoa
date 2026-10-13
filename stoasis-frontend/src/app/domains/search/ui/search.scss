@@ -12,14 +12,13 @@
 .search-input {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   padding: 0 15px;
   box-sizing: border-box;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-panel);
   background: var(--surface-raised);
-  box-shadow: var(--shadow-md);
   font-size: 1.1rem;
 }
 .search-input:focus-within {
@@ -45,12 +44,25 @@
 .search-input input:focus-visible {
   box-shadow: none;
 }
+.search-input input::-webkit-search-cancel-button {
+  appearance: none;
+}
 .search-input button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
   border: 0;
   background: transparent;
   color: var(--muted);
   font-size: 1.2rem;
   cursor: pointer;
+}
+.search-input button:hover {
+  background: var(--surface-sunken);
+  color: var(--text);
 }
 .mini-loader {
   width: 16px;
@@ -67,25 +79,27 @@
 }
 .filter-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   margin-top: 14px;
 }
 .type-filters {
   display: flex;
-  gap: 4px;
-  flex: 1;
+  flex-wrap: wrap;
+  flex: 1 1 320px;
+  gap: 6px;
 }
 .type-filters button,
 .reset-filter {
-  min-height: 34px;
+  min-height: 40px;
   padding: 0 11px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--surface-raised);
   color: var(--muted);
   font: inherit;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   cursor: pointer;
 }
 .type-filters button.active {
@@ -94,10 +108,10 @@
   color: var(--accent-strong);
 }
 .filter-bar select {
-  min-height: 34px;
+  min-height: 40px;
   padding: 0 9px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--surface-raised);
   color: var(--text);
 }
@@ -110,26 +124,39 @@
 }
 .result-count {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
 }
 .results {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 .result-card {
+  animation: stoa-content-enter var(--motion-enter) var(--ease-soft) backwards;
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr) 20px;
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 12px;
+  padding: 16px;
   border: 1px solid var(--border);
-  border-radius: 11px;
+  border-radius: var(--radius-panel);
   background: var(--surface-raised);
   color: var(--text);
   text-align: left;
   cursor: pointer;
+}
+@for $item from 2 through 5 {
+  .result-card:nth-child(#{$item}) {
+    animation-delay: ($item - 1) * 20ms;
+  }
+}
+.result-card:nth-child(n + 6) {
+  animation-delay: 100ms;
+}
+.result-count,
+.search-empty {
+  animation: stoa-fade-in var(--motion-fast) ease;
 }
 .result-card:hover {
   border-color: var(--border-strong);
@@ -153,20 +180,20 @@
 }
 .result-copy small {
   color: var(--accent-strong);
-  font-size: 0.63rem;
+  font-size: 0.75rem;
   font-weight: 750;
 }
 .result-copy strong {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.84rem;
+  font-size: 0.9375rem;
 }
 .result-copy em {
   display: inline-flex;
   margin-right: 5px;
   color: var(--muted);
-  font-size: 0.64rem;
+  font-size: 0.75rem;
   font-style: normal;
 }
 .search-empty {
@@ -209,14 +236,14 @@
 }
 .tag-manager {
   margin-top: 26px;
-  padding: 12px 14px;
+  padding: 18px 20px;
   border: 1px solid var(--border);
-  border-radius: 11px;
+  border-radius: var(--radius-panel);
   background: var(--surface-raised);
 }
 .tag-manager summary {
   cursor: pointer;
-  font-size: 0.76rem;
+  font-size: 0.875rem;
   font-weight: 750;
 }
 .tag-manager summary span {
@@ -282,11 +309,33 @@
   height: 13px;
 }
 @media (max-width: 650px) {
+  .search-input {
+    min-height: 54px;
+    border-radius: 14px;
+  }
+  .search-input button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .type-filters button {
+    min-height: 44px;
+    padding-inline: 14px;
+    flex-shrink: 0;
+  }
+  .filter-bar select {
+    min-height: 48px;
+    border-radius: 12px;
+  }
+  .result-card {
+    padding: 16px 12px;
+    border-radius: 16px;
+  }
   .filter-bar {
     align-items: stretch;
     flex-direction: column;
   }
   .type-filters {
+    flex: none;
     width: 100%;
     overflow: auto;
   }

@@ -1,13 +1,55 @@
 .stoa-board {
+  .board-zoom-stage {
+    // Only opacity: animating a canvas transform would disturb drag geometry.
+    animation: stoa-fade-in var(--motion-fast) ease;
+  }
+  .board-shell > :not(.board-canvas):not(.board-loading) {
+    flex-shrink: 0;
+  }
+  .board-heading {
+    min-width: 0;
+    flex: 1 1 240px;
+  }
+  .board-heading > div {
+    min-width: 0;
+  }
+  .board-heading h1 {
+    overflow-wrap: anywhere;
+  }
+  .board-emoji,
+  .member-count {
+    flex-shrink: 0;
+  }
+  .board-actions {
+    flex-wrap: wrap;
+  }
+  .board-tool-menu {
+    display: block;
+  }
+  .board-tool-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .board-tool-menu > summary,
+  .mobile-tool-label {
+    display: none;
+  }
+  .toolbar-button.add-pin-button {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .board-actions button:not(:disabled):active {
+    transform: scale(0.96);
+  }
   .board-zoom-controls {
-    position: fixed;
-    z-index: 38;
-    top: calc(env(safe-area-inset-top) + 132px);
-    right: calc(env(safe-area-inset-right) + 24px);
+    flex-shrink: 0;
     display: flex;
     justify-content: flex-end;
-    margin: 0;
-    pointer-events: none;
+    padding: 6px 22px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-raised);
   }
 
   .board-zoom-panel {
@@ -51,6 +93,7 @@
   }
 
   .board-zoom-value {
+    font-variant-numeric: tabular-nums;
     min-width: 44px;
     color: var(--text);
     font-size: 0.72rem;
@@ -106,9 +149,133 @@
   }
 
   @media (max-width: 760px) {
+    .board-toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 72px;
+      padding: 12px;
+    }
+    .board-heading {
+      min-width: 0;
+      gap: 8px;
+    }
+    .board-heading p,
+    .board-toolbar .member-avatars,
+    .board-hint {
+      display: none;
+    }
+    .board-heading h1 {
+      white-space: normal;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
+      max-height: 2.5em;
+      font-size: 1.05rem;
+      line-height: 1.25;
+    }
+    .board-actions {
+      flex-wrap: nowrap;
+      gap: 6px;
+    }
+    .board-emoji {
+      width: 30px;
+      height: 34px;
+    }
+    .view-toggle {
+      padding: 0;
+      border: 0;
+      gap: 2px;
+    }
+    .view-toggle button {
+      min-width: 36px;
+      min-height: 44px;
+    }
+    .toolbar-button.add-pin-button {
+      position: absolute;
+      z-index: 25;
+      right: 16px;
+      bottom: 16px;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      font-size: 0.9rem;
+    }
+    .board-canvas {
+      padding-bottom: 88px;
+      scrollbar-gutter: auto;
+    }
+    .board-tool-menu {
+      display: block;
+      position: relative;
+    }
+    .board-tool-menu > summary {
+      display: grid;
+      place-items: center;
+      min-width: 40px;
+      min-height: 44px;
+      list-style: none;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--surface-sunken);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .board-tool-menu > summary::-webkit-details-marker {
+      display: none;
+    }
+    .board-tool-menu:not([open]) .board-tool-options {
+      display: none;
+    }
+    .board-tool-menu[open] .board-tool-options {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2px;
+      position: absolute;
+      z-index: 35;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 220px;
+      padding: 6px;
+      border: 1px solid var(--border-strong);
+      border-radius: 15px;
+      background: var(--surface-raised);
+      box-shadow: var(--shadow-lg);
+      animation: stoa-menu-enter 160ms var(--ease-soft);
+      transform-origin: top right;
+    }
+    .board-tool-options .toolbar-button,
+    .board-tool-options .toolbar-icon {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      width: 100%;
+      min-height: 46px;
+      padding: 8px 12px;
+      border: 0;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .mobile-tool-label {
+      display: inline;
+    }
+    .board-palette {
+      top: 72px;
+      max-height: calc(100% - 90px);
+      overflow-y: auto;
+    }
     .board-zoom-controls {
-      top: calc(env(safe-area-inset-top) + 104px);
-      right: calc(env(safe-area-inset-right) + 13px);
+      padding: 4px 12px;
+    }
+    .board-zoom-panel button {
+      min-width: 40px;
+      min-height: 40px;
     }
   }
 }
@@ -130,7 +297,8 @@
   }
   .clip-card.manual-size .pin-card > ui-note-pin,
   .clip-card.manual-size .pin-card > ui-link-pin,
-  .clip-card.manual-size .pin-card > ui-photo-pin {
+  .clip-card.manual-size .pin-card > ui-photo-pin,
+  .clip-card.manual-size .pin-card > ui-portal-pin {
     flex: 1;
     min-height: 0;
     overflow: hidden;
