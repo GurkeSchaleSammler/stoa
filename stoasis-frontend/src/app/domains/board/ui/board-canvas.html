@@ -310,13 +310,15 @@
                 class="clip-card"
                 [class.can-move]="canEdit()"
                 [class.dragging]="isDragging(pin.id)"
+                [class.resizing]="isResizing(pin.id)"
+                [class.manual-size]="hasManualSize(pin)"
                 [class.overlap-warning]="isInvalidDrag(pin.id)"
                 [class.drop-rejected]="rejectedPinId() === pin.id"
                 [class.drop-target]="isStackTarget('pin', pin.id)"
                 [attr.data-pin-id]="pin.id"
                 [style.left.px]="cardLeft(pin)"
                 [style.top.px]="cardTop(pin)"
-                [style.width.px]="cardWidthPx"
+                [style.width.px]="cardWidth(pin)"
                 [style.height.px]="cardHeight(pin)"
                 [style.z-index]="cardLayer(pin)"
                 [style.--layer-depth]="layerDepth(pin)"
@@ -334,6 +336,19 @@
                   (onImageFullView)="openImageFullView($event)"
                 />
                 @if (canEdit()) {
+                  @for (edge of resizeEdges; track edge) {
+                    <button
+                      type="button"
+                      [class]="'pin-resize-edge ' + edge"
+                      [attr.aria-label]="'board.resizePin.' + edge | translate"
+                      (keydown)="resizePinFromKeyboard($event, pin, edge)"
+                      (pointerdown)="startPinResize($event, pin, edge)"
+                      (pointermove)="movePinResize($event)"
+                      (pointerup)="endPinResize($event)"
+                      (pointercancel)="cancelPinResize($event)"
+                      (click)="$event.stopPropagation()"
+                    ></button>
+                  }
                   <ui-pin-edit-button (edit)="openPin(pin.id)" />
                   <button
                     type="button"

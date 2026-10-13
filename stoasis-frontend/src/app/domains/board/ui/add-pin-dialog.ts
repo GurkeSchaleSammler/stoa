@@ -9,12 +9,19 @@ import { NOTE_BACKGROUND_PRESETS } from '../data/models/board-color';
 import { LinkPreview } from '../data/models/link-preview';
 import { UploadedPhoto } from '../data/models/uploaded-photo';
 import { BoardColorPickerComponent } from './board-color-picker';
+import { NoteEditorComponent } from './note-editor';
 
 /** Collects pin content and displays upload validation and progress. */
 @Component({
   selector: 'ui-add-pin-dialog',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, AppIconComponent, BoardColorPickerComponent],
+  imports: [
+    FormsModule,
+    TranslatePipe,
+    AppIconComponent,
+    BoardColorPickerComponent,
+    NoteEditorComponent,
+  ],
   template: `
     @if (isOpen()) {
       <div class="dialog-backdrop" (click)="onCancel.emit()">
@@ -91,15 +98,10 @@ import { BoardColorPickerComponent } from './board-color-picker';
               }
             }
             @case ('note') {
-              <label class="dialog-field"
-                ><span>{{ 'pin.note' | translate }}</span
-                ><textarea
-                  rows="7"
-                  [placeholder]="'pin.notePlaceholder' | translate"
-                  [ngModel]="draft().content"
-                  (ngModelChange)="onDraftChange.emit({ content: $event })"
-                ></textarea>
-              </label>
+              <ui-note-editor
+                [content]="draft().content"
+                (contentChange)="onDraftChange.emit({ content: $event })"
+              />
               <ui-board-color-picker
                 labelKey="pin.backgroundColor"
                 [value]="draft().color"

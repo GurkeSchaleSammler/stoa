@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { NotePinData } from '../../../shared/models/note-pin-data';
+import { MarkdownContentComponent } from '../../../shared/ui/markdown-content';
 import { PinMeta } from '../data/models/pin-meta';
 import { boardColorCssValue, normalizeBoardColor } from '../data/models/board-color';
 
 @Component({
   selector: 'ui-note-pin',
   standalone: true,
+  imports: [MarkdownContentComponent],
   template: `<div
     class="note-visual"
     [class]="'note-visual ' + data().color"
@@ -15,7 +17,7 @@ import { boardColorCssValue, normalizeBoardColor } from '../data/models/board-co
     @if (data().title) {
       <h2>{{ data().title }}</h2>
     }
-    <p>{{ data().content }}</p>
+    <ui-markdown-content [content]="data().content" />
   </div>`,
   styleUrl: './board.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

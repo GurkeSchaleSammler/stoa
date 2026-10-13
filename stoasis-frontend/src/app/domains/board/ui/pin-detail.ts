@@ -15,6 +15,8 @@ import { PinEditValue } from '../data/models/pin-edit-value';
 import { BoardColorPickerComponent } from './board-color-picker';
 import { ImageFullViewComponent } from './image-full-view';
 import { ImageFullView } from './models/image-full-view';
+import { MarkdownContentComponent } from '../../../shared/ui/markdown-content';
+import { NoteEditorComponent } from './note-editor';
 
 @Component({
   selector: 'ui-pin-detail',
@@ -25,6 +27,8 @@ import { ImageFullView } from './models/image-full-view';
     AppIconComponent,
     BoardColorPickerComponent,
     ImageFullViewComponent,
+    MarkdownContentComponent,
+    NoteEditorComponent,
   ],
   template: `
     @if (pin(); as item) {
@@ -67,14 +71,10 @@ import { ImageFullView } from './models/image-full-view';
                   </label>
                 }
                 @case ('note') {
-                  <label class="dialog-field"
-                    ><span>{{ 'pin.note' | translate }}</span
-                    ><textarea
-                      rows="10"
-                      [ngModel]="editValue().content"
-                      (ngModelChange)="onDraftChange.emit({ content: $event })"
-                    ></textarea>
-                  </label>
+                  <ui-note-editor
+                    [content]="editValue().content"
+                    (contentChange)="onDraftChange.emit({ content: $event })"
+                  />
                 }
                 @case ('photo') {
                   <label class="dialog-field"
@@ -146,7 +146,10 @@ import { ImageFullView } from './models/image-full-view';
                 }
                 @case ('note') {
                   <p class="eyebrow">{{ 'pin.note' | translate }}</p>
-                  <h1 id="pin-detail-title">{{ item.data.content }}</h1>
+                  <h1 id="pin-detail-title" [class.sr-only]="!item.data.title">
+                    {{ item.data.title || ('pin.note' | translate) }}
+                  </h1>
+                  <ui-markdown-content class="detail-note" [content]="item.data.content" />
                 }
                 @case ('photo') {
                   @if (item.data.imageUrl) {

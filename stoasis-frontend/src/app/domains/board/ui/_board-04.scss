@@ -82,7 +82,7 @@
   .detail-content {
     padding: 25px 5px;
   }
-  .detail-content h1 {
+  .detail-content > h1 {
     margin: 8px 0 12px;
     font-family: var(--font-display);
     font-size: clamp(1.5rem, 5vw, 2.15rem);

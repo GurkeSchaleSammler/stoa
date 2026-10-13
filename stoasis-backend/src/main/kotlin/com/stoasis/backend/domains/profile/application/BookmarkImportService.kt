@@ -45,7 +45,7 @@ class BookmarkImportService(
         val user = plans.lock(userId)
         val rows = rows(userId, board, content)
         val existing = pins.findAllByCollectionIdOrderBySortOrder(board.id)
-        val occupied = existing.map { PinGridRect(it.gridX, it.gridY, 16, it.heightClips) }.toMutableList()
+        val occupied = existing.map { PinGridRect(it.gridX, it.gridY, it.widthClips, it.heightClips) }.toMutableList()
         occupied.addAll(stacks.findAllByCollectionIdOrderByLayer(board.id).map { PinGridRect(it.gridX, it.gridY, 16, it.heightClips) })
         var order = existing.maxOfOrNull { it.sortOrder } ?: 0
         var full = false

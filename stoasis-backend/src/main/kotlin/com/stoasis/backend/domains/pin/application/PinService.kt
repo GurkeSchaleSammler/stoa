@@ -110,6 +110,7 @@ class PinService(
         if (request.type != PinType.skill) applyData(pin, request.data, userId)
         val existing = pins.findAllByCollectionIdOrderBySortOrder(collectionId)
         pin.heightClips = estimatedPinHeight(pin)
+        pin.baseHeightClips = pin.heightClips
         val position = findFreePinPosition(pin.heightClips, occupiedRects(collectionId, existing))
         pin.gridX = position.first
         pin.gridY = position.second
@@ -150,7 +151,7 @@ class PinService(
             stack.children.removeIf { it.pin?.id == pinId }
             if (stack.children.size == 1) {
                 stack.children.single().pin?.let { remaining ->
-                    remaining.gridX = stack.gridX
+                    remaining.gridX = stack.gridX.coerceAtMost(BOARD_WIDTH_CLIPS - remaining.widthClips)
                     remaining.gridY = stack.gridY
                     remaining.layer = stack.layer
                 }
@@ -225,6 +226,9 @@ class PinService(
                 x = pin.gridX,
                 y = pin.gridY,
                 heightClips = pin.heightClips,
+                width = pin.widthClips,
+                baseHeightClips = pin.baseHeightClips,
+                manualSize = pin.manualSize,
                 layer = pin.layer,
                 contentType = pin.type,
             ),
@@ -251,10 +255,24 @@ class PinService(
         if (stackChildren.existsByPinId(pin.id)) {
             throw ApiException(HttpStatus.CONFLICT, "Karten innerhalb eines Stacks werden über den Stack bewegt.")
         }
+        val width = grid.width ?: pin.widthClips
+        val manualSize = grid.manualSize ?: pin.manualSize
+        if (width !in CARD_WIDTH_CLIPS..(CARD_WIDTH_CLIPS * 2)) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Ungültige Kartenbreite.")
+        }
+        if (pin.manualSize && grid.manualSize == false) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Eine manuelle Kartengrösse kann nicht automatisch überschrieben werden.")
+        }
+        if (width != CARD_WIDTH_CLIPS && !manualSize) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Eine veränderte Breite erfordert eine manuelle Kartengrösse.")
+        }
+        if (manualSize && grid.heightClips !in pin.baseHeightClips..minOf(BOARD_HEIGHT_CLIPS, pin.baseHeightClips * 2)) {
+            throw ApiException(HttpStatus.BAD_REQUEST, "Karten dürfen höchstens auf die doppelte Höhe vergrössert werden.")
+        }
         if (grid.heightClips < 1 || grid.heightClips > BOARD_HEIGHT_CLIPS) {
             throw ApiException(HttpStatus.BAD_REQUEST, "Ungültige Kartenhöhe.")
         }
-        if (grid.x !in 0..(BOARD_WIDTH_CLIPS - CARD_WIDTH_CLIPS) ||
+        if (grid.x !in 0..(BOARD_WIDTH_CLIPS - width) ||
             grid.y !in 0..(BOARD_HEIGHT_CLIPS - grid.heightClips)
         ) {
             throw ApiException(HttpStatus.BAD_REQUEST, "Die Karte liegt ausserhalb des Boards.")
@@ -263,7 +281,7 @@ class PinService(
             throw ApiException(HttpStatus.BAD_REQUEST, "Ungültige Kartenebene.")
         }
 
-        val candidate = PinGridRect(grid.x, grid.y, CARD_WIDTH_CLIPS, grid.heightClips)
+        val candidate = PinGridRect(grid.x, grid.y, width, grid.heightClips)
         val stackedIds = stacks.findAllByCollectionIdOrderByLayer(collectionId)
             .flatMap { it.children }
             .mapNotNull { it.pin?.id }
@@ -271,7 +289,7 @@ class PinService(
         val invalidPinOverlap = collectionPins
             .asSequence()
             .filter { it.id != pin.id && it.id !in stackedIds }
-            .map { PinGridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
+            .map { PinGridRect(it.gridX, it.gridY, it.widthClips, it.heightClips) }
             .any { !pinOverlapAllowed(candidate, it) }
         val invalidStackOverlap = stacks.findAllByCollectionIdOrderByLayer(collectionId)
             .asSequence()
@@ -283,6 +301,9 @@ class PinService(
 
         pin.gridX = grid.x
         pin.gridY = grid.y
+        pin.widthClips = width
+        pin.manualSize = manualSize
+        if (!manualSize) pin.baseHeightClips = grid.heightClips
         pin.heightClips = grid.heightClips
         pin.layer = grid.layer
     }
@@ -292,7 +313,7 @@ class PinService(
         val stackedIds = allStacks.flatMap { it.children }.mapNotNull { it.pin?.id }.toSet()
         return existing
             .filter { it.id !in stackedIds }
-            .map { PinGridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) } +
+            .map { PinGridRect(it.gridX, it.gridY, it.widthClips, it.heightClips) } +
             allStacks.map { PinGridRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
     }
 

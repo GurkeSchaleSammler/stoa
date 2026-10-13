@@ -33,6 +33,7 @@ import { DragState } from './models/drag-state';
 import { ImageFullView } from './models/image-full-view';
 import { LabelPointerState } from './models/label-pointer-state';
 import { PinGridChange } from './models/pin-grid-change';
+import { PinResizeState } from './models/pin-resize-state';
 import { StackChildDragState } from './models/stack-child-drag-state';
 import { StackChildRelease } from './models/stack-child-release';
 import { StackDragState } from './models/stack-drag-state';
@@ -131,6 +132,7 @@ export abstract class BoardCanvasState {
   protected readonly destroyRef = inject(DestroyRef);
   protected readonly cardElements = viewChildren<ElementRef<HTMLElement>>('clipCard');
   protected readonly drag = signal<DragState | null>(null);
+  protected readonly pinResize = signal<PinResizeState | null>(null);
   protected readonly labelPointer = signal<LabelPointerState | null>(null);
   protected readonly stickerPointer = signal<StickerPointerState | null>(null);
   protected readonly settledGrids = signal<Record<string, UpdateGridBlockRequest>>({});

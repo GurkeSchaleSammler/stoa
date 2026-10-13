@@ -20,7 +20,7 @@ class PostgresMigrationTests {
         val flywayToPreviousRelease = Flyway.configure()
             .dataSource(postgres.jdbcUrl, postgres.username, postgres.password)
             .locations("classpath:db/migration")
-            .target(MigrationVersion.fromVersion("14"))
+            .target(MigrationVersion.fromVersion("15"))
             .load()
         flywayToPreviousRelease.migrate()
 
@@ -29,6 +29,14 @@ class PostgresMigrationTests {
             "user-preserved",
             "preserved@example.test",
             "Preserved User",
+        )
+        jdbc.update(
+            "INSERT INTO collections (id, name, emoji, owner_id, visibility, created_at, updated_at) " +
+                "VALUES ('board-preserved', 'Board', 'pin', 'user-preserved', 'private', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
+        )
+        jdbc.update(
+            "INSERT INTO pins (id, collection_id, type, created_by, sort_order, created_at, content, height_clips) " +
+                "VALUES ('pin-preserved', 'board-preserved', 'note', 'user-preserved', 1, CURRENT_TIMESTAMP, '**Note**', 19)",
         )
         val result = Flyway.configure()
             .dataSource(dataSource)
@@ -55,7 +63,11 @@ class PostgresMigrationTests {
             Int::class.java,
         )
 
-        assertEquals("15", latestVersion)
+        assertEquals(16, jdbc.queryForObject("SELECT width_clips FROM pins WHERE id = 'pin-preserved'", Int::class.java))
+        assertEquals(19, jdbc.queryForObject("SELECT base_height_clips FROM pins WHERE id = 'pin-preserved'", Int::class.java))
+        assertEquals(false, jdbc.queryForObject("SELECT manual_size FROM pins WHERE id = 'pin-preserved'", Boolean::class.java))
+        assertEquals("**Note**", jdbc.queryForObject("SELECT content FROM pins WHERE id = 'pin-preserved'", String::class.java))
+        assertEquals("16", latestVersion)
         assertEquals(1, result.migrationsExecuted)
         assertTrue(foreignKeyCount != null && foreignKeyCount > 0, "Expected relational integrity constraints")
         assertEquals(2, sessionTableCount)

@@ -64,7 +64,6 @@
     box-sizing: border-box;
     background: var(--note-background, #fff5bd);
     color: var(--note-foreground, #534817);
-    white-space: pre-line;
   }
   .note-visual.blue {
     background: #dceef7;
@@ -74,13 +73,13 @@
     background: #dcebdc;
     color: #23462b;
   }
-  .note-visual p {
+  .note-visual ui-markdown-content {
     margin: 0;
     font-family: var(--font-display);
     font-size: 0.93rem;
     line-height: 1.6;
   }
-  .note-visual h2 {
+  .note-visual > h2 {
     margin: 0 0 8px;
     font-size: 1rem;
     line-height: 1.35;

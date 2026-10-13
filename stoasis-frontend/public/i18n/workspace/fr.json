@@ -78,6 +78,12 @@
       "compass": "Boussole",
       "suitcase": "Valise",
       "camera": "Appareil photo"
+    },
+    "resizePin": {
+      "left": "Faites glisser le bord gauche ou utilisez les flèches",
+      "right": "Faites glisser le bord droit ou utilisez les flèches",
+      "top": "Faites glisser le bord supérieur ou utilisez les flèches",
+      "bottom": "Faites glisser le bord inférieur ou utilisez les flèches"
     }
   },
   "collection": {
@@ -189,7 +195,11 @@
       "notes": "Notes",
       "photos": "Photos"
     },
-    "invalidPhoto": "Choisissez JPEG, PNG ou WebP : 5 Mo maximum avec Free, 20 Mo avec Premium."
+    "invalidPhoto": "Choisissez JPEG, PNG ou WebP : 5 Mo maximum avec Free, 20 Mo avec Premium.",
+    "markdownWrite": "Écrire",
+    "markdownPreview": "Aperçu",
+    "markdownEmpty": "Votre note mise en forme apparaît ici.",
+    "markdownHint": "Markdown : # Titre, **gras**, *italique*, - Liste, [Lien](https://…), `code`."
   },
   "profile": {
     "yourAccount": "Votre compte",

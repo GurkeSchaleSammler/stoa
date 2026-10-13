@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  margin-bottom: 18px;
+}
+.note-editor-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.note-editor-tabs button {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.note-editor-tabs button.active {
+  background: var(--accent-soft);
+  color: var(--text);
+  border-color: var(--accent);
+}
+.note-editor-preview {
+  min-height: 170px;
+  max-height: 340px;
+  overflow: auto;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-sunken);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+.note-editor-hint {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}

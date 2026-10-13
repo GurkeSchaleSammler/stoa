@@ -69,7 +69,7 @@ class BoardElementSupport(
         val invalidPin = pins.findAllByCollectionIdOrderBySortOrder(collectionId)
             .asSequence()
             .filter { it.id !in stackedIds }
-            .map { BoardRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
+            .map { BoardRect(it.gridX, it.gridY, it.widthClips, it.heightClips) }
             .any { !overlapAllowed(candidate, it) }
         val invalidStack = stacks.findAllByCollectionIdOrderByLayer(collectionId)
             .asSequence()
@@ -93,7 +93,7 @@ class BoardElementSupport(
         val invalidPin = pins.findAllByCollectionIdOrderBySortOrder(collectionId)
             .asSequence()
             .filter { it.id !in childIds && it.id !in stackedIds }
-            .map { BoardRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
+            .map { BoardRect(it.gridX, it.gridY, it.widthClips, it.heightClips) }
             .any { !overlapAllowed(candidate, it) }
         val invalidStack = existingStacks
             .asSequence()
@@ -110,13 +110,13 @@ class BoardElementSupport(
         y: Int,
         height: Int,
     ) {
-        val candidate = BoardRect(x, y, CARD_WIDTH_CLIPS, height)
+        val candidate = BoardRect(x, y, getPin(collectionId, pinId).widthClips, height)
         val allStacks = stacks.findAllByCollectionIdOrderByLayer(collectionId)
         val stackedIds = allStacks.flatMap { it.children }.mapNotNull { it.pin?.id }.toSet()
         val invalidPin = pins.findAllByCollectionIdOrderBySortOrder(collectionId)
             .asSequence()
             .filter { it.id != pinId && it.id !in stackedIds }
-            .map { BoardRect(it.gridX, it.gridY, CARD_WIDTH_CLIPS, it.heightClips) }
+            .map { BoardRect(it.gridX, it.gridY, it.widthClips, it.heightClips) }
             .any { !overlapAllowed(candidate, it) }
         val invalidStack = allStacks
             .asSequence()

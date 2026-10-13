@@ -94,6 +94,7 @@ export class PinCardComponent {
   }
 
   openFromKeyboard(event: Event): void {
+    if (event.target !== event.currentTarget) return;
     event.preventDefault();
     this.onOpen.emit(this.pin().id);
   }

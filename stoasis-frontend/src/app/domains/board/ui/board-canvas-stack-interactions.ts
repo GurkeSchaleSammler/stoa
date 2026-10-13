@@ -2,7 +2,6 @@ import { Directive } from '@angular/core';
 import { Pin } from '../../../shared/models/pin';
 import { BOARD_HEIGHT_CLIPS } from '../data/models/board-height-clips';
 import { BOARD_WIDTH_CLIPS } from '../data/models/board-width-clips';
-import { CARD_WIDTH_CLIPS } from '../data/models/card-width-clips';
 import { CLIP_SIZE_PX } from '../data/models/clip-size-px';
 import { StackBlock } from '../data/models/stack-block';
 import { BoardCanvasStickerInteractions } from './board-canvas-sticker-interactions';
@@ -132,7 +131,7 @@ export abstract class BoardCanvasStackInteractions extends BoardCanvasStickerInt
         x: this.clamp(
           stack.x + Math.round(state.deltaX / CLIP_SIZE_PX),
           0,
-          BOARD_WIDTH_CLIPS - CARD_WIDTH_CLIPS,
+          BOARD_WIDTH_CLIPS - pin.grid.width,
         ),
         y: this.clamp(
           stack.y + Math.round(state.deltaY / CLIP_SIZE_PX),

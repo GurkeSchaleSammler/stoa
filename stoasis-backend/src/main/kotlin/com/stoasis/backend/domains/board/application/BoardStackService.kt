@@ -13,6 +13,7 @@ import com.stoasis.backend.domains.board.utils.requireGridBounds
 import com.stoasis.backend.domains.board.utils.toDto
 import com.stoasis.backend.domains.board.utils.touchCollection
 import com.stoasis.backend.domains.pin.application.PinService.Companion.CARD_WIDTH_CLIPS
+import com.stoasis.backend.domains.pin.application.PinService.Companion.BOARD_WIDTH_CLIPS
 import com.stoasis.backend.domains.pin.data.PinEntity
 import com.stoasis.backend.shared.id.IdGenerator
 import com.stoasis.backend.shared.web.ApiException
@@ -105,7 +106,7 @@ class BoardStackService(
         val child = stack.children.firstOrNull { it.pin?.id == request.pinId }
             ?: throw ApiException(HttpStatus.NOT_FOUND, "Karte ist nicht Teil dieses Stacks.")
         val pin = child.pin ?: throw ApiException(HttpStatus.NOT_FOUND, "Karte nicht gefunden.")
-        requireGridBounds(request.x, request.y, pin.heightClips, CARD_WIDTH_CLIPS)
+        requireGridBounds(request.x, request.y, pin.heightClips, pin.widthClips)
         support.requirePinPositionAllowed(collectionId, pin.id, stack.id, request.x, request.y, pin.heightClips)
 
         pin.gridX = request.x
@@ -143,7 +144,7 @@ class BoardStackService(
             1 -> {
                 val remaining = stack.children.single().pin
                 if (remaining != null) {
-                    remaining.gridX = stack.gridX
+                    remaining.gridX = stack.gridX.coerceAtMost(BOARD_WIDTH_CLIPS - remaining.widthClips)
                     remaining.gridY = stack.gridY
                     remaining.layer = stack.layer
                 }

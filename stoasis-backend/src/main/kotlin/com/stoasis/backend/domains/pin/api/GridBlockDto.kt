@@ -10,4 +10,6 @@ data class GridBlockDto(
     val heightClips: Int,
     val layer: Int,
     val contentType: PinType,
+    val baseHeightClips: Int = heightClips,
+    val manualSize: Boolean = false,
 )

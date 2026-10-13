@@ -7,7 +7,6 @@ import com.stoasis.backend.domains.pin.api.PinDto
 import com.stoasis.backend.domains.pin.application.PinService
 import com.stoasis.backend.domains.pin.application.PinService.Companion.BOARD_HEIGHT_CLIPS
 import com.stoasis.backend.domains.pin.application.PinService.Companion.BOARD_WIDTH_CLIPS
-import com.stoasis.backend.domains.pin.application.PinService.Companion.CARD_WIDTH_CLIPS
 import com.stoasis.backend.domains.pin.data.PinEntity
 import com.stoasis.backend.domains.pin.data.PinRepository
 import com.stoasis.backend.shared.web.ApiException
@@ -76,15 +75,15 @@ class BoardLayoutService(
         var y = 0
         var rowHeight = 0
         boardPins.forEach { pin ->
-            if (x + CARD_WIDTH_CLIPS > BOARD_WIDTH_CLIPS) {
+            if (x + pin.widthClips > BOARD_WIDTH_CLIPS) {
                 x = 0
                 y += rowHeight + GAP
                 rowHeight = 0
             }
-            requireFits(x, y, pin.heightClips)
+            requireFits(x, y, pin.heightClips, pin.widthClips)
             result += Placement(pin, x, y)
             rowHeight = maxOf(rowHeight, pin.heightClips)
-            x += CARD_WIDTH_CLIPS + GAP
+            x += pin.widthClips + GAP
         }
         return result
     }
@@ -100,14 +99,14 @@ class BoardLayoutService(
         var y = 0
         levels.forEach { level ->
             val levelPins = level.mapNotNull(byId::get)
-            val totalWidth = levelPins.size * CARD_WIDTH_CLIPS + (levelPins.size - 1).coerceAtLeast(0) * GAP
+            val totalWidth = levelPins.sumOf(PinEntity::widthClips) + (levelPins.size - 1).coerceAtLeast(0) * GAP
             if (totalWidth > BOARD_WIDTH_CLIPS) outOfBounds()
             var x = (BOARD_WIDTH_CLIPS - totalWidth) / 2
             val rowHeight = levelPins.maxOfOrNull(PinEntity::heightClips) ?: 0
             levelPins.forEach { pin ->
-                requireFits(x, y, pin.heightClips)
+                requireFits(x, y, pin.heightClips, pin.widthClips)
                 result += Placement(pin, x, y)
-                x += CARD_WIDTH_CLIPS + GAP
+                x += pin.widthClips + GAP
             }
             y += rowHeight + TREE_GAP
         }
@@ -121,12 +120,12 @@ class BoardLayoutService(
     ): List<Placement> {
         val byId = boardPins.associateBy(PinEntity::id)
         val levels = breadthFirstLevels(root.id, adjacency)
-        val rootX = (BOARD_WIDTH_CLIPS - CARD_WIDTH_CLIPS) / 2
+        val rootX = (BOARD_WIDTH_CLIPS - root.widthClips) / 2
         val rootY = (BOARD_HEIGHT_CLIPS - root.heightClips) / 2
         val result = mutableListOf(Placement(root, rootX, rootY))
 
         levels.drop(1).forEachIndexed { depthIndex, level ->
-            val distance = (depthIndex + 1) * (CARD_WIDTH_CLIPS + GAP)
+            val distance = (depthIndex + 1) * (boardPins.maxOf(PinEntity::widthClips) + GAP)
             val levelPins = level.mapNotNull(byId::get)
             val right = levelPins.filterIndexed { index, _ -> index % 2 == 0 }
             val left = levelPins.filterIndexed { index, _ -> index % 2 == 1 }
@@ -142,7 +141,7 @@ class BoardLayoutService(
         if (totalHeight > BOARD_HEIGHT_CLIPS) outOfBounds()
         var y = (BOARD_HEIGHT_CLIPS - totalHeight) / 2
         return columnPins.map { pin ->
-            requireFits(x, y, pin.heightClips)
+            requireFits(x, y, pin.heightClips, pin.widthClips)
             Placement(pin, x, y).also { y += pin.heightClips + GAP }
         }
     }
@@ -165,8 +164,8 @@ class BoardLayoutService(
         return levels
     }
 
-    private fun requireFits(x: Int, y: Int, height: Int) {
-        if (x < 0 || y < 0 || x + CARD_WIDTH_CLIPS > BOARD_WIDTH_CLIPS || y + height > BOARD_HEIGHT_CLIPS) {
+    private fun requireFits(x: Int, y: Int, height: Int, width: Int) {
+        if (x < 0 || y < 0 || x + width > BOARD_WIDTH_CLIPS || y + height > BOARD_HEIGHT_CLIPS) {
             outOfBounds()
         }
     }

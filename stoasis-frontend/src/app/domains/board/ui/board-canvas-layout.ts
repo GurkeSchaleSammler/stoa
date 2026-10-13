@@ -31,7 +31,7 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
     const candidate: GridRect = {
       x: grid.x,
       y: grid.y,
-      width: CARD_WIDTH_CLIPS,
+      width: grid.width ?? CARD_WIDTH_CLIPS,
       height: grid.heightClips,
     };
     const targets: Array<{ target: StackTarget; ratio: number }> = [];
@@ -40,14 +40,17 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
       const overlap = intersectionArea(candidate, {
         x: pin.grid.x,
         y: pin.grid.y,
-        width: CARD_WIDTH_CLIPS,
+        width: pin.grid.width,
         height: pin.grid.heightClips,
       });
       targets.push({
         target: { id: pin.id, type: 'pin' },
         ratio:
           overlap /
-          Math.min(CARD_WIDTH_CLIPS * grid.heightClips, CARD_WIDTH_CLIPS * pin.grid.heightClips),
+          Math.min(
+            (grid.width ?? CARD_WIDTH_CLIPS) * grid.heightClips,
+            pin.grid.width * pin.grid.heightClips,
+          ),
       });
     }
     for (const stack of this.elements().stacks) {
@@ -61,7 +64,10 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
         target: { id: stack.id, type: 'stack' },
         ratio:
           overlap /
-          Math.min(CARD_WIDTH_CLIPS * grid.heightClips, CARD_WIDTH_CLIPS * stack.heightClips),
+          Math.min(
+            (grid.width ?? CARD_WIDTH_CLIPS) * grid.heightClips,
+            CARD_WIDTH_CLIPS * stack.heightClips,
+          ),
       });
     }
     return (
@@ -95,7 +101,7 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
       overlapAllowed(candidate, {
         x: pin.grid.x,
         y: pin.grid.y,
-        width: CARD_WIDTH_CLIPS,
+        width: pin.grid.width,
         height: pin.grid.heightClips,
       }),
     );
@@ -127,13 +133,20 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
     const activePin = this.drag();
     if (pin && activePin?.pinId === pinId) {
       return {
-        x: activePin.leftPx + (CARD_WIDTH_CLIPS * CLIP_SIZE_PX) / 2,
+        x: activePin.leftPx + ((activePin.origin.width ?? pin.grid.width) * CLIP_SIZE_PX) / 2,
         y: activePin.topPx + (activePin.origin.heightClips * CLIP_SIZE_PX) / 2,
+      };
+    }
+    const resized = this.pinResize();
+    if (pin && resized?.pinId === pinId) {
+      return {
+        x: (resized.grid.x + resized.grid.width! / 2) * CLIP_SIZE_PX,
+        y: (resized.grid.y + resized.grid.heightClips / 2) * CLIP_SIZE_PX,
       };
     }
     return pin
       ? {
-          x: (pin.grid.x + CARD_WIDTH_CLIPS / 2) * CLIP_SIZE_PX,
+          x: (pin.grid.x + pin.grid.width / 2) * CLIP_SIZE_PX,
           y: (pin.grid.y + pin.grid.heightClips / 2) * CLIP_SIZE_PX,
         }
       : { x: 0, y: 0 };
@@ -157,14 +170,13 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
 
   protected snapCandidate(active: DragState): UpdateGridBlockRequest {
     const heightClips = active.origin.heightClips;
+    const width = active.origin.width ?? CARD_WIDTH_CLIPS;
     return {
-      x: this.clamp(
-        Math.round(active.leftPx / CLIP_SIZE_PX),
-        0,
-        BOARD_WIDTH_CLIPS - CARD_WIDTH_CLIPS,
-      ),
+      x: this.clamp(Math.round(active.leftPx / CLIP_SIZE_PX), 0, BOARD_WIDTH_CLIPS - width),
       y: this.clamp(Math.round(active.topPx / CLIP_SIZE_PX), 0, BOARD_HEIGHT_CLIPS - heightClips),
       heightClips,
+      width,
+      manualSize: active.origin.manualSize,
       layer: active.layer,
     };
   }
@@ -173,7 +185,7 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
     const candidate: GridRect = {
       x: grid.x,
       y: grid.y,
-      width: CARD_WIDTH_CLIPS,
+      width: grid.width ?? CARD_WIDTH_CLIPS,
       height: grid.heightClips,
     };
     const pinsAllowed = this.visiblePins()
@@ -182,7 +194,7 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
         overlapAllowed(candidate, {
           x: pin.grid.x,
           y: pin.grid.y,
-          width: CARD_WIDTH_CLIPS,
+          width: pin.grid.width,
           height: pin.grid.heightClips,
         }),
       );
@@ -202,7 +214,7 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
     const occupied = this.visiblePins().map((pin) => ({
       x: pin.grid.x,
       y: pin.grid.y,
-      width: CARD_WIDTH_CLIPS,
+      width: pin.grid.width,
       height: pin.grid.heightClips,
     }));
     occupied.push(
@@ -244,10 +256,16 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
   }
 
   protected reportMeasuredHeight(pinId: string, heightClips: number): void {
-    if (!this.canEdit() || this.measuredHeights.get(pinId) === heightClips) return;
+    if (
+      !this.canEdit() ||
+      this.pinResize()?.pinId === pinId ||
+      this.settledGrids()[pinId]?.manualSize ||
+      this.measuredHeights.get(pinId) === heightClips
+    )
+      return;
     this.measuredHeights.set(pinId, heightClips);
     const pin = this.pins().find((item) => item.id === pinId);
-    if (!pin || pin.grid.heightClips === heightClips) return;
+    if (!pin || pin.grid.manualSize || pin.grid.heightClips === heightClips) return;
     const grid: UpdateGridBlockRequest = {
       x: pin.grid.x,
       y: this.clamp(pin.grid.y, 0, BOARD_HEIGHT_CLIPS - heightClips),
@@ -277,7 +295,14 @@ export abstract class BoardCanvasLayout extends BoardCanvasState {
   }
 
   protected toUpdate(grid: GridBlock): UpdateGridBlockRequest {
-    return { x: grid.x, y: grid.y, heightClips: grid.heightClips, layer: grid.layer };
+    return {
+      x: grid.x,
+      y: grid.y,
+      width: grid.width,
+      heightClips: grid.heightClips,
+      layer: grid.layer,
+      manualSize: grid.manualSize,
+    };
   }
 
   protected clamp(value: number, min: number, max: number): number {

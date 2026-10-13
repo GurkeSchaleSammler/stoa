@@ -78,6 +78,12 @@
       "compass": "Compass",
       "suitcase": "Suitcase",
       "camera": "Camera"
+    },
+    "resizePin": {
+      "left": "Drag left edge or use arrow keys",
+      "right": "Drag right edge or use arrow keys",
+      "top": "Drag top edge or use arrow keys",
+      "bottom": "Drag bottom edge or use arrow keys"
     }
   },
   "collection": {
@@ -189,7 +195,11 @@
       "notes": "Notes",
       "photos": "Photos"
     },
-    "invalidPhoto": "Choose JPEG, PNG or WebP: up to 5 MB on Free or 20 MB on Premium."
+    "invalidPhoto": "Choose JPEG, PNG or WebP: up to 5 MB on Free or 20 MB on Premium.",
+    "markdownWrite": "Write",
+    "markdownPreview": "Preview",
+    "markdownEmpty": "Your formatted note appears here.",
+    "markdownHint": "Markdown: # Heading, **bold**, *italic*, - List, [Link](https://…), `code`."
   },
   "profile": {
     "yourAccount": "Your account",

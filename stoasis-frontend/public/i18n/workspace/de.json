@@ -78,6 +78,12 @@
       "compass": "Kompass",
       "suitcase": "Koffer",
       "camera": "Kamera"
+    },
+    "resizePin": {
+      "left": "Linken Rand ziehen oder mit Pfeiltasten verschieben",
+      "right": "Rechten Rand ziehen oder mit Pfeiltasten verschieben",
+      "top": "Oberen Rand ziehen oder mit Pfeiltasten verschieben",
+      "bottom": "Unteren Rand ziehen oder mit Pfeiltasten verschieben"
     }
   },
   "collection": {
@@ -189,7 +195,11 @@
       "notes": "Notizen",
       "photos": "Fotos"
     },
-    "invalidPhoto": "Bitte JPEG, PNG oder WebP wählen: maximal 5 MB mit Free, 20 MB mit Premium."
+    "invalidPhoto": "Bitte JPEG, PNG oder WebP wählen: maximal 5 MB mit Free, 20 MB mit Premium.",
+    "markdownWrite": "Schreiben",
+    "markdownPreview": "Vorschau",
+    "markdownEmpty": "Deine formatierte Notiz erscheint hier.",
+    "markdownHint": "Markdown: # Überschrift, **fett**, *kursiv*, - Liste, [Link](https://…), `Code`."
   },
   "profile": {
     "yourAccount": "Dein Konto",

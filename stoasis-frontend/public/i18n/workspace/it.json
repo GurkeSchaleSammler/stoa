@@ -78,6 +78,12 @@
       "compass": "Bussola",
       "suitcase": "Valigia",
       "camera": "Fotocamera"
+    },
+    "resizePin": {
+      "left": "Trascina il bordo sinistro o usa le frecce",
+      "right": "Trascina il bordo destro o usa le frecce",
+      "top": "Trascina il bordo superiore o usa le frecce",
+      "bottom": "Trascina il bordo inferiore o usa le frecce"
     }
   },
   "collection": {
@@ -189,7 +195,11 @@
       "notes": "Note",
       "photos": "Foto"
     },
-    "invalidPhoto": "Scegli JPEG, PNG o WebP: massimo 5 MB con Free, 20 MB con Premium."
+    "invalidPhoto": "Scegli JPEG, PNG o WebP: massimo 5 MB con Free, 20 MB con Premium.",
+    "markdownWrite": "Scrivi",
+    "markdownPreview": "Anteprima",
+    "markdownEmpty": "La nota formattata appare qui.",
+    "markdownHint": "Markdown: # Titolo, **grassetto**, *corsivo*, - Elenco, [Link](https://…), `codice`."
   },
   "profile": {
     "yourAccount": "Il tuo account",
