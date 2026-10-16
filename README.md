@@ -1,4 +1,4 @@
-# Stoasis
+# Stoasis (stoasis.ch)
 
 Stoasis ist eine visuelle Web-App zum Sammeln und gemeinsamen Organisieren von Links, Notizen und Bildern.
 

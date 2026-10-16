@@ -1,0 +1,122 @@
+<section class="experience-view">
+  <div class="experience-heading">
+    <div>
+      <h2>{{ 'board.experience.presentation' | translate }}</h2>
+      <p>
+        {{ 'board.experience.pathAllowance' | translate }} ({{ paths().length }} /
+        {{ limit() ?? '∞' }})
+      </p>
+    </div>
+    @if (canEdit()) {
+      <button type="button" [disabled]="!canCreate() || saving()" (click)="edit()">
+        {{ 'board.experience.newPath' | translate }}
+      </button>
+    }
+  </div>
+  @if (draft(); as draftValue) {
+    <form class="experience-editor" (submit)="$event.preventDefault(); save()">
+      <fieldset [disabled]="saving()">
+        <label
+          >{{ 'board.experience.pathName' | translate
+          }}<input
+            maxlength="120"
+            required
+            [value]="draftValue.name"
+            (input)="name($any($event.target).value)"
+        /></label>
+        <div class="experience-actions">
+          <label
+            >{{ 'board.experience.station' | translate
+            }}<select #station>
+              @for (pin of pins(); track pin.id) {
+                <option [value]="pin.id">{{ title(pin) }}</option>
+              }
+            </select></label
+          ><button type="button" [disabled]="!pins().length" (click)="add(station.value)">
+            {{ 'board.experience.addStation' | translate }}
+          </button>
+        </div>
+        <ol class="path-stations">
+          @for (id of draftValue.pinIds; track $index; let i = $index) {
+            <li>
+              <span>{{
+                byId().get(id)
+                  ? title(byId().get(id)!)
+                  : ('board.experience.missingPin' | translate)
+              }}</span>
+              <button
+                type="button"
+                [disabled]="i === 0"
+                [attr.aria-label]="'board.experience.moveUp' | translate"
+                (click)="move(i, -1)"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                [disabled]="i === draftValue.pinIds.length - 1"
+                [attr.aria-label]="'board.experience.moveDown' | translate"
+                (click)="move(i, 1)"
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                [attr.aria-label]="'board.experience.removeStation' | translate"
+                (click)="remove(i)"
+              >
+                ×
+              </button>
+            </li>
+          }
+        </ol>
+        <div class="experience-actions">
+          <button type="submit" [disabled]="!draftValue.name.trim() || !draftValue.pinIds.length">
+            {{ 'common.save' | translate }}</button
+          ><button type="button" (click)="draft.set(null)">
+            {{ 'common.cancel' | translate }}
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  }
+  <div class="path-list">
+    @for (path of paths(); track path.id) {
+      <article class="path-card">
+        <h3>{{ path.name }}</h3>
+        <p>{{ 'board.experience.stationCount' | translate: { count: path.pinIds.length } }}</p>
+        <div class="experience-actions">
+          <button type="button" [disabled]="!path.pinIds.length" (click)="playing.set(path)">
+            ▶ {{ 'board.experience.start' | translate }}
+          </button>
+          @if (canEdit()) {
+            <button type="button" [disabled]="saving()" (click)="edit(path)">
+              {{ 'common.edit' | translate }}</button
+            ><button type="button" [disabled]="saving()" (click)="deleting.set(path.id)">
+              {{ 'common.delete' | translate }}
+            </button>
+          }
+        </div>
+        @if (deleting() === path.id) {
+          <p>{{ 'board.experience.confirmDelete' | translate: { name: path.name } }}</p>
+          <div class="experience-actions">
+            <button
+              type="button"
+              [disabled]="saving()"
+              (click)="pathDeleted.emit(path.id); deleting.set(null)"
+            >
+              {{ 'common.delete' | translate }}</button
+            ><button type="button" (click)="deleting.set(null)">
+              {{ 'common.cancel' | translate }}
+            </button>
+          </div>
+        }
+      </article>
+    } @empty {
+      <p>{{ 'board.experience.noPaths' | translate }}</p>
+    }
+  </div>
+  @if (playing(); as path) {
+    <ui-board-presentation-player [path]="path" [pins]="pins()" (closed)="playing.set(null)" />
+  }
+</section>

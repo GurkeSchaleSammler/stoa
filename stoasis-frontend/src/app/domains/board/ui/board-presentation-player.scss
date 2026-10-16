@@ -1,0 +1,93 @@
+.presentation-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  padding: 0;
+  border: 0;
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+.presentation-dialog[open] {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+header,
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--surface-raised);
+  z-index: 1;
+}
+button {
+  padding: 8px 16px;
+  min-height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-raised);
+  color: var(--text);
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.presentation-viewport {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+.presentation-camera {
+  position: absolute;
+  transform-origin: 0 0;
+  transition: transform 500ms ease;
+}
+.presentation-pin {
+  position: absolute;
+  width: 420px;
+  height: 480px;
+  overflow: auto;
+  border-radius: 8px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  opacity: 0.12;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.presentation-pin.current {
+  opacity: 1;
+  z-index: 1;
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+}
+h2 {
+  font:
+    600 24px Georgia,
+    serif;
+  margin: 0 0 16px;
+  overflow-wrap: anywhere;
+}
+footer p {
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 760px) {
+  header,
+  footer {
+    padding: 12px;
+    gap: 8px;
+  }
+  footer p {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .presentation-camera {
+    transition: none;
+  }
+}

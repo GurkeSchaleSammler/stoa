@@ -78,6 +78,22 @@ import { ViewportService } from '../../../shared/application/viewport.service';
             >
               <ui-app-icon name="list" />
             </button>
+            @for (mode of extraViews; track mode) {
+              <button
+                type="button"
+                [class.active]="viewMode() === mode"
+                [attr.aria-pressed]="viewMode() === mode"
+                (click)="viewModeChange.emit(mode)"
+                [attr.title]="'board.experience.' + mode | translate"
+                [attr.aria-label]="'board.experience.' + mode | translate"
+              >
+                <ui-app-icon
+                  [name]="
+                    mode === 'network' ? 'network' : mode === 'timeline' ? 'timeline' : 'play'
+                  "
+                />
+              </button>
+            }
           </div>
           <details #toolsMenu class="board-tool-menu" [open]="!viewport.compact()">
             <summary [attr.aria-label]="'shell.boardTools' | translate">
@@ -158,6 +174,7 @@ import { ViewportService } from '../../../shared/application/viewport.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardToolbarComponent {
+  readonly extraViews = ['network', 'timeline', 'presentation'] as const;
   protected readonly viewport = inject(ViewportService);
   private readonly toolsMenu = viewChild<ElementRef<HTMLDetailsElement>>('toolsMenu');
   readonly context = input<BoardContext | null>(null);

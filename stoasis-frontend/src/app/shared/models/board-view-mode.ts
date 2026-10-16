@@ -1,1 +1,1 @@
-export type BoardViewMode = 'board' | 'list';
+export type BoardViewMode = 'board' | 'list' | 'network' | 'timeline' | 'presentation';

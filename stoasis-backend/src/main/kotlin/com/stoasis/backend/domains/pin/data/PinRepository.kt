@@ -24,6 +24,8 @@ interface PinRepository : JpaRepository<PinEntity, String>, JpaSpecificationExec
     @Query("select p from PinEntity p join p.collection c where c.visibility = com.stoasis.backend.domains.collection.model.Visibility.public or exists (select m.id from CollectionMemberEntity m where m.collection = c and m.user.id = :userId)")
     fun findAllVisibleTo(@Param("userId") userId: String): List<PinEntity>
 
+    fun countByCollectionIdAndIdIn(collectionId: String, ids: Collection<String>): Long
+
     fun countByCollectionId(collectionId: String): Long
     fun deleteAllByCollectionId(collectionId: String)
 

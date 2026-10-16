@@ -1,0 +1,82 @@
+<section class="experience-view">
+  <h2>{{ 'board.experience.timeline' | translate }}</h2>
+  <p>{{ 'board.experience.timelineHelp' | translate }}</p>
+  @if (editing(); as id) {
+    <form class="experience-editor" (submit)="$event.preventDefault(); save()">
+      <h3>{{ 'board.experience.editDates' | translate }}</h3>
+      <div class="experience-actions">
+        <label
+          >{{ 'board.experience.startDate' | translate
+          }}<input
+            type="date"
+            required
+            min="0001-01-01"
+            max="9999-12-31"
+            [value]="start()"
+            (input)="start.set($any($event.target).value)"
+        /></label>
+        <label
+          >{{ 'board.experience.endDate' | translate
+          }}<input
+            type="date"
+            [min]="start()"
+            max="9999-12-31"
+            [value]="end()"
+            (input)="end.set($any($event.target).value)"
+        /></label>
+      </div>
+      @if (end() && end() < start()) {
+        <p role="alert">{{ 'board.invalid_date_range' | translate }}</p>
+      }
+      <div class="experience-actions">
+        <button type="submit" [disabled]="saving() || invalid()">
+          {{ 'common.save' | translate }}</button
+        ><button type="button" [disabled]="saving()" (click)="clear()">
+          {{ 'board.experience.removeDate' | translate }}</button
+        ><button type="button" [disabled]="saving()" (click)="editing.set(null)">
+          {{ 'common.cancel' | translate }}
+        </button>
+      </div>
+    </form>
+  }
+  <ol class="timeline-list">
+    @for (entry of dated(); track entry.pin.id) {
+      <li>
+        <div class="timeline-date">
+          <time [attr.datetime]="entry.date!.startDate">{{ entry.date!.startDate }}</time>
+          @if (entry.date!.endDate) {
+            <span> – </span
+            ><time [attr.datetime]="entry.date!.endDate">{{ entry.date!.endDate }}</time>
+          }
+        </div>
+        <button type="button" class="timeline-pin" (click)="pinSelected.emit(entry.pin.id)">
+          {{ title(entry.pin) }}
+        </button>
+        @if (canEdit()) {
+          <button type="button" (click)="edit(entry.pin.id)">
+            {{ 'board.experience.editDates' | translate }}
+          </button>
+        }
+      </li>
+    } @empty {
+      <li>{{ 'board.experience.noDates' | translate }}</li>
+    }
+  </ol>
+  @if (undated().length) {
+    <h3>{{ 'board.experience.undated' | translate }} · {{ undated().length }}</h3>
+    <div class="undated-pins">
+      @for (entry of undated(); track entry.pin.id) {
+        <div class="experience-actions">
+          <button type="button" (click)="pinSelected.emit(entry.pin.id)">
+            {{ title(entry.pin) }}
+          </button>
+          @if (canEdit()) {
+            <button type="button" (click)="edit(entry.pin.id)">
+              {{ 'board.experience.addDate' | translate }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</section>

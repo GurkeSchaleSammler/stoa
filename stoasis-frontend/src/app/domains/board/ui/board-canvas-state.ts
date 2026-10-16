@@ -71,7 +71,7 @@ export abstract class BoardCanvasState {
     color: BoardColorVariant;
   }>();
   readonly onDeleteConnector = output<string>();
-  readonly onUpdateConnector = output<{ id: string; color: string }>();
+  readonly onUpdateConnector = output<{ id: string; color?: string; label?: string }>();
   readonly onCreateZone = output<CreateSoftZoneRequest>();
   readonly onUpdateZone = output<{ id: string; update: Partial<CreateSoftZoneRequest> }>();
   readonly onDeleteZone = output<string>();

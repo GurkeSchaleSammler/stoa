@@ -352,3 +352,27 @@
     outline-offset: 1px;
   }
 }
+
+.stoa-board .connector-caption {
+  fill: var(--text);
+  stroke: var(--surface-sunken);
+  stroke-width: 5px;
+  paint-order: stroke;
+  font-size: 13px;
+  pointer-events: none;
+}
+.stoa-board .connector-label-field {
+  display: grid;
+  gap: 4px;
+}
+.stoa-board .connector-label-field input {
+  width: 100%;
+  min-width: 0;
+}
+.stoa-board .connector-editor {
+  display: grid;
+  gap: 8px;
+}
+.stoa-board .connector-editor small {
+  color: var(--muted);
+}

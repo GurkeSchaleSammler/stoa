@@ -15,6 +15,21 @@ import { AppIconName } from '../models/app-icon-name';
       aria-hidden="true"
     >
       @switch (name()) {
+        @case ('network') {
+          <path d="m7 7 10 3M7 7l3 11m7-8-7 8" />
+          <circle cx="6" cy="6" r="3" />
+          <circle cx="18" cy="10" r="3" />
+          <circle cx="10" cy="19" r="3" />
+        }
+        @case ('timeline') {
+          <path d="M5 3v18M5 6h14M5 12h9M5 18h14" />
+          <circle cx="5" cy="6" r="1" />
+          <circle cx="5" cy="12" r="1" />
+          <circle cx="5" cy="18" r="1" />
+        }
+        @case ('play') {
+          <path d="m8 4 12 8-12 8Z" />
+        }
         @case ('home') {
           <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z" />
         }

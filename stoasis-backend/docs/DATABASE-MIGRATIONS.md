@@ -44,3 +44,10 @@ die Flags über den Foreign Key. Vertrag und Verifikation: `spec/09-board-templa
 vergrösserter Pins. Bestehende Pins behalten ihre Größe; die ursprüngliche Höhe wird
 aus `height_clips` übernommen. Die Migration ist additiv und muss vor dem neuen
 Backend-Image über den vorhandenen Pipeline-Einstieg ausgeführt werden.
+
+`V20` ergänzt Verbindungsbeschriftungen, Präsentationspfade mit geordneten Stationen
+und explizite Zeitstrahl-Daten. Bestehende Verbindungen erhalten eine leere Beschriftung;
+es ist kein Backfill erforderlich. Pfadstationen und Datumszuordnungen werden beim
+Löschen des jeweiligen Pins entfernt. Vor dem neuen Backend-Image die Migration
+über den bestehenden Pipeline-Einstieg ausführen. Ein App-Rollback lässt die neuen
+Tabellen und die Spalte stehen. Vertrag: `docs/api/board-experience.md` im Repository-Root.

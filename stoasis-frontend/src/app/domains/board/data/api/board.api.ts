@@ -149,11 +149,12 @@ export class BoardApi {
   updateConnector(
     collectionId: string,
     connectorId: string,
-    colorVariant: BoardColorVariant,
+    colorVariant?: BoardColorVariant,
+    label?: string,
   ): Observable<ConnectorThread> {
     return this.http.patch<ConnectorThread>(
       `${API_URL}/collections/${collectionId}/board-elements/connectors/${connectorId}`,
-      { colorVariant },
+      { colorVariant, label },
     );
   }
 

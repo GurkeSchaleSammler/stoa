@@ -25,6 +25,7 @@ fun BoardConnectorEntity.toDto() = ConnectorThreadDto(
     id = id,
     sourcePinId = sourcePin?.id.orEmpty(),
     targetPinId = targetPin?.id.orEmpty(),
+    label = label,
     colorVariant = colorVariant,
 )
 

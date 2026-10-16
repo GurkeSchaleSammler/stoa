@@ -61,7 +61,10 @@ export class BoardElementsStore {
   }
 
   handleError(error: unknown): Observable<never> {
-    const message = (error as { error?: { message?: string } })?.error?.message ?? 'errors.board';
+    const body = (error as { error?: { code?: string; message?: string } })?.error;
+    const message = body?.code?.startsWith('board.')
+      ? body.code
+      : (body?.message ?? 'errors.board');
     this.errorState.set(message);
     this.snackbars.error(message);
     return EMPTY;

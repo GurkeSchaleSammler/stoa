@@ -35,9 +35,14 @@ export class ConnectorActionsService {
       .subscribe();
   }
 
-  update(collectionId: string, connectorId: string, color: BoardColorVariant): void {
+  update(
+    collectionId: string,
+    connectorId: string,
+    color?: BoardColorVariant,
+    label?: string,
+  ): void {
     this.api
-      .updateConnector(collectionId, connectorId, color)
+      .updateConnector(collectionId, connectorId, color, label)
       .pipe(
         tap((updated) =>
           this.store.update((elements) => ({

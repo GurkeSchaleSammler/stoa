@@ -23,6 +23,7 @@ import { boardShortcut } from '../data/models/board-shortcut';
 import { PortalPinData } from '../../../shared/models/portal-pin-data';
 import { WorldTrailComponent } from '../../world/world-trail';
 import { BoardPresenceStore } from '../data/application/board-presence.store';
+import { BoardExperienceHandlerComponent } from './board-experience-handler';
 import { BoardPresenceComponent } from '../ui/board-presence';
 
 @Component({
@@ -46,6 +47,7 @@ import { BoardPresenceComponent } from '../ui/board-presence';
     BoardReuseHandlerComponent,
     WorldTrailComponent,
     BoardPresenceComponent,
+    BoardExperienceHandlerComponent,
   ],
   template: `
     <ui-board-canvas
@@ -79,7 +81,9 @@ import { BoardPresenceComponent } from '../ui/board-presence';
         )
       "
       (onDeleteConnector)="pins.connectorActions.delete(collectionId(), $event)"
-      (onUpdateConnector)="pins.connectorActions.update(collectionId(), $event.id, $event.color)"
+      (onUpdateConnector)="
+        pins.connectorActions.update(collectionId(), $event.id, $event.color, $event.label)
+      "
       (onCreateZone)="pins.decorationActions.createZone(collectionId(), $event)"
       (onUpdateZone)="pins.decorationActions.updateZone(collectionId(), $event.id, $event.update)"
       (onDeleteZone)="pins.decorationActions.deleteZone(collectionId(), $event)"
@@ -95,6 +99,22 @@ import { BoardPresenceComponent } from '../ui/board-presence';
       (onConsoleClick)="consoleOpen.set(true)"
       (onSettingsClick)="openSettings()"
     >
+      <feature-board-experience-handler
+        board-experience
+        [collectionId]="collectionId()"
+        [pins]="pins.sortedPins()"
+        [connectors]="pins.elements().connectors"
+        [viewMode]="pins.viewMode()"
+        [canEdit]="pins.canEdit()"
+        (pinSelected)="selectPin($event)"
+        (connectorUpdated)="
+          pins.connectorActions.update(collectionId(), $event.id, undefined, $event.label)
+        "
+        (connectorCreated)="
+          pins.connectorActions.create(collectionId(), $event.sourcePinId, $event.targetPinId)
+        "
+        (connectorDeleted)="pins.connectorActions.delete(collectionId(), $event)"
+      />
       <ui-board-presence
         board-presence
         [participants]="presence.participants()"
@@ -157,6 +177,12 @@ export class BoardCanvasHandlerComponent {
     ),
     { initialValue: this.route.snapshot.queryParamMap.get('pin') },
   );
+  private readonly viewFromUrl = toSignal(
+    this.route.queryParamMap.pipe(
+      map((params) => params.get('view')),
+      distinctUntilChanged(),
+    ),
+  );
   readonly worldId = toSignal(
     this.route.queryParamMap.pipe(
       map((params) => params.get('world')),
@@ -213,6 +239,12 @@ export class BoardCanvasHandlerComponent {
 
   constructor() {
     effect(() => {
+      const mode = this.viewFromUrl();
+      if (mode && ['board', 'list', 'network', 'timeline', 'presentation'].includes(mode)) {
+        untracked(() => this.pins.setViewMode(mode as BoardViewMode));
+      }
+    });
+    effect(() => {
       const id = this.collectionId();
       const context = this.pins.context();
       const visible = this.pageVisible();
@@ -262,6 +294,11 @@ export class BoardCanvasHandlerComponent {
   }
   changeView(mode: BoardViewMode): void {
     this.pins.setViewMode(mode);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { view: mode },
+      queryParamsHandling: 'merge',
+    });
   }
   handleStackDrop(drop: StackDrop): void {
     if (drop.targetType === 'stack') {

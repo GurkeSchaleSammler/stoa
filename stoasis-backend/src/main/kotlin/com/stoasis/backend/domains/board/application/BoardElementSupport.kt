@@ -36,6 +36,13 @@ class BoardElementSupport(
         pins.findDetailed(collectionId, pinId)
             ?: throw ApiException(HttpStatus.NOT_FOUND, "Pin nicht gefunden.")
 
+    fun requirePins(collectionId: String, pinIds: List<String>) {
+        val ids = pinIds.distinct()
+        // Chunking avoids database parameter limits without imposing a station quota.
+        val count = ids.chunked(500).sumOf { pins.countByCollectionIdAndIdIn(collectionId, it) }
+        if (count != ids.size.toLong()) throw ApiException(HttpStatus.NOT_FOUND, "Pin nicht gefunden.")
+    }
+
     fun getStack(collectionId: String, stackId: String): PinStackEntity =
         stacks.findDetailed(collectionId, stackId)
             ?: throw ApiException(HttpStatus.NOT_FOUND, "Stack nicht gefunden.")

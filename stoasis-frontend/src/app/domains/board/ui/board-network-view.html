@@ -1,0 +1,157 @@
+<section class="experience-view">
+  <div class="experience-heading">
+    <div>
+      <h2>{{ 'board.experience.network' | translate }}</h2>
+      <p>{{ 'board.experience.networkHelp' | translate }}</p>
+    </div>
+    <div class="experience-actions">
+      <button
+        type="button"
+        (click)="zoom.set(zoom() > 0.25 ? zoom() - 0.25 : 0.25)"
+        [attr.aria-label]="'board.zoomOut' | translate"
+      >
+        −
+      </button>
+      <button type="button" (click)="zoom.set(1)">{{ zoom() * 100 }}%</button>
+      <button
+        type="button"
+        (click)="zoom.set(zoom() < 2 ? zoom() + 0.25 : 2)"
+        [attr.aria-label]="'board.zoomIn' | translate"
+      >
+        +
+      </button>
+      @if (focusId()) {
+        <button type="button" (click)="focusId.set(null)">
+          {{ 'board.experience.showAll' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+  @if (!pins().length) {
+    <p>{{ 'board.empty' | translate }}</p>
+  }
+  <div
+    class="network-scroll"
+    tabindex="0"
+    [attr.aria-label]="'board.experience.network' | translate"
+  >
+    <div [style.width.px]="width() * zoom()" [style.height.px]="height() * zoom()">
+      <div
+        class="network-stage"
+        [style.width.px]="width()"
+        [style.height.px]="height()"
+        [style.transform]="'scale(' + zoom() + ')'"
+      >
+        <svg [attr.width]="width()" [attr.height]="height()" aria-hidden="true">
+          @for (edge of validEdges(); track edge.id) {
+            <g
+              [class.dimmed]="
+                focusId() && edge.sourcePinId !== focusId() && edge.targetPinId !== focusId()
+              "
+            >
+              <line
+                [attr.x1]="point(edge.sourcePinId).x"
+                [attr.y1]="point(edge.sourcePinId).y"
+                [attr.x2]="point(edge.targetPinId).x"
+                [attr.y2]="point(edge.targetPinId).y"
+                [attr.stroke]="color(edge.colorVariant)"
+                stroke-width="2"
+              />
+              @if (edge.label) {
+                <text
+                  [attr.x]="(point(edge.sourcePinId).x + point(edge.targetPinId).x) / 2"
+                  [attr.y]="(point(edge.sourcePinId).y + point(edge.targetPinId).y) / 2 - 52"
+                  text-anchor="middle"
+                >
+                  {{ edge.label.length > 36 ? edge.label.slice(0, 36) + '…' : edge.label }}
+                </text>
+              }
+            </g>
+          }
+        </svg>
+        @for (node of nodes(); track node.pin.id) {
+          <button
+            type="button"
+            class="network-node"
+            [style.left.px]="node.x"
+            [style.top.px]="node.y"
+            [class.dimmed]="focusId() && !related().has(node.pin.id)"
+            [attr.aria-pressed]="focusId() === node.pin.id"
+            (click)="focusId.set(focusId() === node.pin.id ? null : node.pin.id)"
+          >
+            <small>{{ 'pin.' + node.pin.type | translate }}</small
+            ><strong>{{ title(node.pin) }}</strong>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+  @if (focusId(); as id) {
+    <button type="button" (click)="pinSelected.emit(id)">
+      {{ 'board.experience.openPin' | translate }}
+    </button>
+  }
+  <details class="connections-panel">
+    <summary>{{ 'board.experience.connections' | translate }} · {{ connectors().length }}</summary>
+    <p>
+      {{ 'board.experience.labelAllowance' | translate }} ({{ labelCount() }} /
+      {{ labelLimit() ?? '∞' }})
+    </p>
+    @if (canEdit()) {
+      <form
+        class="experience-actions"
+        (submit)="$event.preventDefault(); connect(source.value, target.value)"
+      >
+        <label
+          >{{ 'board.experience.from' | translate
+          }}<select #source>
+            @for (pin of pins(); track pin.id) {
+              <option [value]="pin.id">{{ title(pin) }}</option>
+            }
+          </select></label
+        >
+        <label
+          >{{ 'board.experience.to' | translate
+          }}<select #target>
+            @for (pin of pins(); track pin.id) {
+              <option [value]="pin.id">{{ title(pin) }}</option>
+            }
+          </select></label
+        >
+        <button type="submit" [disabled]="pins().length < 2">
+          {{ 'board.experience.connect' | translate }}
+        </button>
+      </form>
+    }
+    @for (edge of activeEdges(); track edge.id) {
+      <div class="connection-row">
+        <span
+          >{{ byId().get(edge.sourcePinId) ? title(byId().get(edge.sourcePinId)!.pin) : '' }} ↔
+          {{ byId().get(edge.targetPinId) ? title(byId().get(edge.targetPinId)!.pin) : '' }}</span
+        >
+        @if (canEdit()) {
+          <label
+            >{{ 'board.experience.connectionLabel' | translate
+            }}<input
+              #caption
+              maxlength="120"
+              [value]="edge.label || ''"
+              [disabled]="!labelAllowed(edge)"
+          /></label>
+          <button
+            type="button"
+            [disabled]="!labelAllowed(edge)"
+            (click)="connectorUpdated.emit({ id: edge.id, label: caption.value })"
+          >
+            {{ 'common.save' | translate }}
+          </button>
+          <button type="button" (click)="connectorDeleted.emit(edge.id)">
+            {{ 'common.delete' | translate }}
+          </button>
+        } @else {
+          <strong>{{ edge.label }}</strong>
+        }
+      </div>
+    }
+  </details>
+</section>

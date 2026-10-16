@@ -1,0 +1,240 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.experience-view {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: var(--text);
+}
+h2 {
+  font:
+    600 28px Georgia,
+    serif;
+  margin: 0 0 8px;
+}
+h3 {
+  margin: 0 0 12px;
+}
+p {
+  color: var(--muted);
+  margin: 8px 0 16px;
+}
+button,
+input,
+select {
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 8px 12px;
+  min-height: 40px;
+  box-sizing: border-box;
+}
+button {
+  cursor: pointer;
+}
+button:hover:not(:disabled) {
+  background: var(--accent-soft);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+.network-scroll:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+}
+input,
+select {
+  max-width: 100%;
+}
+select {
+  max-width: 320px;
+}
+.experience-heading,
+.experience-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.experience-heading {
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.experience-actions {
+  margin: 12px 0;
+}
+.experience-editor,
+.path-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  background: var(--surface-raised);
+  margin-bottom: 16px;
+}
+fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.network-scroll {
+  overflow: auto;
+  max-height: 65dvh;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background: var(--surface-sunken);
+}
+.network-stage {
+  position: relative;
+  transform-origin: 0 0;
+}
+.network-stage svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.network-stage text {
+  fill: var(--text);
+  stroke: var(--surface-sunken);
+  stroke-width: 5px;
+  paint-order: stroke;
+  font-size: 13px;
+}
+.network-node {
+  position: absolute;
+  width: 220px;
+  height: 72px;
+  display: grid;
+  text-align: left;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+}
+.network-node strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.network-node small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.network-node[aria-pressed='true'] {
+  border: 2px solid var(--accent);
+  background: var(--accent-soft);
+}
+.dimmed {
+  opacity: 0.28;
+}
+.connections-panel {
+  margin-top: 24px;
+}
+summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-weight: 600;
+}
+.connection-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.connection-row > span {
+  flex: 1;
+  min-width: 200px;
+  overflow-wrap: anywhere;
+}
+.timeline-list {
+  list-style: none;
+  margin: 24px 0;
+  padding: 0 0 0 24px;
+  border-left: 2px solid var(--accent);
+}
+.timeline-list li {
+  position: relative;
+  padding: 0 0 28px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.timeline-list li::before {
+  content: '';
+  position: absolute;
+  left: -31px;
+  top: 12px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.timeline-date {
+  width: 100%;
+  color: var(--accent-strong);
+  font-weight: 600;
+  font-size: 13px;
+}
+.timeline-pin {
+  text-align: left;
+  max-width: 600px;
+  overflow-wrap: anywhere;
+}
+.undated-pins {
+  display: grid;
+  gap: 8px;
+}
+.undated-pins .experience-actions {
+  margin: 0;
+}
+.path-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+}
+.path-stations {
+  padding-left: 24px;
+}
+.path-stations li {
+  padding: 8px 0;
+}
+.path-stations li span {
+  display: inline-block;
+  width: min(50%, 480px);
+  overflow-wrap: anywhere;
+  vertical-align: middle;
+}
+.path-stations button {
+  margin-left: 8px;
+}
+@media (max-width: 760px) {
+  .experience-view {
+    padding: 16px;
+  }
+  .experience-heading {
+    align-items: flex-start;
+  }
+  .network-scroll {
+    max-height: 55dvh;
+  }
+  .connection-row > span {
+    min-width: 100%;
+  }
+}

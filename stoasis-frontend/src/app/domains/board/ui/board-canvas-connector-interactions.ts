@@ -82,6 +82,12 @@ export abstract class BoardCanvasConnectorInteractions extends BoardCanvasCardIn
     this.selectedConnectorId.set(connector.id);
   }
 
+  connectorMidpoint(connector: ConnectorThread): { x: number; y: number } {
+    const a = this.pinAnchor(connector.sourcePinId),
+      b = this.pinAnchor(connector.targetPinId);
+    return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+  }
+
   connectorEditorLeft(connector: ConnectorThread): number {
     const source = this.pinAnchor(connector.sourcePinId);
     const target = this.pinAnchor(connector.targetPinId);
@@ -91,7 +97,7 @@ export abstract class BoardCanvasConnectorInteractions extends BoardCanvasCardIn
   connectorEditorTop(connector: ConnectorThread): number {
     const source = this.pinAnchor(connector.sourcePinId);
     const target = this.pinAnchor(connector.targetPinId);
-    return this.clamp((source.y + target.y) / 2 - 74, 0, this.boardHeightPx - 128);
+    return this.clamp((source.y + target.y) / 2 - 74, 0, this.boardHeightPx - 260);
   }
 
   changeConnectorColor(connectorId: string, color: string): void {

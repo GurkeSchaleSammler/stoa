@@ -163,6 +163,18 @@
                   (dblclick)="canEdit() && onDeleteConnector.emit(connector.id)"
                 />
               }
+              @for (connector of elements().connectors; track connector.id) {
+                @if (connector.label) {
+                  <text
+                    class="connector-caption"
+                    [attr.x]="connectorMidpoint(connector).x"
+                    [attr.y]="connectorMidpoint(connector).y - 8"
+                    text-anchor="middle"
+                  >
+                    {{ connector.label }}
+                  </text>
+                }
+              }
               @if (connectorDraft(); as draft) {
                 <path
                   class="connector-thread draft"
@@ -186,6 +198,24 @@
                   [value]="connector.colorVariant"
                   (valueChange)="changeConnectorColor(connector.id, $event)"
                 />
+                <label class="connector-label-field"
+                  >{{ 'board.experience.connectionLabel' | translate }}
+                  <input
+                    #caption
+                    maxlength="120"
+                    [value]="connector.label || ''"
+                    (keydown.enter)="
+                      onUpdateConnector.emit({ id: connector.id, label: caption.value })
+                    "
+                  />
+                </label>
+                <small>{{ 'board.experience.labelAllowance' | translate }}</small>
+                <button
+                  type="button"
+                  (click)="onUpdateConnector.emit({ id: connector.id, label: caption.value })"
+                >
+                  {{ 'common.save' | translate }}
+                </button>
                 <div class="connector-editor-footer">
                   <button
                     type="button"
@@ -393,9 +423,10 @@
             }
           </div>
         </div>
-      } @else {
+      } @else if (viewMode() === 'list') {
         <ui-board-list-view [pins]="pins()" (onSelectPin)="onSelectPin.emit($event)" />
       }
+      <ng-content select="[board-experience]" />
       @if (pins().length === 0 && (!canEdit() || viewMode() === 'list')) {
         <p class="empty-board">{{ 'board.empty' | translate }}</p>
       }

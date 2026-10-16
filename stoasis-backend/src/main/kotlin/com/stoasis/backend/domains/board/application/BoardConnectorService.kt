@@ -20,6 +20,7 @@ class BoardConnectorService(
     private val support: BoardElementSupport,
     private val connectors: BoardConnectorRepository,
     private val idGenerator: IdGenerator,
+    private val policy: BoardFeaturePolicy,
 ) {
     @Transactional
     fun createConnector(
@@ -27,7 +28,7 @@ class BoardConnectorService(
         userId: String,
         request: CreateConnectorRequest,
     ): ConnectorThreadDto {
-        val collection = support.editableCollection(collectionId, userId)
+        val collection = policy.editable(collectionId, userId)
         if (request.sourcePinId == request.targetPinId) badRequest("Eine Verbindung braucht zwei Karten.")
         val source = support.getPin(collectionId, request.sourcePinId)
         val target = support.getPin(collectionId, request.targetPinId)
@@ -37,6 +38,8 @@ class BoardConnectorService(
             target.id,
         ) || connectors.existsByCollectionIdAndSourcePinIdAndTargetPinId(collectionId, target.id, source.id)
         if (duplicate) throw ApiException(HttpStatus.CONFLICT, "Diese Karten sind bereits verbunden.")
+        val label = policy.label(request.label)
+        if (label.isNotEmpty()) policy.requireCapacity(collection, connectors.countByCollectionIdAndLabelNot(collectionId, ""), 10, "board.connector_label_limit")
         val connector = connectors.save(
             BoardConnectorEntity(
                 id = "thread-${idGenerator.newId()}",
@@ -44,6 +47,7 @@ class BoardConnectorService(
                 sourcePin = source,
                 targetPin = target,
                 colorVariant = validBoardColor(request.colorVariant),
+                label = label,
             ),
         )
         touchCollection(collection)
@@ -57,17 +61,24 @@ class BoardConnectorService(
         userId: String,
         request: UpdateConnectorRequest,
     ): ConnectorThreadDto {
-        val collection = support.editableCollection(collectionId, userId)
+        val collection = policy.editable(collectionId, userId)
         val connector = connectors.findByIdAndCollectionId(connectorId, collectionId)
             ?: throw ApiException(HttpStatus.NOT_FOUND, "Verbindung nicht gefunden.")
-        connector.colorVariant = validBoardColor(request.colorVariant)
+        request.label?.let { value ->
+            val label = policy.label(value)
+            if (connector.label.isEmpty() && label.isNotEmpty()) policy.requireCapacity(
+                collection, connectors.countByCollectionIdAndLabelNot(collectionId, ""), 10, "board.connector_label_limit",
+            )
+            connector.label = label
+        }
+        request.colorVariant?.let { connector.colorVariant = validBoardColor(it) }
         touchCollection(collection)
         return connector.toDto()
     }
 
     @Transactional
     fun deleteConnector(collectionId: String, connectorId: String, userId: String) {
-        val collection = support.editableCollection(collectionId, userId)
+        val collection = policy.editable(collectionId, userId)
         val connector = connectors.findByIdAndCollectionId(connectorId, collectionId)
             ?: throw ApiException(HttpStatus.NOT_FOUND, "Verbindung nicht gefunden.")
         connectors.delete(connector)
@@ -76,7 +87,7 @@ class BoardConnectorService(
 
     @Transactional
     fun disconnectPins(collectionId: String, sourcePinId: String, targetPinId: String, userId: String): String {
-        val collection = support.editableCollection(collectionId, userId)
+        val collection = policy.editable(collectionId, userId)
         val connector = connectors.findByCollectionIdAndSourcePinIdAndTargetPinId(
             collectionId,
             sourcePinId,

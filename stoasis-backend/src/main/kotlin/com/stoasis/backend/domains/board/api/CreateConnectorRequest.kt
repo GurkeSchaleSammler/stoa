@@ -4,5 +4,6 @@ data class CreateConnectorRequest(
     val sourcePinId: String,
     val targetPinId: String,
     val colorVariant: String = "accent",
+    val label: String = "",
 )
 

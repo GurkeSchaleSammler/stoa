@@ -22,6 +22,8 @@ class BoardCopyService(
     private val labels: FloatingLabelRepository,
     private val stickers: StickerRepository,
     private val ids: IdGenerator,
+    private val experiences: BoardExperienceRepository,
+    private val policy: BoardFeaturePolicy,
 ) {
     @Transactional
     fun duplicate(sourceId: String, userId: String, name: String): com.stoasis.backend.domains.collection.api.CollectionDetail {
@@ -31,6 +33,12 @@ class BoardCopyService(
         }
         val result = collections.create(userId, CreateCollectionRequest(name, source.emoji, source.allowedTypes))
         val target = collections.get(result.id)
+        val sourcePaths = experiences.paths(sourceId)
+        val sourceConnectors = connectors.findAllByCollectionId(sourceId)
+        if (!policy.premium(target)) {
+            if (sourcePaths.size > 7) policy.requireCapacity(target, 7, 7, "board.presentation_path_limit")
+            if (sourceConnectors.count { it.label.isNotEmpty() } > 10) policy.requireCapacity(target, 10, 10, "board.connector_label_limit")
+        }
         val pinIds = pins.copyAll(sourceId, target.id, userId)
         stacks.findAllByCollectionIdOrderByLayer(sourceId).forEach { old ->
             val copiedChildren = old.children.mapNotNull { child ->
@@ -50,13 +58,13 @@ class BoardCopyService(
             stack.children.addAll(copiedChildren)
             stacks.save(stack)
         }
-        connectors.findAllByCollectionId(sourceId).forEach { old ->
+        sourceConnectors.forEach { old ->
             val sourcePinId = pinIds[old.sourcePin!!.id] ?: return@forEach
             val targetPinId = pinIds[old.targetPin!!.id] ?: return@forEach
             connectors.save(BoardConnectorEntity(
                 id = "connector-${ids.newId()}", collection = target,
                 sourcePin = support.getPin(target.id, sourcePinId),
-                targetPin = support.getPin(target.id, targetPinId), colorVariant = old.colorVariant,
+                targetPin = support.getPin(target.id, targetPinId), colorVariant = old.colorVariant, label = old.label,
             ))
         }
         zones.findAllByCollectionId(sourceId).forEach { old ->
@@ -77,6 +85,15 @@ class BoardCopyService(
                 widthClips = old.widthClips, heightClips = old.heightClips, rotation = old.rotation,
                 layer = old.layer, motif = old.motif, colorVariant = old.colorVariant,
             ))
+        }
+        // Flush copied JPA pins before inserting JDBC rows with foreign keys.
+        connectors.flush()
+        experiences.dates(sourceId).forEach { old ->
+            pinIds[old.pinId]?.let { experiences.saveDate(target.id, it, com.stoasis.backend.domains.board.api.SavePinDateRequest(old.startDate, old.endDate)) }
+        }
+        sourcePaths.forEach { old ->
+            val steps = old.pinIds.mapNotNull { pinIds[it] }
+            experiences.savePath(target.id, com.stoasis.backend.domains.board.api.PresentationPathDto("path-${ids.newId()}", old.name, steps), true)
         }
         return collections.detail(target.id, userId)
     }

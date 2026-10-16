@@ -31,5 +31,13 @@ BEGIN
     ) THEN
         RAISE EXCEPTION 'Pin type constraint is missing';
     END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'board_connectors' AND column_name = 'label'
+    ) OR to_regclass('public.board_pin_dates') IS NULL
+      OR to_regclass('public.board_presentation_paths') IS NULL
+      OR to_regclass('public.board_presentation_steps') IS NULL THEN
+        RAISE EXCEPTION 'Board experience schema V20 is missing';
+    END IF;
 END $$;
 

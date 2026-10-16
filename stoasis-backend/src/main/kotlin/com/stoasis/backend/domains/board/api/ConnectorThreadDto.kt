@@ -5,5 +5,6 @@ data class ConnectorThreadDto(
     val sourcePinId: String,
     val targetPinId: String,
     val colorVariant: String,
+    val label: String = "",
 )
 

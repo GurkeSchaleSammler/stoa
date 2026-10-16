@@ -1,4 +1,7 @@
 export type AppIconName =
+  | 'network'
+  | 'timeline'
+  | 'play'
   | 'home'
   | 'more'
   | 'arrow-down'

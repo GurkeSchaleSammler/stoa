@@ -1,6 +1,7 @@
 package com.stoasis.backend.domains.profile.application
 
 import com.stoasis.backend.domains.auth.api.toDto
+import com.stoasis.backend.domains.board.application.BoardExperienceService
 import com.stoasis.backend.domains.board.application.BoardElementQueryService
 import com.stoasis.backend.domains.collection.application.CollectionService
 import com.stoasis.backend.domains.collection.data.CollectionRepository
@@ -26,6 +27,7 @@ class ProfileExportService(
     private val pins: PinRepository,
     private val pinService: PinService,
     private val elements: BoardElementQueryService,
+    private val experiences: BoardExperienceService,
     private val plans: PlanService,
     private val mapper: ObjectMapper,
     private val archive: ProfileArchiveService,
@@ -46,7 +48,7 @@ class ProfileExportService(
             mapOf("id" to board.id, "name" to board.name, "emoji" to board.emoji, "boardKind" to board.boardKind,
                 "visibility" to board.visibility, "allowedTypes" to board.allowedTypes, "accent" to board.accent,
                 "pins" to pins.findAllByCollectionIdOrderBySortOrder(board.id).map(pinService::toDto),
-                "elements" to elements.snapshot(board.id))
+                "elements" to elements.snapshot(board.id), "experience" to experiences.list(board.id, userId))
         }
         val result = if (format == "csv") csv(data) else mapper.writeValueAsBytes(
             mapOf("version" to 1, "exportedAt" to now, "user" to user.toDto(), "collections" to data,
