@@ -1,6 +1,7 @@
 package com.stoasis.backend.domains.pin.application
 
 import com.stoasis.backend.domains.auth.data.UserRepository
+import com.stoasis.backend.domains.board.data.BoardConnectorRepository
 import com.stoasis.backend.domains.board.data.PinStackChildRepository
 import com.stoasis.backend.domains.board.data.PinStackRepository
 import com.stoasis.backend.domains.collection.application.CollectionService
@@ -51,6 +52,7 @@ class PinService(
     private val comments: PinCommentRepository,
     private val collections: CollectionService,
     private val users: UserRepository,
+    private val connectors: BoardConnectorRepository,
     private val stacks: PinStackRepository,
     private val stackChildren: PinStackChildRepository,
     private val skillData: SkillDataRepository,
@@ -170,6 +172,9 @@ class PinService(
                 stacks.delete(stack)
             }
         }
+        // Remove managed connector entities before their pin. Relying only on the database's
+        // ON DELETE CASCADE leaves already-loaded connectors pointing at a removed JPA entity.
+        connectors.deleteAllBySourcePinIdOrTargetPinId(pinId, pinId)
         pins.delete(pin)
         pin.fileKey?.let(uploads::discardUnused)
         collection.updatedAt = Instant.now()

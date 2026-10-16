@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface BoardConnectorRepository : JpaRepository<BoardConnectorEntity, String> {
     fun countByCollectionIdAndLabelNot(collectionId: String, label: String): Long
 
+    fun deleteAllBySourcePinIdOrTargetPinId(sourcePinId: String, targetPinId: String)
+
     @EntityGraph(attributePaths = ["sourcePin", "targetPin", "collection"])
     fun findAllByCollectionId(collectionId: String): List<BoardConnectorEntity>
 
